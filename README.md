@@ -43,7 +43,3 @@ haven't tested it without that change
 It will break if you use versions different than:
 Python 3.12
 Node 22.0
-
-
-TEST
-TEST2
