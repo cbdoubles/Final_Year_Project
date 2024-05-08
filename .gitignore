@@ -1,6 +1,7 @@
 venv/
 backend/api/downloads
 backend/api/__pycache__/*
+backend/backend/__pycache__/*
 backend/db.sqlite3
 Pipfile
 sepenv/
