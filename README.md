@@ -1,49 +1,117 @@
-## Installation
-Installation steps are as follows:
-1. Install openjdk from [openjdk](https://www.oracle.com/java/technologies/downloads/#jdk22-windows).
-  * You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive
-  * Copy the folder path of jdk from where you installed it (ex - C:\Program Files\Java\jdk-17.0.2)
-  * Search Enviroment Variables on your PC - which should open a system properties page, under that select Environment Variables.
-  * Click "New" under System variables, then under variable name: call it JAVA_HOME and under variable path: paste the copied folder path of your JDK. Once done click Ok.
-  * Click on the "Path" Variable under System variables, then click on "New" and then create an entry with the name "%JAVA_HOME%". Once done click Ok. Then the enviroment variable should be set for your Java.
-  * To test if its working - open cmd and type >java --version.
-2. Download and extract the community version of neo4j from [neo4j](https://neo4j.com/deployment-center/). Put the folder in the C:\ drive directly (not in any folder, DIRECTLY!).
- * Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder.
-3. Download python 3.12 from [Python 3.12](https://www.python.org/downloads/)
-4. Clone the repository. This should create a "Querify" repository (i.e. folder). <br>
-   4a. Open the terminal inside of the "Querify" folder. <br>
-   4b. Run the command `python -m venv ../env` (please do not change anything from this command!). This command will create an env folder, which is your virtual environment. <br>
-   4c. Activate the virtual environment by running the command `..\env\Scripts\activate.bat` inside the same terminal window. This will activate your vertual enviornment. <br>
-   4d. Run the command `pip install -r requirements.txt` . This should download python along with the libraries needed to work on this project. <br>
-5. Set up a virtual environment and open it up (python -m venv env) to set up and (.\env\Scripts\activate.bat)Clone the repository and navigate to it, run (pip install -r requirements.txt)
-6. Install node.js 22.0 from [Node.js](https://nodejs.org/en)
-7. Navigate to the frontend folder in the terminal and install the packages using (npm install)
-8. It works!
 
-## Usage
-You need to run neo4j server before running the code itself.
+# Installation Guide
 
-1) You need to run neo4j server before running the code itself. (powershell command & "$env:NEO4J_HOME\bin\neo4j-admin.bat" server console)
-2) activate the virtual environment and enter the root of the project
-3) upload file (three arguments are required username for neo4j password for neo4j and path to file that you wish to upload)
-4) cd backend
-5) python manage.py makemigrations
-6) python manage.py migrate
-7) python manage.py runserver
-8) create a new terminal while leaving the django server to run in the first one
-9) cd frontend
-10) npm run build
-11) npm run dev
-12) pray
+## Prerequisites and Installation Steps:
 
-## Remarks:
-I created a downloads folder inside api with custom input files I tried to abstract,
-from their structure, but the main testing has been done on a json input,
-as that was the easiest one for me for this attempt, the csv requires dealing,
-with several files and combining them and I am not certain for graphml and sql,
-make sure you have your username and password in views.py and neo4j_services.py
-haven't tested it without that change
+### Java Development Kit (JDK)
+1. **Install OpenJDK:** Download and install OpenJDK from [Oracle's official site](https://www.oracle.com/java/technologies/downloads/#jdk22-windows). (It is recommended to use either version 17 or 21)
+2. **Set Up Environment Variables for OpenJDK:**
+    - Install OpenJDK in the C Drive.
+    - Copy the folder path of JDK from the installation location (e.g., `C:\Program Files\Java\jdk-17.0.2`).
+    - Search for "Environment Variables" on your PC and open the System Properties page.
+    - Under "System variables", click "New". Set `JAVA_HOME` as the variable name and paste the copied folder path as the variable value.
+    - Edit the "Path" variable under "System variables", click "New", and add `%JAVA_HOME%\bin`.
+    - To verify the installation, open Command Prompt and type `java --version`.
 
-It will break if you use versions different than:
-Python 3.12
-Node 22.0
+### Neo4J Setup
+3. **Download and Configure Neo4J:**
+    - Download the community version of Neo4J from [Neo4J Official Site](https://neo4j.com/deployment-center/).
+    - Extract it directly into the `C:\` drive.
+    - Set the NEO4J_HOME environment variable similar to JAVA_HOME, pointing the "Path" to the `/bin` folder of Neo4J.
+    - To install as a Windows service, open Terminal and run: `neo4j windows-service install`.
+
+### Python Setup
+4. **Install Python:**
+    - Download and install Python 3.12 from [Python Official Downloads](https://www.python.org/downloads/).
+    - Clone the repository to create a "Querify" folder.
+    - Inside the "Querify" folder, create a virtual environment: `python -m venv ../env`.
+    - Activate the virtual environment:
+        - Command Prompt: `call ..\env\Scripts\activate.bat`
+        - Git Bash: `../env/Scripts/activate.bat`
+    - Install required Python packages: `pip install -r requirements.txt`.
+
+### Node.js and NPM Setup
+5. **Install Node.js:**
+    - Download and install Node.js 22.0 from [Node.js Official Site](https://nodejs.org/en).
+    - Navigate to the frontend directory in the terminal.
+    - Install the necessary packages: `npm install`.
+
+### Resetting the Neo4j Password
+6. **Follow the steps to set the new neo4j password:**
+     - Documentation for resetting the neo4j database password - [Password Reset for neo4j](https://neo4j.com/docs/operations-manual/current/authentication-authorization/password-and-user-recovery/)
+
+### Final Steps
+7. **Project Verification:**
+    - Ensure all installations are correctly set up and verify the project runs correctly.
+    - Celebrate your success with a test run: `It works!`.
+
+# Project Setup and Launch Instructions
+
+## Prerequisites:
+- Ensure that the Neo4J server is installed on your system and the `NEO4J_HOME` environment variable is set to the installation path.
+- Python and Django installed for backend setup.
+- Node.js and npm installed for frontend setup.
+
+## Steps:
+
+### Set Up the Neo4J Server:
+1. **Start the Neo4J Server:** Open PowerShell and run the following command to start the Neo4J server:
+   ```
+   neo4j start
+   ```
+
+### Start the neo4j instance
+2. This is the instance you will work on and which will host all of your files. Go to https://localhost:7474, select **bolt** in the dropdown, input username "neo4j" and password "password"
+
+### Prepare the Backend:
+3. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
+4. **Navigate to Backend Directory:** Change directory to the backend:
+   ```
+   cd backend
+   ```
+5. **Database Migrations:** Prepare and apply database migrations:
+   ```
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+6. **Start Django Server:** Run the Django server:
+   ```
+   python manage.py runserver
+   ```
+
+### Set Up the Frontend:
+7. **Open a New Terminal:** Ensure the Django server is still running in the first terminal.
+8. **Navigate to Frontend Directory:** Change directory to the frontend folder:
+   ```
+   cd frontend
+   ```
+9. **Build the Frontend:** Compile the frontend assets:
+   ```
+   npm run build
+   ```
+10. **Launch Frontend Development Server:** Start the development server:
+    ```
+    npm run dev
+    ```
+
+### Final Step:
+11. **Verification and Testing:** Ensure everything is working as expected and make adjustments if necessary. Sometimes, things don't go as planned:
+    ```
+    # Reflect on your efforts and the mysteries of software development
+    pray
+    ```
+
+
+# Additional Remarks
+
+## Custom Downloads Folder
+- A custom downloads folder named `api` contains various input files. The primary testing focused on JSON inputs, given their ease of use.
+- CSV inputs require processing multiple files and combining them, which hasn't been fully implemented.
+- The compatibility with GraphML and SQL inputs remains uncertain.
+
+## Credentials Requirement
+- Ensure that your username and password are correctly set in `views.py` and `neo4j_services.py`. The application has not been tested without these credentials in place.
+
+## Version Compatibility
+- The application is designed to work specifically with Python 3.12 and Node.js 22. Using versions other than these may lead to issues.
+
