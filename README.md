@@ -1,14 +1,14 @@
 ## Installation
 Installation steps are as follows:
-1. Install openjdk from [openjdk](https://www.oracle.com/java/technologies/downloads/#jdk22-windows).
-  1a. You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive
-  1b. Copy the folder path of jdk from where you installed it (ex - C:\Program Files\Java\jdk-17.0.2)
-  1c. Search Enviroment Variables on your PC - which should open a system properties page, under that select Environment Variables.
-  1d. Click "New" under System variables, then under variable name: call it JAVA_HOME and under variable path: paste the copied folder path of your JDK. Once done click Ok.
-  1e. Click on the "Path" Variable under System variables, then click on "New" and then create an entry with the name "%JAVA_HOME%". Once done click Ok. Then the enviroment variable should be set for your Java.
-  1f. To test if its working - open cmd and type >java --version.
-2. Download and extract the community version of neo4j from [neo4j](https://neo4j.com/deployment-center/). Put the folder in the C:\ drive directly (not in any folder, DIRECTLY!).
-  2a. Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder.
+1. Install openjdk from [openjdk](https://www.oracle.com/java/technologies/downloads/#jdk22-windows). <br>
+  1a. You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive <br>
+  1b. Copy the folder path of jdk from where you installed it (ex - C:\Program Files\Java\jdk-17.0.2) <br>
+  1c. Search Enviroment Variables on your PC - which should open a system properties page, under that select Environment Variables. <br>
+  1d. Click "New" under System variables, then under variable name: call it JAVA_HOME and under variable path: paste the copied folder path of your JDK. Once done click Ok. <br>
+  1e. Click on the "Path" Variable under System variables, then click on "New" and then create an entry with the name "%JAVA_HOME%". Once done click Ok. Then the enviroment variable should be set for your Java. <br>
+  1f. To test if its working - open cmd and type >java --version. <br>
+2. Download and extract the community version of neo4j from [neo4j](https://neo4j.com/deployment-center/). Put the folder in the C:\ drive directly (not in any folder, DIRECTLY!). <br>
+  2a. Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder. <br>
 3. Download python 3.12 from [Python 3.12](https://www.python.org/downloads/)
 4. Clone the repository. This should create a "Querify" repository (i.e. folder). <br>
    4a. Open the terminal inside of the "Querify" folder. <br>
