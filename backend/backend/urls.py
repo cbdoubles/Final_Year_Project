@@ -16,27 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.http import JsonResponse
-from api.views import download_file, save_graph, view_graph
-from neo4j import GraphDatabase
+from api.views import download_file, save_graph, view_graph, graph_data
 
-#should probably be moved from here, but I am not certain where is the place for this,perhaps views.py?
-def graph_data(request):
-    # Create a driver for your Neo4j database
-    driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "cobra-paprika-nylon-conan-tobacco-2599"))
-
-    # Start a new session
-    with driver.session() as session:
-        # Run a Cypher query to fetch all nodes with auto-generated ID and properties
-        result = session.run("MATCH (n) RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties")
-        nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result]
-
-        # Run a Cypher query to fetch all edges
-        result = session.run("MATCH (n)-[r]->(m) RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, elementId(m) AS endId, properties(r) AS properties")
-        edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result]
-
-    # Return the data as JSON
-    return JsonResponse({"nodes": nodes, "edges": edges})
 
 urlpatterns = [
     path('admin/', admin.site.urls),

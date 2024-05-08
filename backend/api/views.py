@@ -5,6 +5,7 @@ from django.conf import settings
 from .models import Query
 import networkx as nx
 from networkx.readwrite import json_graph
+from neo4j import GraphDatabase
 import os
 import json
 
@@ -63,3 +64,19 @@ def view_graph(request, query_id):
 
     # Return the Query object in the HTTP response
     return HttpResponse(f'Graph retrieved successfully: Cypher query: {query.cypher_query}, Natural query: {query.natural_query}, Graph: {graph_json}')
+def graph_data(request):
+    # Create a driver for your Neo4j database
+    driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "cobra-paprika-nylon-conan-tobacco-2599"))
+
+    # Start a new session
+    with driver.session() as session:
+        # Run a Cypher query to fetch all nodes with auto-generated ID and properties
+        result = session.run("MATCH (n) RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties")
+        nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result]
+
+        # Run a Cypher query to fetch all edges
+        result = session.run("MATCH (n)-[r]->(m) RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, elementId(m) AS endId, properties(r) AS properties")
+        edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result]
+
+    # Return the data as JSON
+    return JsonResponse({"nodes": nodes, "edges": edges})
