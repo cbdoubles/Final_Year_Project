@@ -4,7 +4,7 @@
 ## Prerequisites and Installation Steps:
 
 ### Java Development Kit (JDK)
-1. **Install OpenJDK:** Download and install OpenJDK from [Oracle's official site](https://www.oracle.com/java/technologies/downloads/#jdk22-windows).
+1. **Install OpenJDK:** Download and install OpenJDK from [Oracle's official site](https://www.oracle.com/java/technologies/downloads/#jdk22-windows). (It is recommended to use either version 17 or 21)
 2. **Set Up Environment Variables for OpenJDK:**
     - Install OpenJDK in the C Drive.
     - Copy the folder path of JDK from the installation location (e.g., `C:\Program Files\Java\jdk-17.0.2`).
@@ -36,8 +36,12 @@
     - Navigate to the frontend directory in the terminal.
     - Install the necessary packages: `npm install`.
 
+### Resetting the Neo4j Password
+6. **Follow the steps to set the new neo4j password:**
+     - Documentation for resetting the neo4j database password - [Password Reset for neo4j](https://neo4j.com/docs/operations-manual/current/authentication-authorization/password-and-user-recovery/)
+
 ### Final Steps
-6. **Project Verification:**
+7. **Project Verification:**
     - Ensure all installations are correctly set up and verify the project runs correctly.
     - Celebrate your success with a test run: `It works!`.
 
@@ -56,49 +60,42 @@
    neo4j start
    ```
 
-### (Optional) Follow the steps to set the new neo4j password
-
 ### Start the neo4j instance
 2. This is the instance you will work on and which will host all of your files. Go to https://localhost:7474, select **bolt** in the dropdown, input username "neo4j" and password "password"
 
 ### Prepare the Backend:
-3. **Activate Virtual Environment:** Navigate to the project root directory and activate the virtual environment. You can create one if it doesn't exist using `python -m venv env` and then activate it with:
-   ```
-   .\env\Scripts\activate  # Windows
-   source env/bin/activate # Unix/Mac
-   ```
-4. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
-5. **Navigate to Backend Directory:** Change directory to the backend:
+3. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
+4. **Navigate to Backend Directory:** Change directory to the backend:
    ```
    cd backend
    ```
-6. **Database Migrations:** Prepare and apply database migrations:
+5. **Database Migrations:** Prepare and apply database migrations:
    ```
    python manage.py makemigrations
    python manage.py migrate
    ```
-7. **Start Django Server:** Run the Django server:
+6. **Start Django Server:** Run the Django server:
    ```
    python manage.py runserver
    ```
 
 ### Set Up the Frontend:
-8. **Open a New Terminal:** Ensure the Django server is still running in the first terminal.
-9. **Navigate to Frontend Directory:** Change directory to the frontend folder:
+7. **Open a New Terminal:** Ensure the Django server is still running in the first terminal.
+8. **Navigate to Frontend Directory:** Change directory to the frontend folder:
    ```
    cd frontend
    ```
-10. **Build the Frontend:** Compile the frontend assets:
+9. **Build the Frontend:** Compile the frontend assets:
    ```
    npm run build
    ```
-11. **Launch Frontend Development Server:** Start the development server:
+10. **Launch Frontend Development Server:** Start the development server:
     ```
     npm run dev
     ```
 
 ### Final Step:
-12. **Verification and Testing:** Ensure everything is working as expected and make adjustments if necessary. Sometimes, things don't go as planned:
+11. **Verification and Testing:** Ensure everything is working as expected and make adjustments if necessary. Sometimes, things don't go as planned:
     ```
     # Reflect on your efforts and the mysteries of software development
     pray
