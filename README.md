@@ -99,14 +99,17 @@
     pray
     ```
 
-# Remarks:
-I created a downloads folder inside api with custom input files I tried to abstract,
-from their structure, but the main testing has been done on a json input,
-as that was the easiest one for me for this attempt, the csv requires dealing,
-with several files and combining them and I am not certain for graphml and sql,
-make sure you have your username and password in views.py and neo4j_services.py
-haven't tested it without that change
 
-It will break if you use versions different than:
-Python 3.12
-Node 22.0
+# Additional Remarks
+
+## Custom Downloads Folder
+- A custom downloads folder named `api` contains various input files. The primary testing focused on JSON inputs, given their ease of use.
+- CSV inputs require processing multiple files and combining them, which hasn't been fully implemented.
+- The compatibility with GraphML and SQL inputs remains uncertain.
+
+## Credentials Requirement
+- Ensure that your username and password are correctly set in `views.py` and `neo4j_services.py`. The application has not been tested without these credentials in place.
+
+## Version Compatibility
+- The application is designed to work specifically with Python 3.12 and Node.js 22. Using versions other than these may lead to issues.
+
