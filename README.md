@@ -37,10 +37,10 @@ Installation steps are as follows:
    ```
 
 ### Prepare the Backend:
-2. **Activate Virtual Environment:** Navigate to the project root directory and activate the virtual environment. You can create one if it doesn't exist using `python -m venv sepenv` and then activate it with:
+2. **Activate Virtual Environment:** Navigate to the project root directory and activate the virtual environment. You can create one if it doesn't exist using `python -m venv env` and then activate it with:
    ```
-   .\sepenv\Scripts\activate  # Windows
-   source sepenv/bin/activate # Unix/Mac
+   .\env\Scripts\activate  # Windows
+   source env/bin/activate # Unix/Mac
    ```
 3. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
 4. **Navigate to Backend Directory:** Change directory to the backend:
