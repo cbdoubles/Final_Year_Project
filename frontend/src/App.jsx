@@ -12,7 +12,7 @@ export default function App() {
   const apiUrl = 'http://127.0.0.1:8000/api/graphData';
   const sendToAPI = 'http://127.0.0.1:8000/download_file/';
 
-
+  //probably unnecessary have to test it without
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -27,7 +27,7 @@ export default function App() {
     }
     return cookieValue;
 }
-
+//probably unnecessary have to test it without
 const csrftoken = getCookie('csrftoken');
 
   const handleFileUpload = event => {
@@ -82,6 +82,7 @@ const csrftoken = getCookie('csrftoken');
       .catch(error => console.error("Error fetching data: ", error));
   }, []);
 
+  //the logic should be fixed
   function chooseLayout(nodesCount, edgesCount) {
     if (nodesCount < 50 && edgesCount < 50) {
       return 'grid';

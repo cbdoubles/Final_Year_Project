@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
-from .models import Person #change this to whatever
-from api.views import download_file
+from api.views import download_file, save_graph, view_graph
 from neo4j import GraphDatabase
 
+#should probably be moved from here, but I am not certain where is the place for this,perhaps views.py?
 def graph_data(request):
     # Create a driver for your Neo4j database
     driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "cobra-paprika-nylon-conan-tobacco-2599"))
@@ -42,4 +42,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/graphData', graph_data),
     path('download_file/', download_file),
+    path('save_graph/',save_graph),
+    path('view_graph/<int:query_id>/', view_graph),
 ]
