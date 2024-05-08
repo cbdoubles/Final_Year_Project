@@ -1,4 +1,4 @@
-## Installation
+# Installation
 Installation steps are as follows:
 1. Install openjdk from [openjdk](https://www.oracle.com/java/technologies/downloads/#jdk22-windows). <br>
   1a. You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive <br>
@@ -20,8 +20,6 @@ Installation steps are as follows:
 6. Install node.js 22.0 from [Node.js](https://nodejs.org/en)
 7. Navigate to the frontend folder in the terminal and install the packages using (npm install)
 8. It works!
-
-## Usage
 
 # Project Setup and Launch Instructions
 
@@ -81,7 +79,7 @@ Installation steps are as follows:
     pray
     ```
 
-## Remarks:
+# Remarks:
 I created a downloads folder inside api with custom input files I tried to abstract,
 from their structure, but the main testing has been done on a json input,
 as that was the easiest one for me for this attempt, the csv requires dealing,
