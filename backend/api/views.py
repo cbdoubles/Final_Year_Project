@@ -7,7 +7,7 @@ import os
 import json
 
 # Initialize Neo4j connection
-neo4j_service = Neo4jService('bolt://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
+neo4j_service = Neo4jService('bolt://localhost:7687', 'admin', 'password')
 
 @csrf_exempt # THIS SHIT IS THE GOAT (FIXED HTTP ERROR 403)
 def download_file(request):

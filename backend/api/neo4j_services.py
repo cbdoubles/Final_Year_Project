@@ -1,7 +1,7 @@
 from neo4j import GraphDatabase
 
 uri = "bolt://localhost:7687"
-user = "user"
+user = "admin"
 password = "password"
 
 class Neo4jService:
