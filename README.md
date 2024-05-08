@@ -53,47 +53,52 @@
 ### Set Up the Neo4J Server:
 1. **Start the Neo4J Server:** Open PowerShell and run the following command to start the Neo4J server:
    ```
-   & "$env:NEO4J_HOME\bin\neo4j-admin.bat" server console
+   neo4j start
    ```
 
+### (Optional) Follow the steps to set the new neo4j password
+
+### Start the neo4j instance
+2. This is the instance you will work on and which will host all of your files. Go to https://localhost:7474, select **bolt** in the dropdown, input username "neo4j" and password "password"
+
 ### Prepare the Backend:
-2. **Activate Virtual Environment:** Navigate to the project root directory and activate the virtual environment. You can create one if it doesn't exist using `python -m venv env` and then activate it with:
+3. **Activate Virtual Environment:** Navigate to the project root directory and activate the virtual environment. You can create one if it doesn't exist using `python -m venv env` and then activate it with:
    ```
    .\env\Scripts\activate  # Windows
    source env/bin/activate # Unix/Mac
    ```
-3. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
-4. **Navigate to Backend Directory:** Change directory to the backend:
+4. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
+5. **Navigate to Backend Directory:** Change directory to the backend:
    ```
    cd backend
    ```
-5. **Database Migrations:** Prepare and apply database migrations:
+6. **Database Migrations:** Prepare and apply database migrations:
    ```
    python manage.py makemigrations
    python manage.py migrate
    ```
-6. **Start Django Server:** Run the Django server:
+7. **Start Django Server:** Run the Django server:
    ```
    python manage.py runserver
    ```
 
 ### Set Up the Frontend:
-7. **Open a New Terminal:** Ensure the Django server is still running in the first terminal.
-8. **Navigate to Frontend Directory:** Change directory to the frontend folder:
+8. **Open a New Terminal:** Ensure the Django server is still running in the first terminal.
+9. **Navigate to Frontend Directory:** Change directory to the frontend folder:
    ```
    cd frontend
    ```
-9. **Build the Frontend:** Compile the frontend assets:
+10. **Build the Frontend:** Compile the frontend assets:
    ```
    npm run build
    ```
-10. **Launch Frontend Development Server:** Start the development server:
+11. **Launch Frontend Development Server:** Start the development server:
     ```
     npm run dev
     ```
 
 ### Final Step:
-11. **Verification and Testing:** Ensure everything is working as expected and make adjustments if necessary. Sometimes, things don't go as planned:
+12. **Verification and Testing:** Ensure everything is working as expected and make adjustments if necessary. Sometimes, things don't go as planned:
     ```
     # Reflect on your efforts and the mysteries of software development
     pray
