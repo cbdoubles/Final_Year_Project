@@ -9,6 +9,7 @@ Installation steps are as follows:
   1f. To test if its working - open cmd and type >java --version. <br>
 2. Download and extract the community version of neo4j from [neo4j](https://neo4j.com/deployment-center/). Put the folder in the C:\ drive directly (not in any folder, DIRECTLY!). <br>
   2a. Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder. <br>
+  2b. Open Terminal and run the command `neo4j windows-service install`.
 3. Download python 3.12 from [Python 3.12](https://www.python.org/downloads/)
 4. Clone the repository. This should create a "Querify" repository (i.e. folder). <br>
    4a. Open the terminal inside of the "Querify" folder. <br>
