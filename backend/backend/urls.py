@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
 from .models import Person #change this to whatever
-from api.views import upload_file, download_file#save_file #create_person, get_person, save_file
+from api.views import download_file
 from neo4j import GraphDatabase
 
 def graph_data(request):
