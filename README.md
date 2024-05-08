@@ -22,20 +22,64 @@ Installation steps are as follows:
 8. It works!
 
 ## Usage
-You need to run neo4j server before running the code itself.
 
-1) You need to run neo4j server before running the code itself. (powershell command & "$env:NEO4J_HOME\bin\neo4j-admin.bat" server console)
-2) activate the virtual environment and enter the root of the project
-3) upload file (three arguments are required username for neo4j password for neo4j and path to file that you wish to upload)
-4) cd backend
-5) python manage.py makemigrations
-6) python manage.py migrate
-7) python manage.py runserver
-8) create a new terminal while leaving the django server to run in the first one
-9) cd frontend
-10) npm run build
-11) npm run dev
-12) pray
+# Project Setup and Launch Instructions
+
+## Prerequisites:
+- Ensure that the Neo4J server is installed on your system and the `NEO4J_HOME` environment variable is set to the installation path.
+- Python and Django installed for backend setup.
+- Node.js and npm installed for frontend setup.
+
+## Steps:
+
+### Set Up the Neo4J Server:
+1. **Start the Neo4J Server:** Open PowerShell and run the following command to start the Neo4J server:
+   ```
+   & "$env:NEO4J_HOME\bin\neo4j-admin.bat" server console
+   ```
+
+### Prepare the Backend:
+2. **Activate Virtual Environment:** Navigate to the project root directory and activate the virtual environment. You can create one if it doesn't exist using `python -m venv venv` and then activate it with:
+   ```
+   .\venv\Scripts\activate  # Windows
+   source venv/bin/activate # Unix/Mac
+   ```
+3. **Upload Required Files:** Ensure to upload necessary files with the script that requires three arguments: username, password for Neo4J, and the path to the file you wish to upload.
+4. **Navigate to Backend Directory:** Change directory to the backend:
+   ```
+   cd backend
+   ```
+5. **Database Migrations:** Prepare and apply database migrations:
+   ```
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+6. **Start Django Server:** Run the Django server:
+   ```
+   python manage.py runserver
+   ```
+
+### Set Up the Frontend:
+7. **Open a New Terminal:** Ensure the Django server is still running in the first terminal.
+8. **Navigate to Frontend Directory:** Change directory to the frontend folder:
+   ```
+   cd frontend
+   ```
+9. **Build the Frontend:** Compile the frontend assets:
+   ```
+   npm run build
+   ```
+10. **Launch Frontend Development Server:** Start the development server:
+    ```
+    npm run dev
+    ```
+
+### Final Step:
+11. **Verification and Testing:** Ensure everything is working as expected and make adjustments if necessary. Sometimes, things don't go as planned:
+    ```
+    # Reflect on your efforts and the mysteries of software development
+    pray
+    ```
 
 ## Remarks:
 I created a downloads folder inside api with custom input files I tried to abstract,
