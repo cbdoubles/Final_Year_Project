@@ -1,19 +1,19 @@
 ## Installation
 Installation steps are as follows:
 1. Install openjdk from [openjdk](https://www.oracle.com/java/technologies/downloads/#jdk22-windows).
-  * You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive
-  * Copy the folder path of jdk from where you installed it (ex - C:\Program Files\Java\jdk-17.0.2)
-  * Search Enviroment Variables on your PC - which should open a system properties page, under that select Environment Variables.
-  * Click "New" under System variables, then under variable name: call it JAVA_HOME and under variable path: paste the copied folder path of your JDK. Once done click Ok.
-  * Click on the "Path" Variable under System variables, then click on "New" and then create an entry with the name "%JAVA_HOME%". Once done click Ok. Then the enviroment variable should be set for your Java.
-  * To test if its working - open cmd and type >java --version.
+  1a. You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive
+  1b. Copy the folder path of jdk from where you installed it (ex - C:\Program Files\Java\jdk-17.0.2)
+  1c. Search Enviroment Variables on your PC - which should open a system properties page, under that select Environment Variables.
+  1d. Click "New" under System variables, then under variable name: call it JAVA_HOME and under variable path: paste the copied folder path of your JDK. Once done click Ok.
+  1e. Click on the "Path" Variable under System variables, then click on "New" and then create an entry with the name "%JAVA_HOME%". Once done click Ok. Then the enviroment variable should be set for your Java.
+  1f. To test if its working - open cmd and type >java --version.
 2. Download and extract the community version of neo4j from [neo4j](https://neo4j.com/deployment-center/). Put the folder in the C:\ drive directly (not in any folder, DIRECTLY!).
- * Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder.
+  2a. Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder.
 3. Download python 3.12 from [Python 3.12](https://www.python.org/downloads/)
 4. Clone the repository. This should create a "Querify" repository (i.e. folder). <br>
    4a. Open the terminal inside of the "Querify" folder. <br>
    4b. Run the command `python -m venv ../env` (please do not change anything from this command!). This command will create an env folder, which is your virtual environment. <br>
-   4c. Activate the virtual environment by running the command `..\env\Scripts\activate.bat` inside the same terminal window. This will activate your vertual enviornment. <br>
+   4c. Activate the virtual environment by running the command `../env/Scripts/activate.bat` inside the same terminal window. This will activate your vertual enviornment. <br>
    4d. Run the command `pip install -r requirements.txt` . This should download python along with the libraries needed to work on this project. <br>
 5. Set up a virtual environment and open it up (python -m venv env) to set up and (.\env\Scripts\activate.bat)Clone the repository and navigate to it, run (pip install -r requirements.txt)
 6. Install node.js 22.0 from [Node.js](https://nodejs.org/en)
