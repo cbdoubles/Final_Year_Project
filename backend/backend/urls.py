@@ -40,11 +40,6 @@ def graph_data(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('create_person/<str:name>/', create_person),
-    #path('get_person/<str:name>/', get_person),
     path('api/graphData', graph_data),
-    #path('api/saveFile', save_file),
-    path('upload_file/', upload_file),
     path('download_file/', download_file),
-
 ]

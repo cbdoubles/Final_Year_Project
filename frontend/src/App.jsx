@@ -104,19 +104,6 @@ const csrftoken = getCookie('csrftoken');
     }
   }
 
-  // const layout = {
-  //   name: "cose",
-  //   fit: true,
-  //   // circle: true,
-  //   directed: true,
-  //   padding: 50,
-  //   // spacingFactor: 1.5,
-  //   animate: true,
-  //   animationDuration: 1000,
-  //   avoidOverlap: true,
-  //   nodeDimensionsIncludeLabels: false
-  // };
-
   const styleSheet = [
     {
       selector: "node",
