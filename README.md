@@ -1,25 +1,45 @@
-# Installation
-Installation steps are as follows:
-1. Install openjdk from [openjdk](https://www.oracle.com/java/technologies/downloads/#jdk22-windows). <br>
-  1a. You have to put openjdk in your enviroment variables for it to communicate with your terminal. To do that, Install OpenJDK in the C Drive <br>
-  1b. Copy the folder path of jdk from where you installed it (ex - C:\Program Files\Java\jdk-17.0.2) <br>
-  1c. Search Enviroment Variables on your PC - which should open a system properties page, under that select Environment Variables. <br>
-  1d. Click "New" under System variables, then under variable name: call it JAVA_HOME and under variable path: paste the copied folder path of your JDK. Once done click Ok. <br>
-  1e. Click on the "Path" Variable under System variables, then click on "New" and then create an entry with the name "%JAVA_HOME%". Once done click Ok. Then the enviroment variable should be set for your Java. <br>
-  1f. To test if its working - open cmd and type >java --version. <br>
-2. Download and extract the community version of neo4j from [neo4j](https://neo4j.com/deployment-center/). Put the folder in the C:\ drive directly (not in any folder, DIRECTLY!). <br>
-  2a. Set up the environment variable like for openjdk, make sure you point Path to the /bin folder, not the parent neo4j folder. <br>
-  2b. Open Terminal and run the command `neo4j windows-service install`.
-3. Download python 3.12 from [Python 3.12](https://www.python.org/downloads/)
-4. Clone the repository. This should create a "Querify" repository (i.e. folder). <br>
-   4a. Open the terminal inside of the "Querify" folder. <br>
-   4b. Run the command `python -m venv ../env` (please do not change anything from this command!). This command will create an env folder, which is your virtual environment. <br>
-   4c. Activate the virtual environment by running the command  `call ..\env\Scripts\activate.bat` (for Command Prompt) or `../env/Scripts/activate.bat` (for Git Bath) inside the same terminal window. This will activate your vertual enviornment. <br>
-   4d. Run the command `pip install -r requirements.txt` . This should download python along with the libraries needed to work on this project. <br>
-5. Set up a virtual environment and open it up (python -m venv env) to set up and (.\env\Scripts\activate.bat)Clone the repository and navigate to it, run (pip install -r requirements.txt)
-6. Install node.js 22.0 from [Node.js](https://nodejs.org/en)
-7. Navigate to the frontend folder in the terminal and install the packages using (npm install)
-8. It works!
+
+# Installation Guide
+
+## Prerequisites and Installation Steps:
+
+### Java Development Kit (JDK)
+1. **Install OpenJDK:** Download and install OpenJDK from [Oracle's official site](https://www.oracle.com/java/technologies/downloads/#jdk22-windows).
+2. **Set Up Environment Variables for OpenJDK:**
+    - Install OpenJDK in the C Drive.
+    - Copy the folder path of JDK from the installation location (e.g., `C:\Program Files\Java\jdk-17.0.2`).
+    - Search for "Environment Variables" on your PC and open the System Properties page.
+    - Under "System variables", click "New". Set `JAVA_HOME` as the variable name and paste the copied folder path as the variable value.
+    - Edit the "Path" variable under "System variables", click "New", and add `%JAVA_HOME%\bin`.
+    - To verify the installation, open Command Prompt and type `java --version`.
+
+### Neo4J Setup
+3. **Download and Configure Neo4J:**
+    - Download the community version of Neo4J from [Neo4J Official Site](https://neo4j.com/deployment-center/).
+    - Extract it directly into the `C:\` drive.
+    - Set the NEO4J_HOME environment variable similar to JAVA_HOME, pointing the "Path" to the `/bin` folder of Neo4J.
+    - To install as a Windows service, open Terminal and run: `neo4j windows-service install`.
+
+### Python Setup
+4. **Install Python:**
+    - Download and install Python 3.12 from [Python Official Downloads](https://www.python.org/downloads/).
+    - Clone the repository to create a "Querify" folder.
+    - Inside the "Querify" folder, create a virtual environment: `python -m venv ../env`.
+    - Activate the virtual environment:
+        - Command Prompt: `call ..\env\Scripts\activate.bat`
+        - Git Bash: `../env/Scripts/activate.bat`
+    - Install required Python packages: `pip install -r requirements.txt`.
+
+### Node.js and NPM Setup
+5. **Install Node.js:**
+    - Download and install Node.js 22.0 from [Node.js Official Site](https://nodejs.org/en).
+    - Navigate to the frontend directory in the terminal.
+    - Install the necessary packages: `npm install`.
+
+### Final Steps
+6. **Project Verification:**
+    - Ensure all installations are correctly set up and verify the project runs correctly.
+    - Celebrate your success with a test run: `It works!`.
 
 # Project Setup and Launch Instructions
 
