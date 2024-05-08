@@ -12,8 +12,8 @@ Installation steps are as follows:
 3. Download python 3.12 from [Python 3.12](https://www.python.org/downloads/)
 4. Clone the repository. This should create a "Querify" repository (i.e. folder). <br>
    4a. Open the terminal inside of the "Querify" folder. <br>
-   4b. Run the command `python -m venv env` (please do not change anything from this command!). This command will create an env folder, which is your virtual environment. <br>
-   4c. Activate the virtual environment by running the command `.\env\Scripts\activate.bat` inside the same terminal window. This will activate your vertual enviornment. <br>
+   4b. Run the command `python -m venv ../env` (please do not change anything from this command!). This command will create an env folder, which is your virtual environment. <br>
+   4c. Activate the virtual environment by running the command `..\env\Scripts\activate.bat` inside the same terminal window. This will activate your vertual enviornment. <br>
    4d. Run the command `pip install -r requirements.txt` . This should download python along with the libraries needed to work on this project. <br>
 5. Set up a virtual environment and open it up (python -m venv env) to set up and (.\env\Scripts\activate.bat)Clone the repository and navigate to it, run (pip install -r requirements.txt)
 6. Install node.js 22.0 from [Node.js](https://nodejs.org/en)
