@@ -1,17 +1,60 @@
 // pages/index.tsx
-import React from 'react';
-import Button from '../src/utils/Button';
-import '../public/styles/style.css';
-import Image from 'next/image';
-import CapGemini from '../public/images/capgemini.png'; 
+import React from "react";
+import Button from "../src/utils/Button";
+import Image from "next/image";
+import CapGemini from "../public/images/capgemini.jpg";
 
 export default function home() {
   return (
-    <div className= "centered-column">
-      <Image src={CapGemini} alt="kur"/> /* move it outside of the divs, possibly define a style for the image itself, you can adjust the height and width as */
-      <div className= "transparent-box">
-      <Button title="Button 1" color="blue" size="70px" />
-      <Button title="Button 2" color="red" size="70px" />
+    // <div className="centered-column">
+    <div>
+      <style>{`
+        body {
+          background-size: cover;
+          color: white; 
+          margin: 0; 
+          padding: 0; 
+      `}</style>
+
+      <div>
+        <Image src={CapGemini} alt="Capgemini Logo" width={150} height={80} />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "80vh",
+          backgroundColor: "#ADD8E6",
+          color: "white",
+        }}
+      >
+        <button
+          style={{
+            marginBottom: "10px",
+            backgroundColor: "#0077C8",
+            color: "white",
+            width: "150px",
+            height: "30px",
+            border: "none",
+            borderRadius: "10px",
+          }}
+        >
+          Existing Project
+        </button>
+        <button
+          style={{
+            backgroundColor: "#0077C8",
+            color: "white",
+            width: "150px",
+            height: "30px",
+            border: "none",
+            borderRadius: "10px",
+          }}
+        >
+          New Project
+        </button>
       </div>
     </div>
   );
