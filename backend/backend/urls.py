@@ -16,13 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import download_file, save_graph, view_graph, graph_data
+from api.views import download_file, save_graph, view_graph, graph_data, cypher_query, run_query
 
-
+#maybe we should add sql/whatever() and neo4j/whatever() so that it is easier to understand what the function of each method is
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/graphData', graph_data),
     path('download_file/', download_file),
     path('save_graph/',save_graph),
     path('view_graph/<int:query_id>/', view_graph),
+    path('cypher_query/', cypher_query),
+    path('run_query/', run_query),
 ]
