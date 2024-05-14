@@ -14,7 +14,7 @@ import requests
 import errno
 
 # Initialize Neo4j connection
-neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
+neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'password3')
 
 @csrf_exempt
 def download_file(request):
