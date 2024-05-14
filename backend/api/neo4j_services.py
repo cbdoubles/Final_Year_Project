@@ -11,30 +11,29 @@ class Neo4jService:
     def close(self):
         self.driver.close()
 
-    def create_person(self, name):
+    def run_query(self, query):
         with self.driver.session() as session:
-            result = session.write_transaction(self._create_and_return_person, name)
-            return result
+            result = session.run(query)
+            return [record for record in result]
+    
+    def query_graph(self, nodes, edges, query):
+        # Convert the nodes and edges to a format that can be used in a Cypher query
+        nodes_param = [{**node} for node in nodes]
+        edges_param = [{**edge} for edge in edges]
 
-    def get_person(self, name):
+        new_nodes = []
+        new_edges = []
+
         with self.driver.session() as session:
-            result = session.read_transaction(self._get_and_return_person, name)
-            return result
+        # Run the provided query with the nodes and edges as parameters
+            result = session.run(query, {"nodes": nodes_param, "edges": edges_param})
 
-    @staticmethod
-    def _create_and_return_person(tx, name):
-        query = (
-            "CREATE (p:Person {name: $name}) "
-            "RETURN p.name AS name"
-        )
-        result = tx.run(query, name=name)
-        return result.single()[0]
+        # Process the result
+        
+            for record in result:
+                if 'nodes' in record.keys():
+                   new_nodes.extend(record['nodes'])
+                if 'edges' in record.keys():
+                   new_edges.extend(record['edges'])
 
-    @staticmethod
-    def _get_and_return_person(tx, name):
-        query = (
-            "MATCH (p:Person {name: $name}) "
-            "RETURN p.name AS name"
-        )
-        result = tx.run(query, name=name)
-        return result.single()[0]
+        return {"nodes": new_nodes, "edges": new_edges}
