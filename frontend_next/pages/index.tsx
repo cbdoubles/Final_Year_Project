@@ -8,6 +8,12 @@ export default function home() {
   return (
     // <div className="centered-column">
     <div>
+      <div style={{ backgroundColor: "white", height: "70px" }}>
+        <div style={{ marginLeft: "25px" }}>
+          <Image src={CapGemini} alt="Capgemini Logo" width={130} height={70} />
+        </div>
+      </div>
+
       <style jsx global>{`
         body {
           background-image: url(/images/background.jpg);
@@ -16,21 +22,19 @@ export default function home() {
           background-position: center;
           background-attachment: fixed;
           color: white; 
+
           margin: 0; 
           padding: 0;
           height: 100vh; 
       `}</style>
 
-      <div>
-        <Image src={CapGemini} alt="Capgemini Logo" width={150} height={80} />
-      </div>
       <div
-      style = {{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-      }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+        }}
       >
         <div
           style={{
@@ -38,11 +42,12 @@ export default function home() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            height: "20vh",
-            width: "20vh",
-            backgroundColor: "#ADD8E6",
+            height: "60vh",
+            width: "50vh",
+            backgroundColor: "rgba(173, 216, 230, 0.85)",
             color: "white",
             margin: "auto",
+            borderRadius: "20px",
           }}
         >
           <button
@@ -50,25 +55,25 @@ export default function home() {
               marginBottom: "10px",
               backgroundColor: "#0077C8",
               color: "white",
-              width: "150px",
-              height: "30px",
+              width: "200px",
+              height: "50px",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "20px",
             }}
           >
-            Existing Project
+            <strong>Existing Project </strong>
           </button>
           <button
             style={{
               backgroundColor: "#0077C8",
               color: "white",
-              width: "150px",
-              height: "30px",
+              width: "200px",
+              height: "50px",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "20px",
             }}
           >
-            New Project
+            <strong> New Project </strong>
           </button>
         </div>
       </div>
