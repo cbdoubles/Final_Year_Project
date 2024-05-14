@@ -46,9 +46,46 @@ export default function App() {
     // Parse the response as JSON
     const data = await response.json();
     console.log(data);
+    try{
+      let run_nodes = [];
+      let run_edges = [];
+      
+      data.nodes.forEach(node => {
+        const {id, ... otherProperties} = node.properties;
+        run_nodes.push({
+          data: {
+            id: node.element_id,
+            label: node.labels[0], // Assuming there's at least one label
+            ...node.otherProperties,
+            ...node.data
+          }
+        });
+      });
+      console.log(run_nodes)
+      data.edges.forEach(edge => {
+        if (run_nodes.find(n => n.data.id === edge.start_node.element_id) && run_nodes.find(n => n.data.id === edge.end_node.element_id)) {
+          run_edges.push({
+              data: {
+                  id: edge.element_id,
+                  source: edge.start_node.element_id,
+                  target: edge.end_node.element_id,
+                  label: edge.type,
+                  ...edge.properties
+                }
+            });
+        } else {
+            console.error('Edge with non-existent source or target:', edge);
+        }
+      });
+      // Combine nodes and edges into one array
+      let graphRunData = { nodes: run_nodes, edges: run_edges };
+      console.log(graphRunData);
 
-    // Update the graph data
-    setGraphData(data);
+      // Update the graph data
+      setGraphData(graphRunData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const saveQuery = () => {
