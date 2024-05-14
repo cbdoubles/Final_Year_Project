@@ -31,6 +31,17 @@ export default function home() {
       <div
         style={{
           display: "flex",
+          justifyContent: "left",//change to center if you want image at the center
+          alignItems: "left",//change to center if you want image at the center
+          width: "100vw", // Make the div take up the full width of the viewport
+          backgroundColor: "white", // Set the background color to white
+        }}
+      >
+        <Image src={CapGemini} alt="Capgemini Logo" width={150} height={80} />
+      </div>
+      <div
+        style={{
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
@@ -42,9 +53,9 @@ export default function home() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            height: "60vh",
-            width: "50vh",
-            backgroundColor: "rgba(173, 216, 230, 0.85)",
+            height: "40vh",
+            width: "40vh",
+            backgroundColor: "#ADD8E6",
             color: "white",
             margin: "auto",
             borderRadius: "20px",
@@ -52,11 +63,11 @@ export default function home() {
         >
           <button
             style={{
-              marginBottom: "10px",
+              marginBottom: "20px",
               backgroundColor: "#0077C8",
               color: "white",
-              width: "200px",
-              height: "50px",
+              width: "300px",
+              height: "60px",
               border: "none",
               borderRadius: "20px",
             }}
@@ -67,8 +78,8 @@ export default function home() {
             style={{
               backgroundColor: "#0077C8",
               color: "white",
-              width: "200px",
-              height: "50px",
+              width: "300px",
+              height: "60px",
               border: "none",
               borderRadius: "20px",
             }}
