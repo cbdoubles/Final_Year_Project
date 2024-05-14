@@ -81,7 +81,7 @@ class Neo4jService:
             
             if(start_id not in nodes or end_id not in nodes):
                 continue
-            
+
             final_edges[edge] = self.rel_to_dict(edges[edge])
             
-        return [final_nodes, final_edges]
+        return [list(final_nodes.values()), list(final_edges.values())]
