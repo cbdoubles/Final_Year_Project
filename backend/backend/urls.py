@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from api.views import download_file, save_graph, view_graph, graph_data, cypher_query, run_query
+from django.urls import path, re_path
+from django.http import JsonResponse
 
 #maybe we should add sql/whatever() and neo4j/whatever() so that it is easier to understand what the function of each method is
 urlpatterns = [
@@ -27,4 +29,5 @@ urlpatterns = [
     path('view_graph/<int:query_id>/', view_graph),
     path('cypher_query/', cypher_query),
     path('run_query/', run_query),
+    re_path('.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404)),
 ]
