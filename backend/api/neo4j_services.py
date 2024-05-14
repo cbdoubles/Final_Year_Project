@@ -1,4 +1,5 @@
 from neo4j import GraphDatabase
+import re
 
 uri = "bolt://localhost:7687"
 user = "admin"
@@ -28,19 +29,45 @@ class Neo4jService:
         modified_query = query + ",r" 
         return modified_query
     
-    def query_graph(self, nodes, edges, query):
+    def query_graph(self, query):
         # Convert the nodes and edges to a format that can be used in a Cypher query
         query = self.modify_query(query)
-        nodes_param = [{**node} for node in nodes]
-        edges_param = [{**edge} for edge in edges]
+
+        # Regular expression to match everything after 'RETURN '
+        match = re.search('RETURN (.*)', query, re.IGNORECASE)
+        if match:
+            # Split the matched string by commas to get the variables
+            variables = match.group(1).split(',')
+            # Strip whitespace from each variable
+            variables = [var.strip() for var in variables]
+
+        print(list(variables))
+
+        nodes = []
+        edges = []
 
         with self.driver.session() as session:
         # Run the provided query with the nodes and edges as parameters
-            result = session.run(query, {"nodes": nodes_param, "edges": edges_param})
+            result = session.run(query)
+            #print(list([record for record in result]))
+            for record in result:
+                #print(list(record.keys()))
+                for var in variables:
+                    #print(list(record.keys()))
+                    if var in record.keys():
+                # Check the type of the variable in the Record
+                        #print(list(record['r']))           
+                        if str(record[var]).startswith('<Node'):
+                            nodes.append(record[var])
+                        elif str(record[var]).startswith('<Relationship'):
+                            edges.append(record[var])
+
+            
+        return [nodes, edges]
+            #print(result)
+            #result.consume()
 
         # Process the result
         # 3 cases return one or many nodes, return relationship of edges, return everything
         
             #kkk 
-
-        return {"nodes": nodes_param, "edges": edges_param}

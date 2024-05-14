@@ -14,7 +14,7 @@ import requests
 import errno
 
 # Initialize Neo4j connection
-neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'password3')
+neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
 
 @csrf_exempt
 def download_file(request):
@@ -128,11 +128,11 @@ def run_query(request):
 
         # Run the Cypher query on the graph data
         # This is a placeholder, replace with your actual logic
-        new_graph_data = neo4j_service.query_graph(nodes, edges, query)
+        new_graph_data = neo4j_service.query_graph(query)
 
         # Process the results
-        nodes = new_graph_data['nodes']
-        edges = new_graph_data['edges']
+        nodes = new_graph_data[0]
+        edges = new_graph_data[1]
         # Return the new graph data
         return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
     else:
