@@ -1,34 +1,74 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import "./style.css";
 import CytoscapeComponent from "react-cytoscapejs";
 import { layouts } from './layouts.tsx'
+import "@neo4j-cypher/codemirror/css/cypher-codemirror.css";
+import { CypherEditor } from "@neo4j-cypher/react-codemirror";
 
 export default function App() {
-  const [width, setWith] = useState("100%");
-  const [height, setHeight] = useState("400px");
+  const [width] = useState("100%");
+  const [height] = useState("400px");
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [layout, setLayout] = useState(layouts['grid']); // default to 'grid' layout
   const [selectedFile, setSelectedFile] = useState();
   const apiUrl = 'http://127.0.0.1:8000/api/graphData';
   const sendToAPI = 'http://127.0.0.1:8000/download_file/';
+  const runCypherQuery = 'http://127.0.0.1:8000/run_query/';
+  const saveCypherQuery = 'http://127.0.0.1:8000/cypher_query/'
+  const cypherEditorRef = useRef();
+  const [editorValue, setEditorValue] = useState(''); 
+  const editorProps = {lint: true, autocompleteOpen : true, value: editorValue};
 
-  //probably unnecessary have to test it without
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+  useEffect(() => {
+    if (cypherEditorRef.current) {
+      const editor = cypherEditorRef.current;
+      console.log(editor.editorRef);
+      console.log(editor);
     }
-    return cookieValue;
-}
-//probably unnecessary have to test it without
-const csrftoken = getCookie('csrftoken');
+  }, [cypherEditorRef]);
+
+  const handleEditorChange = (newValue) => {
+    console.log('New value:', newValue);
+    setEditorValue(newValue);
+  };
+  
+  //change it so that it displays the result in the cytoscape window
+  const runQuery = async () => {
+    console.log(editorValue);
+    const response = await fetch(runCypherQuery, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: editorValue }),
+    });
+
+    // Parse the response as JSON
+    const data = await response.json();
+    console.log(data);
+
+    // Update the graph data
+    setGraphData(data);
+  };
+
+  const saveQuery = () => {
+      fetch(saveCypherQuery, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cypher_query: editorValue,
+          save: true,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+  };
+  
 
   const handleFileUpload = event => {
     const file = event.target.files[0];
@@ -39,10 +79,7 @@ const csrftoken = getCookie('csrftoken');
   
     fetch(sendToAPI, {
       method: 'POST',
-      body: formData,
-      headers: {
-        'X-CSRFToken': csrftoken
-      }
+      body: formData
     })
     .then(response => {
       if (!response.ok) {
@@ -59,9 +96,6 @@ const csrftoken = getCookie('csrftoken');
   };
 
   useEffect(() => {
-    // Replace this URL with the URL of your Django API
-    //const apiUrl = import.meta.env.VITE_API_URL;
-  
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
@@ -165,10 +199,10 @@ const csrftoken = getCookie('csrftoken');
 
   return (
     <>
-    <div>
-      <input type="file" onChange={handleFileUpload} />
-      {selectedFile && <p>File selected: {selectedFile.name}</p>}
-    </div>
+      <div>
+        <input type="file" onChange={handleFileUpload} />
+        {selectedFile && <p>File selected: {selectedFile.name}</p>}
+      </div>
       <div>
         <h1>Cytoscape example</h1>
         <div
@@ -190,20 +224,30 @@ const csrftoken = getCookie('csrftoken');
             stylesheet={styleSheet}
             cy={cy => {
               myCyRef = cy;
-
+  
               console.log("EVT", cy);
-
-              cy.on("tap", "node", evt => {
-                var node = evt.target;
-                console.log("EVT", evt);
-                console.log("TARGET", node.data());
-                console.log("TARGET TYPE", typeof node[0]);
+  
+              cy.on('tap', 'node', function(evt){
+                const node = evt.target;
+                // Display the data of the node in a popup
+                alert(JSON.stringify(node.data(), null, 2));
+              });
+              cy.on('tap', 'edge', function(evt){
+                const edge = evt.target;
+                // Display the data of the edge in a popup
+                alert(JSON.stringify(edge.data(), null, 2));
               });
             }}
             abc={console.log("myCyRef", myCyRef)}
           />
         </div>
       </div>
+      <div>
+        <h1>Cypher Editor</h1>
+        <CypherEditor ref={cypherEditorRef} onValueChanged={handleEditorChange} {...editorProps}/>
+      </div>
+      <button onClick={saveQuery}>Save</button>
+      <button onClick={runQuery}>Run</button>
     </>
   );
 }
