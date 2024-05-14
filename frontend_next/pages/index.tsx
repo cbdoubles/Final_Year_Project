@@ -31,17 +31,6 @@ export default function home() {
       <div
         style={{
           display: "flex",
-          justifyContent: "left", //change to center if you want image at the center
-          alignItems: "left", //change to center if you want image at the center
-          width: "100vw", // Make the div take up the full width of the viewport
-          backgroundColor: "white", // Set the background color to white
-        }}
-      >
-        <Image src={CapGemini} alt="Capgemini Logo" width={150} height={80} />
-      </div>
-      <div
-        style={{
-          display: "flex",
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
