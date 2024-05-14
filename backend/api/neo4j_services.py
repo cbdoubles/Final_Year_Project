@@ -29,45 +29,59 @@ class Neo4jService:
         modified_query = query + ",r" 
         return modified_query
     
+    def node_to_dict(self, node):
+        return {
+            'element_id': node.element_id,
+            'labels': list(node.labels),
+            'properties': dict(node.items())
+        }
+    
+    def rel_to_dict(self, rel):
+        return {
+        'element_id': rel.element_id,
+        'type': rel.type,
+        'properties': dict(rel.items()),
+        'start_node': self.node_to_dict(rel.start_node),
+        'end_node': self.node_to_dict(rel.end_node)
+        }
+    
     def query_graph(self, query):
-        # Convert the nodes and edges to a format that can be used in a Cypher query
         query = self.modify_query(query)
 
-        # Regular expression to match everything after 'RETURN '
         match = re.search('RETURN (.*)', query, re.IGNORECASE)
         if match:
-            # Split the matched string by commas to get the variables
             variables = match.group(1).split(',')
-            # Strip whitespace from each variable
             variables = [var.strip() for var in variables]
 
         print(list(variables))
 
-        nodes = []
-        edges = []
+        nodes = {}
+        final_nodes = {}
+        edges = {}
+
+        final_edges = {}
 
         with self.driver.session() as session:
-        # Run the provided query with the nodes and edges as parameters
             result = session.run(query)
-            #print(list([record for record in result]))
             for record in result:
-                #print(list(record.keys()))
-                for var in variables:
-                    #print(list(record.keys()))
-                    if var in record.keys():
-                # Check the type of the variable in the Record
-                        #print(list(record['r']))           
-                        if str(record[var]).startswith('<Node'):
-                            nodes.append(record[var])
-                        elif str(record[var]).startswith('<Relationship'):
-                            edges.append(record[var])
+                for key in record.keys():
+                    name = record[key].element_id
+                    if(key[0] == "n" and name not in nodes):
+                        nodes[name] = record[key]
 
-            
-        return [nodes, edges]
-            #print(result)
-            #result.consume()
-
-        # Process the result
-        # 3 cases return one or many nodes, return relationship of edges, return everything
+                    if(key[0] == "r" and name not in edges):
+                        edges[name] = record[key]
         
-            #kkk 
+        for node in nodes:
+            final_nodes[node] = self.node_to_dict(nodes[node])
+
+        for edge in edges:
+            start_id = edges[edge].start_node.element_id
+            end_id = edges[edge].end_node.element_id
+            
+            if(start_id not in nodes or end_id not in nodes):
+                continue
+            
+            final_edges[edge] = self.rel_to_dict(edges[edge])
+            
+        return [final_nodes, final_edges]
