@@ -10,7 +10,7 @@ export default function home() {
     <div>
       <div style={{ backgroundColor: "white", height: "70px" }}>
         <div style={{ marginLeft: "25px" }}>
-          <Image src={CapGemini} alt="Capgemini Logo" width={130} height={70} />
+          <Image src={CapGemini} alt="Capgemini Logo" width={150} height={70} />
         </div>
       </div>
 
@@ -52,25 +52,28 @@ export default function home() {
         >
           <button
             style={{
-              marginBottom: "20px",
+              marginBottom: "50px",
               backgroundColor: "#0077C8",
               color: "white",
-              width: "200px",
-              height: "50px",
+              width: "300px",
+              height: "100px",
               border: "none",
               borderRadius: "20px",
+              fontSize: "30px",
             }}
           >
             <strong>Existing Project </strong>
           </button>
+          
           <button
             style={{
               backgroundColor: "#0077C8",
               color: "white",
-              width: "200px",
-              height: "50px",
+              width: "300px",
+              height: "100px",
               border: "none",
               borderRadius: "20px",
+              fontSize: "30px",
             }}
           >
             <strong> New Project </strong>
