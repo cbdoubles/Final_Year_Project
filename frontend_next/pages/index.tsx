@@ -14,20 +14,6 @@ export default function home() {
         </div>
       </div>
 
-      <style jsx global>{`
-        body {
-          background-image: url(/images/background.jpg);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-attachment: fixed;
-          color: white; 
-
-          margin: 0; 
-          padding: 0;
-          height: 100vh; 
-      `}</style>
-
       <div
         style={{
           display: "flex",
