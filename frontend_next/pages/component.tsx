@@ -1,10 +1,9 @@
 // pages/index.tsx
-import React from "react";
-import Button from "../src/utils/Button";
-import Image from "next/image";
-import CapGemini from "../public/images/capgemini.jpg";
-import Background from "../public/images/background.jpg";
-import Icon from "../public/images/blackminiNG.png";
+import React from "react"
+import Button from "../src/utils/Button"
+import Image from "next/image"
+import CapGemini from "../public/images/capgemini.jpg"
+import Background from "../public/images/background.jpg"
 
 const Header = () => (
   <div
@@ -14,11 +13,16 @@ const Header = () => (
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: "0 25px",
+      padding: "0 25px"
     }}
   >
-       <Image src={Icon} alt="Capgemini Logo" width={200} height={100} />
-   <div
+    <img
+      src={"/images/blackminiNG.png"}
+      alt="Capgemini Logo"
+      width={200}
+      height={100}
+    />
+    <div
       style={{
         display: "flex",
         flexDirection: "column",
@@ -28,26 +32,41 @@ const Header = () => (
         padding: "20px",
         borderRadius: "10px",
         width: "200px",
-        height: "30px", 
-        marginRight: "-27px",
-
+        height: "30px",
+        marginRight: "-27px"
       }}
     >
-      <p style={{ margin: 0,  fontSize: "15px", color: "black", marginLeft: "-10px"}}>Project:</p>
-      <p style={{ margin: 0,  fontSize: "15px", color: "black", marginTop: "15px", marginLeft: "-10px"}}>Graph File:</p>
+      <p
+        style={{
+          margin: 0,
+          fontSize: "15px",
+          color: "black",
+          marginLeft: "-10px"
+        }}
+      >
+        Project:
+      </p>
+      <p
+        style={{
+          margin: 0,
+          fontSize: "15px",
+          color: "black",
+          marginTop: "15px",
+          marginLeft: "-10px"
+        }}
+      >
+        Graph File:
+      </p>
     </div>
 
-  
-    {} 
+    {}
   </div>
-);
-
+)
 
 export default function home() {
   return (
     <div>
-      <Header/>
-
+      <Header />
       <style jsx global>{`
         body {
           background-size: cover;
@@ -66,11 +85,9 @@ export default function home() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "100vh",
+          height: "100vh"
         }}
-      >
-
-        </div>
-      </div>
-  );
+      ></div>
+    </div>
+  )
 }

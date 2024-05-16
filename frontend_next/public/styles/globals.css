@@ -21,3 +21,12 @@
     text-wrap: balance;
   }
 }
+
+* {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+.tr {
+  @apply transition-all;
+  @apply duration-300;
+}

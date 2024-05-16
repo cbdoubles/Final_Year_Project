@@ -1,5 +1,5 @@
 "use client"
-import SelectQuery from "@/src/components/select-query-window/SelectQuery";
+import SelectQuery from "@/src/views/Select";
 
 
 function TestPage() {

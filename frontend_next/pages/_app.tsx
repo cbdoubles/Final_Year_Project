@@ -1,9 +1,9 @@
-import { AppProps } from "next/app";
-import Head from "next/head";
-import React, { useEffect } from "react";
+import { AppProps } from "next/app"
+import Head from "next/head"
+import React from "react"
 
-import "../public/styles/globals.css";
-import "../public/styles/style.css";
+import "../public/styles/globals.css"
+import "../public/styles/style.css"
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
@@ -17,7 +17,7 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
       </Head>
       <Component {...pageProps} />
     </>
-  );
-};
+  )
+}
 
-export default MyApp;
+export default MyApp
