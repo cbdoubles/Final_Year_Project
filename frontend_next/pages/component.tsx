@@ -17,10 +17,10 @@ const Header = () => (
     }}
   >
     <img
-      src={"/images/blackminiNG.png"}
+      src={"/images/capgemini.jpg"}
       alt="Capgemini Logo"
       width={200}
-      height={100}
+      height={300}
     />
     <div
       style={{
