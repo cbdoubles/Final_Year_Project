@@ -6,9 +6,6 @@ from django.conf import settings
 from .models import Query
 import networkx as nx
 from networkx.readwrite import json_graph
-from neo4j import GraphDatabase
-import csv
-import sys
 import os
 import json
 import requests
@@ -32,10 +29,6 @@ def upload_file(request):
         with open(file_path, 'wb') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
-        uri = "bolt://localhost:7687"
-        user = 'neo4j' 
-        password = 'cobra-paprika-nylon-conan-tobacco-2599'  # Replace with your password
-        driver = GraphDatabase.driver(uri, auth=(user, password))
 
         #writes the data into api/graphData
         process_file(file_name)
@@ -92,11 +85,8 @@ def graph_data(request):
       nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result_nodes]
       edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result_edges]
 
-      #manually setting the response header as this is retarded (it returns it in binary for some reason)
-      response = JsonResponse({"nodes": nodes, "edges": edges})
-      response['Content-Type'] = 'application/json'
       # Return the data as JSON
-      return response
+      return JsonResponse({"nodes": nodes, "edges": edges})
     except Exception as e:
       return JsonResponse({'error': 'Neo4j query error', 'message': str(e)}, status=500)
 
