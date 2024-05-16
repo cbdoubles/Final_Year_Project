@@ -1,0 +1,78 @@
+/* Styles for the main container */
+.query-textbox-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-left: auto; /* Pushes the container to the right */
+    margin-top: 10px;
+    margin-right: 20px;
+  }
+  
+/* Styles for the textarea */
+.query-textbox-textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    resize: none;
+}
+
+/* Styles for the button container */
+.query-textbox-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.cypher-button {
+    background-color: #29b6f6; /* Gradient blue background */
+    color: white; /* White text */
+    font-size: 16px; /* Adjust the font size as needed */
+    font-weight: 500; /* Medium font weight */
+    padding: 10px 20px; /* Top and bottom padding of 10px, left and right padding of 20px */
+    border: none; /* No border */
+    border-radius: 4px; /* Slightly rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.2s ease-in; /* Smooth transition for hover effect */
+}
+
+.cypher-button:hover {
+    background-color: #039be5; /* Darker blue on hover */
+}
+
+.favorites-button {
+    background-color: #f0f0f0;
+    border: none;
+    color: #333;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease-in;
+    gap: 10px; /* Creates space between the icon and the text */
+}
+
+.favorites-button:hover {
+    background-color: #e2e2e2;
+}
+
+.run-button {
+    background-color: #04AA6D;  /* Light blue background */
+    color: white;               /* White text */
+    border: none;               /* No border */
+    padding: 10px 20px;         /* Padding around text */
+    font-size: 16px;            /* Text size */
+    font-weight: bold;          /* Bold text */
+    cursor: pointer;            /* Pointer cursor on hover */
+    border-radius: 5px;         /* Rounded corners */
+    transition: background-color 0.2s ease-in; /* Smooth transition for background color */
+}
+
+.run-button:hover {
+    background-color: #059862 ;  /* Slightly darker blue on hover */
+}

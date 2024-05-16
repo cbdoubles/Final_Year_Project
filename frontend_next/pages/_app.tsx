@@ -4,6 +4,7 @@ import React from "react"
 
 import "../public/styles/globals.css"
 import "../public/styles/style.css"
+import "../public/styles/querytext.css"
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
