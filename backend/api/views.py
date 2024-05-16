@@ -14,7 +14,7 @@ import requests
 import errno
 
 # Initialize Neo4j connection
-neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'password3')
+neo4j_service = Neo4jService('bolt://localhost:7687', 'neo4j', 'password2')
 
 @csrf_exempt
 def download_file(request):
@@ -71,6 +71,9 @@ def graph_data(request):
       # Define the Cypher queries
       query_nodes = "MATCH (n) RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties"
       query_edges = "MATCH (n)-[r]->(m) RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, elementId(m) AS endId, properties(r) AS properties"
+    # Create a driver for your Neo4j database
+    
+    # driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "password2"))
 
       # Run the Cypher queries using the run_query method
       result_nodes = neo4j_service.run_query(query_nodes)
