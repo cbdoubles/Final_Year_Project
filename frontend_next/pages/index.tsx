@@ -2,7 +2,6 @@
 import React from "react";
 import Button from "../src/utils/Button";
 import Image from "next/image";
-import CapGemini from "../public/images/capgemini.jpg";
 
 export default function home() {
   return (
@@ -10,10 +9,9 @@ export default function home() {
     <div>
       <div style={{ backgroundColor: "white", height: "70px" }}>
         <div style={{ marginLeft: "25px" }}>
-          <Image src={CapGemini} alt="Capgemini Logo" width={150} height={70} />
+          <img src={"/images/capgemini.jpg"} alt="Capgemini Logo" width={150} height={70} />
         </div>
       </div>
-
       <div
         style={{
           display: "flex",
@@ -28,9 +26,9 @@ export default function home() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            height: "60vh",
-            width: "50vh",
-            backgroundColor: "rgba(173, 216, 230, 0.85)",
+            height: "40vh",
+            width: "40vh",
+            backgroundColor: "#ADD8E6",
             color: "white",
             margin: "auto",
             borderRadius: "20px",
@@ -50,7 +48,6 @@ export default function home() {
           >
             <strong>Existing Project </strong>
           </button>
-          
           <button
             style={{
               backgroundColor: "#0077C8",
