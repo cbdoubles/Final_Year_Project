@@ -1,8 +1,8 @@
 from neo4j import GraphDatabase
 
 uri = "bolt://localhost:7687"
-user = "admin"
-password = "password"
+user = "neo4j"
+password = "password2"
 
 class Neo4jService:
     def __init__(self, uri, user, password):
