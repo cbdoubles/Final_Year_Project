@@ -4,9 +4,7 @@ import csv
 from neo4j import GraphDatabase
 import sqlite3
 from xml.etree import ElementTree as ET
-import sys
 
-#run with python upload_file.py <username> <password> <file_path> , the file path has to be local(inside the workplace will fix later)
 
 # Function to determine file format
 def determine_file_format(file_path):
@@ -64,38 +62,33 @@ def import_graphml_data(tx, xml_string):
         query += " RETURN r"
         tx.run(query, source=source, target=target)
 
-if len(sys.argv) < 4:
-    print("Usage: python upload_file.py <file_path>")
-    sys.exit(1)
-
 
 # Connect to Neo4j
 uri = "bolt://localhost:7687"
-user = sys.argv[1]
-password = sys.argv[2]
+user = 'neo4j'
+password = 'cobra-paprika-nylon-conan-tobacco-2599'
 driver = GraphDatabase.driver(uri, auth=(user, password))
 
-# Path to the uploaded file
-# Check if a file path was provided
 
-# Path to the uploaded file
-file_path = sys.argv[3]
-file_format = determine_file_format(file_path)
-
-# Import data into Neo4j based on file format
-with driver.session() as session:
-    if file_format == ".json":
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        session.execute_write(import_json_data, data)
-    elif file_format == ".csv":
-        session.execute_write(import_csv_data, file_path)
-    elif file_format == ".sql":
-        session.execute_write(import_sqlite_data, file_path)
-    elif file_format == ".graphml":
-        with open(file_path, 'r') as file:
-            xml_string = file.read()
-        session.execute_write(import_graphml_data, xml_string)
-    else:
-        print(f"File path: {file_format}")
-        print("Unsupported file format.")
+# Path to the uploaded file and it's name
+def process_file(file_name):
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    file_path = os.path.join(current_dir, 'downloads', file_name)
+    file_path = os.path.normpath(file_path)  # Normalize the path, resolve any '..'
+    file_format = determine_file_format(file_path)
+    
+    # Import data into Neo4j based on file format
+    with driver.session() as session:
+        if file_format == ".json":
+            with open(file_path, 'r') as file:
+                data = json.load(file)
+            session.execute_write(import_json_data, data)
+        elif file_format == ".csv":
+            session.execute_write(import_csv_data, file_path)
+        elif file_format == ".graphml":
+            with open(file_path, 'r') as file:
+                xml_string = file.read()
+            session.execute_write(import_graphml_data, xml_string)
+        else:
+            print(f"File path: {file_format}")
+            print("Unsupported file format.")

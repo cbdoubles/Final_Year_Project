@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import CytoscapeComponent from "react-cytoscapejs";
-import { layouts } from './layouts.tsx'
+import { layouts } from "./layouts.tsx";
 import "@neo4j-cypher/codemirror/css/cypher-codemirror.css";
 import { CypherEditor } from "@neo4j-cypher/react-codemirror";
 
@@ -9,15 +9,19 @@ export default function App() {
   const [width] = useState("100%");
   const [height] = useState("400px");
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
-  const [layout, setLayout] = useState(layouts['grid']); // default to 'grid' layout
+  const [layout, setLayout] = useState(layouts["grid"]); // default to 'grid' layout
   const [selectedFile, setSelectedFile] = useState();
-  const apiUrl = 'http://127.0.0.1:8000/api/graphData';
-  const sendToAPI = 'http://127.0.0.1:8000/download_file/';
-  const runCypherQuery = 'http://127.0.0.1:8000/run_query/';
-  const saveCypherQuery = 'http://127.0.0.1:8000/cypher_query/'
+  const apiUrl = "http://127.0.0.1:8000/api/graphData";
+  const sendToAPI = "http://127.0.0.1:8000/upload_file/";
+  const runCypherQuery = "http://127.0.0.1:8000/run_query/";
+  const saveCypherQuery = "http://127.0.0.1:8000/cypher_query/";
   const cypherEditorRef = useRef();
-  const [editorValue, setEditorValue] = useState(''); 
-  const editorProps = {lint: true, autocompleteOpen : true, value: editorValue};
+  const [editorValue, setEditorValue] = useState("");
+  const editorProps = {
+    lint: true,
+    autocompleteOpen: true,
+    value: editorValue,
+  };
 
   useEffect(() => {
     if (cypherEditorRef.current) {
@@ -28,17 +32,17 @@ export default function App() {
   }, [cypherEditorRef]);
 
   const handleEditorChange = (newValue) => {
-    console.log('New value:', newValue);
+    console.log("New value:", newValue);
     setEditorValue(newValue);
   };
-  
+
   //change it so that it displays the result in the cytoscape window
   const runQuery = async () => {
     console.log(editorValue);
     const response = await fetch(runCypherQuery, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ query: editorValue }),
     });
@@ -46,35 +50,38 @@ export default function App() {
     // Parse the response as JSON
     const data = await response.json();
     console.log(data);
-    try{
+    try {
       let run_nodes = [];
       let run_edges = [];
-      
-      data.nodes.forEach(node => {
-        const {id, ... otherProperties} = node.properties;
+
+      data.nodes.forEach((node) => {
+        const { id, ...otherProperties } = node.properties;
         run_nodes.push({
           data: {
             id: node.element_id,
             label: node.labels[0], // Assuming there's at least one label
             ...node.otherProperties,
-            ...node.data
-          }
+            ...node.data,
+          },
         });
       });
-      console.log(run_nodes)
-      data.edges.forEach(edge => {
-        if (run_nodes.find(n => n.data.id === edge.start_node.element_id) && run_nodes.find(n => n.data.id === edge.end_node.element_id)) {
+      console.log(run_nodes);
+      data.edges.forEach((edge) => {
+        if (
+          run_nodes.find((n) => n.data.id === edge.start_node.element_id) &&
+          run_nodes.find((n) => n.data.id === edge.end_node.element_id)
+        ) {
           run_edges.push({
-              data: {
-                  id: edge.element_id,
-                  source: edge.start_node.element_id,
-                  target: edge.end_node.element_id,
-                  label: edge.type,
-                  ...edge.properties
-                }
-            });
+            data: {
+              id: edge.element_id,
+              source: edge.start_node.element_id,
+              target: edge.end_node.element_id,
+              label: edge.type,
+              ...edge.properties,
+            },
+          });
         } else {
-            console.error('Edge with non-existent source or target:', edge);
+          console.error("Edge with non-existent source or target:", edge);
         }
       });
       // Combine nodes and edges into one array
@@ -84,95 +91,118 @@ export default function App() {
       // Update the graph data
       setGraphData(graphRunData);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   const saveQuery = () => {
-      fetch(saveCypherQuery, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          cypher_query: editorValue,
-          save: true,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+    fetch(saveCypherQuery, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cypher_query: editorValue,
+        save: true,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
-  
 
-  const handleFileUpload = event => {
+  const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-  
+
     const formData = new FormData();
-    formData.append('json_file', file);
-  
+    formData.append("json_file", file);
+
     fetch(sendToAPI, {
-      method: 'POST',
-      body: formData
+      method: "POST",
+      body: formData,
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('File uploaded successfully:', data);
-    })
-    .catch(error => {
-      console.error('Error uploading file:', error);
+      .then((response) => {
+        console.log("Response status: ", response.status);
+        console.log("Response ok: ", response.ok);
+        console.log("Content-Type: ", response.headers.get("Content-Type"));
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        //result is in binary as it is a file
+        return response.blob();
+      })
+      .then((blob) => {
+        console.log("File uploaded successfully:", blob);
+        // Fetch the data after the file has been uploaded
+        return fetch(apiUrl);
+      })
+      .then((response) => {
+        console.log("Raw response: ", response);
+        return response.json();
+      })
+      .then(processGraphData)
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const processGraphData = (data) => {
+    const nodes = data.nodes.map((node) => ({
+      data: {
+        id: node.elementId,
+        label: node.name ? node.name : node.elementId,
+      },
+    }));
+    const edges = data.edges
+      .filter((edge) => edge.source && edge.target) // Ensure that both start and end are not null
+      .map((edge) => ({
+        data: {
+          source: edge.source,
+          target: edge.target,
+          label: edge.label ? edge.label : "",
+        },
+      }));
+    const graphData = { nodes, edges };
+    console.log(graphData);
+    setGraphData(graphData);
+    const layoutName = chooseLayout(nodes.length, edges.length);
+    setLayout({
+      ...layouts[layoutName],
+      fit: false, // Set fit to false to allow the graph to expand
     });
   };
 
-  useEffect(() => {
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        // Convert the data to the format expected by Cytoscape
-        const nodes = data.nodes.map(node => ({ data: { id: node.elementId, label: node.name ? node.name : node.elementId } }));
-        const edges = data.edges
-          .filter(edge => edge.source && edge.target) // Ensure that both start and end are not null
-          .map(edge => ({ data: { source: edge.source, target: edge.target, label: edge.label ? edge.label : '' } }));
-        const graphData = { nodes, edges };
-        console.log(graphData);
-        setGraphData(graphData);
-        const layoutName = chooseLayout(nodes.length, edges.length);
-        setLayout({
-          ...layouts[layoutName],
-          fit: false, // Set fit to false to allow the graph to expand
-        });
-        })
-      .catch(error => console.error("Error fetching data: ", error));
-  }, []);
+  //commented as it duplicates data we will upload data only through upload file for the demo
+  // useEffect(() => {
+  //   fetch(apiUrl)
+  //     .then((response) => response.json())
+  //     .then(processGraphData)
+  //     .catch((error) => console.error("Error fetching data: ", error));
+  // }, []);
 
   //the logic should be fixed
   function chooseLayout(nodesCount, edgesCount) {
     if (nodesCount < 50 && edgesCount < 50) {
-      return 'grid';
+      return "grid";
     } else if (nodesCount < 100 && edgesCount < 100) {
-      return 'circle';
+      return "circle";
     } else if (nodesCount < 200 && edgesCount < 200) {
-      return 'breadthfirst';
+      return "breadthfirst";
     } else if (nodesCount < 300 && edgesCount < 300) {
-      return 'klay';
+      return "klay";
     } else if (nodesCount < 400 && edgesCount < 400) {
-      return 'fcose';
+      return "fcose";
     } else if (nodesCount < 500 && edgesCount < 500) {
-      return 'cose';
+      return "cose";
     } else if (nodesCount < 600 && edgesCount < 600) {
-      return 'cola';
+      return "cola";
     } else if (nodesCount < 700 && edgesCount < 700) {
-      return 'dagre';
+      return "dagre";
     } else {
-      return 'elk_random'; // default to 'elk_random' layout for larger graphs
+      return "elk_random"; // default to 'elk_random' layout for larger graphs
     }
   }
 
@@ -195,8 +225,8 @@ export default function App() {
         "text-outline-color": "#4a56a6",
         "text-outline-width": "2px",
         color: "white",
-        fontSize: 20
-      }
+        fontSize: 20,
+      },
     },
     {
       selector: "node:selected",
@@ -209,14 +239,14 @@ export default function App() {
         height: 50,
         //text props
         "text-outline-color": "#77828C",
-        "text-outline-width": 8
-      }
+        "text-outline-width": 8,
+      },
     },
     {
       selector: "node[type='device']",
       style: {
-        shape: "rectangle"
-      }
+        shape: "rectangle",
+      },
     },
     {
       selector: "edge",
@@ -227,9 +257,9 @@ export default function App() {
         "target-arrow-color": "#6774cb",
         "target-arrow-shape": "triangle",
         "curve-style": "bezier",
-        "label": "data(label)"
-      }
-    }
+        label: "data(label)",
+      },
+    },
   ];
 
   let myCyRef;
@@ -245,7 +275,7 @@ export default function App() {
         <div
           style={{
             border: "1px solid",
-            backgroundColor: "#f5f6fe"
+            backgroundColor: "#f5f6fe",
           }}
         >
           <CytoscapeComponent
@@ -259,17 +289,17 @@ export default function App() {
             boxSelectionEnabled={true}
             layout={layout}
             stylesheet={styleSheet}
-            cy={cy => {
+            cy={(cy) => {
               myCyRef = cy;
-  
+
               console.log("EVT", cy);
-  
-              cy.on('tap', 'node', function(evt){
+
+              cy.on("tap", "node", function (evt) {
                 const node = evt.target;
                 // Display the data of the node in a popup
                 alert(JSON.stringify(node.data(), null, 2));
               });
-              cy.on('tap', 'edge', function(evt){
+              cy.on("tap", "edge", function (evt) {
                 const edge = evt.target;
                 // Display the data of the edge in a popup
                 alert(JSON.stringify(edge.data(), null, 2));
@@ -281,11 +311,14 @@ export default function App() {
       </div>
       <div>
         <h1>Cypher Editor</h1>
-        <CypherEditor ref={cypherEditorRef} onValueChanged={handleEditorChange} {...editorProps}/>
+        <CypherEditor
+          ref={cypherEditorRef}
+          onValueChanged={handleEditorChange}
+          {...editorProps}
+        />
       </div>
       <button onClick={saveQuery}>Save</button>
       <button onClick={runQuery}>Run</button>
     </>
   );
 }
-

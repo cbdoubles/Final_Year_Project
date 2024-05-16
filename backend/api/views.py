@@ -1,23 +1,26 @@
 from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
-#from django.views.decorators.http import require_http_methods
 from py2neo import DatabaseError
 from .neo4j_services import Neo4jService
 from django.conf import settings
 from .models import Query
 import networkx as nx
 from networkx.readwrite import json_graph
-#from neo4j import GraphDatabase
+from neo4j import GraphDatabase
+import csv
+import sys
 import os
 import json
 import requests
 import errno
+from .upload_file import process_file
 
 # Initialize Neo4j connection
 neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
 
+#replace the password inside the upload_file
 @csrf_exempt
-def download_file(request):
+def upload_file(request):
     if request.method == 'POST' and request.FILES.get('json_file'):
         uploaded_file = request.FILES['json_file']
         file_name = uploaded_file.name
@@ -29,10 +32,19 @@ def download_file(request):
         with open(file_path, 'wb') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
+        uri = "bolt://localhost:7687"
+        user = 'neo4j' 
+        password = 'cobra-paprika-nylon-conan-tobacco-2599'  # Replace with your password
+        driver = GraphDatabase.driver(uri, auth=(user, password))
+
+        #writes the data into api/graphData
+        process_file(file_name)
+    
         return FileResponse(open(file_path, 'rb'))
     else:
         return JsonResponse({'status': 'error', 'error': 'Invalid request'}, status=400)
 
+#used for testing
 def save_graph(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
@@ -80,8 +92,11 @@ def graph_data(request):
       nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result_nodes]
       edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result_edges]
 
+      #manually setting the response header as this is retarded (it returns it in binary for some reason)
+      response = JsonResponse({"nodes": nodes, "edges": edges})
+      response['Content-Type'] = 'application/json'
       # Return the data as JSON
-      return JsonResponse({"nodes": nodes, "edges": edges})
+      return response
     except Exception as e:
       return JsonResponse({'error': 'Neo4j query error', 'message': str(e)}, status=500)
 
