@@ -8,7 +8,8 @@ import Background from "../public/images/background.jpg"
 const Header = () => (
   <div
     style={{
-      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3)), url(/images/background.jpg)`,
+      // backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3)), url(/images/background.jpg)`,
+      backgroundColor: "white",
       height: "70px",
       display: "flex",
       alignItems: "center",
@@ -17,7 +18,7 @@ const Header = () => (
     }}
   >
     <img
-      src={"/images/capgemini.jpg"}
+      src={"/images/blackminiNG.png"}
       alt="Capgemini Logo"
       width={200}
       height={300}
@@ -28,12 +29,12 @@ const Header = () => (
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "flex-start",
-        backgroundColor: "grey",
+        backgroundColor: "lightgray",
         padding: "20px",
         borderRadius: "10px",
         width: "200px",
         height: "30px",
-        marginRight: "-27px"
+        marginRight: "-15px"
       }}
     >
       <p
@@ -51,7 +52,6 @@ const Header = () => (
           margin: 0,
           fontSize: "15px",
           color: "black",
-          marginTop: "15px",
           marginLeft: "-10px"
         }}
       >
