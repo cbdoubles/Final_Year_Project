@@ -26,7 +26,7 @@ function Select() {
 
   return (
     <>
-      <div className="bg-gray-400 text-center py-3 text-lg font-bold">
+      <div className="bg-slate-600 text-center py-3 text-lg font-bold text-white">
         Select a Favourite Query
       </div>
       {items.length === 0 ? (
@@ -45,7 +45,7 @@ function Select() {
       )}
       <div className="flex justify-end">
         <button
-          className="tr bg-orange-400 border-solid border-orange-400 border-2 rounded-xl px-7 py-1 font-bold mr-3 mt-1 hover:bg-orange-200"
+          className="tr text-black bg-orange-400 border-solid border-orange-400 border-2 rounded-xl px-7 py-1 font-bold mr-3 mt-1 hover:bg-orange-200"
           onClick={handleButtonClick}
         >
           Select query
