@@ -30,18 +30,18 @@ jobs:
           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
           REPORT_ERRORS: true
           
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.9'
 
-      - name: Install Radon and other dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install radon
+      # - name: Install Radon and other dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install radon
 
-      - name: Check Cyclomatic Complexity
-        run: radon cc . > radon_cc_output.txt
+      # - name: Check Cyclomatic Complexity
+      #   run: radon cc . > radon_cc_output.txt
 
       # - name: Check Maintainability Index
       #   run: radon mi . > radon_mi_output.txt
@@ -49,8 +49,8 @@ jobs:
       # - name: Check Raw Metrics
       #   run: radon raw . > radon_raw_output.txt
 
-      - name: Output Cyclomatic Complexity results
-        run: cat radon_cc_output.txt
+      # - name: Output Cyclomatic Complexity results
+      #   run: cat radon_cc_output.txt
 
       # - name: Output Maintainability Index results
       #   run: cat radon_mi_output.txt
