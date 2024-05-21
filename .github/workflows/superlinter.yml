@@ -43,7 +43,7 @@ jobs:
           # VALIDATE_PYTHON_PYLINT: true
           # VALIDATE_PYTHON_RUFF: true
           REPORT_ERRORS: true
-          FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/neo4j_services.py|backend/api/print_example.py|backend/api/tests.py)
+          FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py)
           
           
 ...
