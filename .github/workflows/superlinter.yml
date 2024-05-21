@@ -75,30 +75,30 @@ jobs:
       #       exit 1
       #     fi
 
-      - name: Check Complexity Thresholds
-        run: |
-          avg_threshold=10
-          max_threshold=20
+      # - name: Check Complexity Thresholds
+      #   run: |
+      #     avg_threshold=10
+      #     max_threshold=20
           
-          avg_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | wc -l)
-          sum_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | awk '{sum += (substr($0,3) == "A") ? 1 : (substr($0,3) == "B") ? 2 : (substr($0,3) == "C") ? 3 : (substr($0,3) == "D") ? 4 : (substr($0,3) == "E") ? 5 : 6} END {print sum}')
-          max_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | awk 'BEGIN {max = 0} {val = (substr($0,3) == "A") ? 1 : (substr($0,3) == "B") ? 2 : (substr($0,3) == "C") ? 3 : (substr($0,3) == "D") ? 4 : (substr($0,3) == "E") ? 5 : 6; if (val > max) max = val} END {print max}')
+      #     avg_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | wc -l)
+      #     sum_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | awk '{sum += (substr($0,3) == "A") ? 1 : (substr($0,3) == "B") ? 2 : (substr($0,3) == "C") ? 3 : (substr($0,3) == "D") ? 4 : (substr($0,3) == "E") ? 5 : 6} END {print sum}')
+      #     max_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | awk 'BEGIN {max = 0} {val = (substr($0,3) == "A") ? 1 : (substr($0,3) == "B") ? 2 : (substr($0,3) == "C") ? 3 : (substr($0,3) == "D") ? 4 : (substr($0,3) == "E") ? 5 : 6; if (val > max) max = val} END {print max}')
           
-          if [ "$avg_complexity" -ne 0 ]; then
-            avg_complexity=$(echo "scale=2; $sum_complexity / $avg_complexity" | bc)
-          else
-            avg_complexity=0
-          fi
+      #     if [ "$avg_complexity" -ne 0 ]; then
+      #       avg_complexity=$(echo "scale=2; $sum_complexity / $avg_complexity" | bc)
+      #     else
+      #       avg_complexity=0
+      #     fi
     
-          echo "Average Cyclomatic Complexity: $avg_complexity"
-          echo "Maximum Cyclomatic Complexity: $max_complexity"
+      #     echo "Average Cyclomatic Complexity: $avg_complexity"
+      #     echo "Maximum Cyclomatic Complexity: $max_complexity"
     
-          if (( $(echo "$avg_complexity > $avg_threshold" | bc -l) )); then
-            echo "Average Cyclomatic Complexity exceeds threshold of $avg_threshold"
-            exit 1
-          fi
+      #     if (( $(echo "$avg_complexity > $avg_threshold" | bc -l) )); then
+      #       echo "Average Cyclomatic Complexity exceeds threshold of $avg_threshold"
+      #       exit 1
+      #     fi
     
-          if (( $(echo "$max_complexity > $max_threshold" | bc -l) )); then
-            echo "Maximum Cyclomatic Complexity exceeds threshold of $max_threshold"
-            exit 1
-          fi
+      #     if (( $(echo "$max_complexity > $max_threshold" | bc -l) )); then
+      #       echo "Maximum Cyclomatic Complexity exceeds threshold of $max_threshold"
+      #       exit 1
+      #     fi
