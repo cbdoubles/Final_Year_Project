@@ -29,7 +29,6 @@ from xml.etree import ElementTree as ET
 from neo4j import GraphDatabase
 
 
-
 # Function to determine file format
 def determine_file_format(file_path):
     """
@@ -58,7 +57,8 @@ def import_json_data(tx, data):
     The data dictionary should have two keys: "nodes" and "edges".
     The "nodes" key should map to a list of dictionaries, each representing a node.
     The "edges" key should map to a list of dictionaries, each representing an edge.
-    Each edge dictionary should have "source" and "target" keys, representing the IDs of the nodes it connects.
+    Each edge dictionary should have "source" and "target" keys,
+    representing the IDs of the nodes it connects.
 
     Parameters:
     tx (neo4j.Transaction): The transaction to run the queries in.
@@ -97,7 +97,7 @@ def import_csv_data(tx, csv_file):
     Returns:
     None
     """
-    with open(csv_file, "r", encoding = "utf_8") as file:
+    with open(csv_file, "r", encoding="utf_8") as file:
         reader = csv.DictReader(file)
         for row in reader:
             tx.run("CREATE (n:Data $props)", props=row)
@@ -119,13 +119,17 @@ def import_graphml_data(tx, xml_string):
     None
     """
     root = ET.fromstring(xml_string)
-    keys = {key.attrib["id"]: key.attrib.get("attr.name", "") 
-            for key in root.findall(".//{http://graphml.graphdrawing.org/xmlns}key")}
+    keys = {
+        key.attrib["id"]: key.attrib.get("attr.name", "")
+        for key in root.findall(".//{http://graphml.graphdrawing.org/xmlns}key")
+    }
 
     for node in root.findall(".//{http://graphml.graphdrawing.org/xmlns}node"):
         node_id = node.attrib["id"]
-        props = {keys[data.attrib["key"]]: data.text for data in node.findall(
-            ".//{http://graphml.graphdrawing.org/xmlns}data") if data.attrib["key"] in keys}
+        props = {
+            keys[data.attrib["key"]]: data.text for data in node.findall(
+                ".//{http://graphml.graphdrawing.org/xmlns}data") if data.attrib["key"] in keys
+        }
         props.pop("id", None)  # Remove "id" from props if it exists
         query = "CREATE (n:Data {id: $id, " + \
             ", ".join(f"{k}: ${k}" for k in props.keys()) + "}) RETURN n"
@@ -134,8 +138,10 @@ def import_graphml_data(tx, xml_string):
     for edge in root.findall(".//{http://graphml.graphdrawing.org/xmlns}edge"):
         source = edge.attrib["source"]
         target = edge.attrib["target"]
-        props = {keys[data.attrib["key"]]: data.text for data in edge.findall(
-            ".//{http://graphml.graphdrawing.org/xmlns}data")}
+        props = {
+            keys[data.attrib["key"]]: data.text for data in edge.findall(
+                ".//{http://graphml.graphdrawing.org/xmlns}data")
+        }
         props.pop("id", None)  # Remove "id" from props if it exists
 
         query = """
@@ -180,13 +186,13 @@ def process_file(file_name):
     # Import data into Neo4j based on file format
     with driver.session() as session:
         if file_format == ".json":
-            with open(file_path, "r", encoding = "utf_8") as file:
+            with open(file_path, "r", encoding="utf_8") as file:
                 data = json.load(file)
             session.execute_write(import_json_data, data)
         elif file_format == ".csv":
             session.execute_write(import_csv_data, file_path)
         elif file_format == ".graphml":
-            with open(file_path, "r", encoding = "utf_8") as file:
+            with open(file_path, "r", encoding="utf_8") as file:
                 xml_string = file.read()
             session.execute_write(import_graphml_data, xml_string)
         else:

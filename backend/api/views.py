@@ -2,9 +2,11 @@
 This module contains the views for the application.
 
 It includes views for handling file uploads, saving and retrieving graphs from the database,
-retrieving graph data from a Neo4j database, running Cypher queries, and running queries on graph data.
+retrieving graph data from a Neo4j database, running Cypher queries,
+and running queries on graph data.
 
-Each view function accepts a Django HttpRequest object and returns a Django HttpResponse object.
+Each view function accepts a Django HttpRequest object
+and returns a Django HttpResponse object.
 
 Functions:
 * upload_file: Handles file upload requests.
@@ -94,7 +96,8 @@ def save_graph(request):
     request (django.http.HttpRequest): The request object.
 
     Returns:
-    django.http.JsonResponse: A JSON response with a success message if the graph is saved successfully,
+    django.http.JsonResponse: A JSON response with a success message
+    if the graph is saved successfully,
     or an error message if the request method is not POST.
     """
     if request.method != "POST":
@@ -105,8 +108,8 @@ def save_graph(request):
     data = json_graph.node_link_data(g)
     graph_json = json.dumps(data)
 
-    query = Query(cypher_query_example="MATCH (n) RETURN n",
-                  natural_query_example="Return all nodes", graph=graph_json)
+    query = Query(cypher_query="MATCH (n) RETURN n",
+                  natural_query="Return all nodes", graph=graph_json)
     query.save()
 
     return JsonResponse({"message": "Graph saved successfully"}, status=201)
@@ -117,7 +120,8 @@ def view_graph(request, query_id):
     Retrieve a graph from the database.
 
     This function retrieves a graph from the database using the provided query ID.
-    It returns a JSON response with the graph data and the associated Cypher and natural language queries.
+    It returns a JSON response with the graph data and the associated
+    Cypher and natural language queries.
 
     If the graph does not exist, it raises a 404 error.
 
@@ -153,7 +157,8 @@ def graph_data(request):
     This function runs two Cypher queries to retrieve nodes and edges from the database,
     processes the results, and returns them as JSON.
 
-    If an error occurs during the execution of the queries, it returns a JSON response with an error message.
+    If an error occurs during the execution of the queries,
+    it returns a JSON response with an error message.
 
     Parameters:
     request (django.http.HttpRequest): The request object.
@@ -161,7 +166,7 @@ def graph_data(request):
     Returns:
     django.http.JsonResponse: A JSON response with the graph data or an error message.
     """
-    if request.method != "POST":#or GET
+    if request.method != "POST":  # or GET
         return JsonResponse({"error": "Method not allowed"}, status=405)
     try:
         # Define the Cypher queries
@@ -180,8 +185,6 @@ def graph_data(request):
         result_edges = neo4j_service.run_query(query_edges)
     except DatabaseError as e:
         return JsonResponse({"error": "Neo4j query error", "message": str(e)}, status=500)
-    except Exception as e:
-        return JsonResponse({"error": "Unexpected error", "message": str(e)}, status=500)
 
     try:
         # Process the results
@@ -189,11 +192,12 @@ def graph_data(request):
                   **record["properties"]} for record in result_nodes]
         edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"],
                   "type": record["type"], **record["properties"]} for record in result_edges]
-    except Exception as e:
-        return JsonResponse({"error": "Error processing results", "message": str(e)}, status=500)
+    except KeyError as e:
+        return JsonResponse({"error": "Missing value in results", "message": str(e)}, status=500)
 
     # Return the data as JSON
     return JsonResponse({"nodes": nodes, "edges": edges})
+
 
 @csrf_exempt
 def cypher_query(request):
@@ -215,18 +219,18 @@ def cypher_query(request):
     try:
         # Get the Cypher query and save parameter from the request
         data = json.loads(request.body)
-        cypher_query = data.get("cypher_query")
-        natural_query = data.get("natural_query")
+        cypher_query_run = data.get("cypher_query")
+        natural_query_run = data.get("natural_query")
         if not natural_query:
             natural_query = "mt"
         save = data.get("save")
 
         # Run the Cypher query
-        results = neo4j_service.run_query(cypher_query)
+        results = neo4j_service.run_query(cypher_query_run)
     except DatabaseError as e:
         return JsonResponse({"error": str(e)}, status=500)
     except json.JSONDecodeError as e:
-        return JsonResponse({"error": "Invalid JSON"}, status=400)
+        return JsonResponse({"error": f"Invalid JSON: {str(e)}"}, status=400)
 
     try:
         # If save is True, save the query to the database
@@ -235,11 +239,11 @@ def cypher_query(request):
                 # Convert the record to a string and save it to the database
                 # convert the first field of the record to a string
                 graph = str(record[0])
-                query = Query(cypher_query=cypher_query,
-                            natural_query=natural_query, graph=graph)
+                query = Query(cypher_query=cypher_query_run,
+                              natural_query=natural_query_run, graph=graph)
                 query.save()
-    except Exception as e:
-        return JsonResponse({"error": "Error saving to database"}, status=500)
+    except DatabaseError as e:
+        return JsonResponse({"error": f"Error saving to database: {str(e)}"}, status=500)
 
     # Return the results as JSON
     return JsonResponse([str(record[0]) for record in results], safe=False)
@@ -250,10 +254,13 @@ def run_query(request):
     """
     Run a Cypher query on graph data and return the results.
 
-    This function retrieves a Cypher query from the request body, sends a POST request to the graph_data URL
-    to get the original graph data, runs the Cypher query on the graph data, and returns the new graph data as JSON.
+    This function retrieves a Cypher query from the request body,
+    sends a POST request to the graph_data URL
+    to get the original graph data, runs the Cypher query on the graph data,
+    and returns the new graph data as JSON.
 
-    It only accepts POST requests. If the request method is not POST, it returns a JSON response with an error message.
+    It only accepts POST requests. If the request method is not POST,
+    it returns a JSON response with an error message.
 
     Parameters:
     request (django.http.HttpRequest): The request object.
@@ -280,5 +287,4 @@ def run_query(request):
         edges = new_graph_data[1]
         # Return the new graph data
         return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
-    else:
-        return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
+    return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
