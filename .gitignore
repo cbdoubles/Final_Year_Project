@@ -8,4 +8,5 @@ sepenv/
 *.DS_Store
 backend/api/migrations/*
 backend/backend/__pycache__/*
+*.pyc
 
