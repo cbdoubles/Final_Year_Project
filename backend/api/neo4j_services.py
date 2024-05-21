@@ -45,43 +45,97 @@ class Neo4jService:
         'end_node': self.node_to_dict(rel.end_node)
         }
     
-    def query_graph(self, query):
-        query = self.modify_query(query)
+    # def query_graph(self, query):
+    #     query = self.modify_query(query)
 
-        match = re.search('RETURN (.*)', query, re.IGNORECASE)
-        if match:
-            variables = match.group(1).split(',')
-            variables = [var.strip() for var in variables]
+    #     match = re.search('RETURN (.*)', query, re.IGNORECASE)
+    #     if match:
+    #         variables = match.group(1).split(',')
+    #         variables = [var.strip() for var in variables]
 
-        print(list(variables))
+    #     print(list(variables))
 
-        nodes = {}
-        final_nodes = {}
-        edges = {}
+    #     nodes = {}
+    #     final_nodes = {}
+    #     edges = {}
 
-        final_edges = {}
+    #     final_edges = {}
 
-        with self.driver.session() as session:
-            result = session.run(query)
-            for record in result:
-                for key in record.keys():
-                    name = record[key].element_id
-                    if(key[0] == "n" and name not in nodes):
-                        nodes[name] = record[key]
+    #     with self.driver.session() as session:
+    #         result = session.run(query)
+    #         for record in result:
+    #             for key in record.keys():
+    #                 name = record[key].element_id
+    #                 if(key[0] == "n" and name not in nodes):
+    #                     nodes[name] = record[key]
 
-                    if(key[0] == "r" and name not in edges):
-                        edges[name] = record[key]
+    #                 if(key[0] == "r" and name not in edges):
+    #                     edges[name] = record[key]
         
-        for node in nodes:
-            final_nodes[node] = self.node_to_dict(nodes[node])
+    #     for node in nodes:
+    #         final_nodes[node] = self.node_to_dict(nodes[node])
 
-        for edge in edges:
-            start_id = edges[edge].start_node.element_id
-            end_id = edges[edge].end_node.element_id
+    #     for edge in edges:
+    #         start_id = edges[edge].start_node.element_id
+    #         end_id = edges[edge].end_node.element_id
             
-            if(start_id not in nodes or end_id not in nodes):
-                continue
+    #         if(start_id not in nodes or end_id not in nodes):
+    #             continue
 
-            final_edges[edge] = self.rel_to_dict(edges[edge])
+    #         final_edges[edge] = self.rel_to_dict(edges[edge])
             
-        return [list(final_nodes.values()), list(final_edges.values())]
+    #     return [list(final_nodes.values()), list(final_edges.values())]
+    
+        def extract_relations(text):
+            pattern = r'\((.*?)\)'
+            matches = re.findall(pattern, text)
+            return matches
+        
+        def extract_nodes(text):
+            pattern = r'\([.*?]\)'
+            matches = re.findall(pattern, text)
+            return matches
+    
+        def query_graph(self, query):
+            query = self.modify_query(query)
+
+            match = re.search('RETURN (.*)', query, re.IGNORECASE)
+            if match:
+                variables = match.group(1).split(',')
+                variables = [var.strip() for var in variables]
+
+            print(list(variables))
+
+            nodes = {}
+            final_nodes = {}
+            edges = {}
+
+            final_edges = {}
+
+            relation = self.extract_relations(query)[0]
+            node = self.extract_nodes(relation)[0]
+
+            with self.driver.session() as session:
+                result = session.run(query)
+                for record in result:
+                    for key in record.keys():
+                        name = record[key].element_id
+                        if(key[:len(node)] == node and name not in nodes):
+                            nodes[name] = record[key]
+
+                        if(key[:len(relation)] == relation and name not in edges):
+                            edges[name] = record[key]
+            
+            for node in nodes:
+                final_nodes[node] = self.node_to_dict(nodes[node])
+
+            for edge in edges:
+                start_id = edges[edge].start_node.element_id
+                end_id = edges[edge].end_node.element_id
+                
+                if(start_id not in nodes or end_id not in nodes):
+                    continue
+
+                final_edges[edge] = self.rel_to_dict(edges[edge])
+                
+            return [list(final_nodes.values()), list(final_edges.values())]
