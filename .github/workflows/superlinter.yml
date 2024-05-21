@@ -1,11 +1,10 @@
----
 name: Lint
 
-on:  # yamllint disable-line rule:truthy
-  push: null
-  pull_request: null
+on:  
+  push: 
+  pull_request: 
 
-permissions: { }
+permissions: {}
 
 jobs:
   build:
@@ -15,35 +14,47 @@ jobs:
     permissions:
       contents: read
       packages: read
-      # To report GitHub Actions status checks
       statuses: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # super-linter needs the full git history to get the
-          # list of files that changed across commits
           fetch-depth: 0
 
       - name: Super-linter
-        uses: super-linter/super-linter@v6.5.0  # x-release-please-version
+        uses: super-linter/super-linter@v6.5.0
         env:
-          # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
-          # VALIDATE_TSX: true
-          # JAVASCRIPT_DEFAULT_STYLE: true
-          # VALIDATE_JAVASCRIPT_ES: true
-          # VALIDATE_YAML: true
-          # VALIDATE_PYTHON_BLACK: true
-          # VALIDATE_PYTHON_FLAKE8: true
-          # VALIDATE_PYTHON_ISORT: true
-          # VALIDATE_PYTHON_MYPY: true
-          # VALIDATE_PYTHON_PYLINT: true
-          # VALIDATE_PYTHON_RUFF: true
           REPORT_ERRORS: true
           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
+
           
-          
-...
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Radon and other dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon
+
+      - name: Check Cyclomatic Complexity
+        run: radon cc . -nc --min C > radon_cc_output.txt
+
+      - name: Check Maintainability Index
+        run: radon mi . --min B > radon_mi_output.txt
+
+      - name: Check Raw Metrics
+        run: radon raw . > radon_raw_output.txt
+
+      - name: Output Cyclomatic Complexity results
+        run: cat radon_cc_output.txt
+
+      - name: Output Maintainability Index results
+        run: cat radon_mi_output.txt
+
+      - name: Output Raw Metrics results
+        run: cat radon_raw_output.txt
