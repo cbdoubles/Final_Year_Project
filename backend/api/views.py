@@ -166,7 +166,7 @@ def graph_data(request):
     Returns:
     django.http.JsonResponse: A JSON response with the graph data or an error message.
     """
-    if request.method != "POST":  # or GET
+    if request.method != "GET":  # or POST
         return JsonResponse({"error": "Method not allowed"}, status=405)
     try:
         # Define the Cypher queries
