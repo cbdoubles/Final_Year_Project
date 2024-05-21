@@ -9,4 +9,3 @@ sepenv/
 backend/api/migrations/*
 backend/backend/__pycache__/*
 *.pyc
-
