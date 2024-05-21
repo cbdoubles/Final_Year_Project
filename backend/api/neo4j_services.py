@@ -13,20 +13,10 @@ the actual URI, user, and password for your Neo4j database.
 
 Classes:
     Neo4jService: A service for interacting with a Neo4j database.
-
-Functions:
-    None
-
-Exceptions:
-    None
-
-Constants:
-    uri: The URI of the Neo4j database.
-    user: The username to authenticate with the Neo4j database.
-    password: The password to authenticate with the Neo4j database.
 """
-from neo4j import GraphDatabase
+
 import re
+from neo4j import GraphDatabase
 
 URI = "bolt://localhost:7687"
 USER = "admin"
@@ -57,7 +47,7 @@ class Neo4jService:
     query_graph(self, query): Query the graph and return nodes and relationships.
     """
 
-    def __init__(self, URI, USER, PASSWORD):
+    def __init__(self, uri, user, password):
         """
         Initialize a new instance of the class.
         This method creates a new driver for the Neo4j database
@@ -67,7 +57,7 @@ class Neo4jService:
         user (str): The username to authenticate with the Neo4j database.
         password (str): The password to authenticate with the Neo4j database.
         """
-        self.driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
     def close(self):
         """
@@ -90,7 +80,7 @@ class Neo4jService:
         """
         with self.driver.session() as session:
             result = session.run(query)
-            return [record for record in result]
+            return list(result)
 
     def modify_query(self, query):
         """
@@ -160,7 +150,7 @@ class Neo4jService:
             "end_node": self.node_to_dict(rel.end_node)
         }
 
-    def extract_relations(text):
+    def extract_relations(self, text):
         """
         Extract relations from a text string.
 
@@ -178,7 +168,7 @@ class Neo4jService:
         matches = re.findall(pattern, text)
         return matches
 
-    def extract_nodes(text):
+    def extract_nodes(self, text):
         """
         Extract nodes from a text string.
 
@@ -192,7 +182,7 @@ class Neo4jService:
         Returns:
         list: The extracted nodes as a list of strings.
         """
-        pattern = r"\([.*?]\)"
+        pattern = r"\(\[.*?\]\)"
         matches = re.findall(pattern, text)
         return matches
 
@@ -223,7 +213,6 @@ class Neo4jService:
         nodes = {}
         final_nodes = {}
         edges = {}
-
         final_edges = {}
 
         relation = self.extract_relations(query)[0]
@@ -234,22 +223,21 @@ class Neo4jService:
             for record in result:
                 for key in record.keys():
                     name = record[key].element_id
-                    if (key[:len(node)] == node and name not in nodes):
+                    if key.startswith(node) and name not in nodes:
                         nodes[name] = record[key]
-
-                    if (key[:len(relation)] == relation and name not in edges):
+                    if key.startswith(relation) and name not in edges:
                         edges[name] = record[key]
 
-        for node in nodes:
-            final_nodes[node] = self.node_to_dict(nodes[node])
+        for node_id, node_value in nodes.items():
+            final_nodes[node_id] = self.node_to_dict(node_value)
 
-        for edge in edges:
-            start_id = edges[edge].start_node.element_id
-            end_id = edges[edge].end_node.element_id
+        for edge_id, edge_value in edges.items():
+            start_id = edge_value.start_node.element_id
+            end_id = edge_value.end_node.element_id
 
-            if (start_id not in nodes or end_id not in nodes):
+            if start_id not in nodes or end_id not in nodes:
                 continue
 
-            final_edges[edge] = self.rel_to_dict(edges[edge])
+            final_edges[edge_id] = self.rel_to_dict(edge_value)
 
         return [list(final_nodes.values()), list(final_edges.values())]
