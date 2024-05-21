@@ -1,254 +1,141 @@
-import React, { useState, useEffect, useRef} from "react";
-import "./style.css";
-import CytoscapeComponent from "react-cytoscapejs";
-import { layouts } from './layouts.tsx'
-import "@neo4j-cypher/codemirror/css/cypher-codemirror.css";
-import { CypherEditor } from "@neo4j-cypher/react-codemirror";
+from neo4j import GraphDatabase
+import re
 
-export default function App() {
-  const [width] = useState("100%");
-  const [height] = useState("400px");
-  const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
-  const [layout, setLayout] = useState(layouts['grid']); // default to 'grid' layout
-  const [selectedFile, setSelectedFile] = useState();
-  const apiUrl = 'http://127.0.0.1:8000/api/graphData';
-  const sendToAPI = 'http://127.0.0.1:8000/download_file/';
-  const runCypherQuery = 'http://127.0.0.1:8000/run_query/';
-  const saveCypherQuery = 'http://127.0.0.1:8000/cypher_query/'
-  const cypherEditorRef = useRef();
-  const [editorValue, setEditorValue] = useState(''); 
-  const editorProps = {lint: true, autocompleteOpen : true, value: editorValue};
+uri = "bolt://localhost:7687"
+user = "admin"
+password = "password"
 
-  useEffect(() => {
-    if (cypherEditorRef.current) {
-      const editor = cypherEditorRef.current;
-      console.log(editor.editorRef);
-      console.log(editor);
-    }
-  }, [cypherEditorRef]);
+class Neo4jService:
+    def __init__(self, uri, user, password):
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
-  const handleEditorChange = (newValue) => {
-    console.log('New value:', newValue);
-    setEditorValue(newValue);
-  };
-  
-  //change it so that it displays the result in the cytoscape window
-  const runQuery = async () => {
-    console.log(editorValue);
-    const response = await fetch(runCypherQuery, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: editorValue }),
-    });
+    def close(self):
+        self.driver.close()
 
-    // Parse the response as JSON
-    const data = await response.json();
-    console.log(data);
+    def run_query(self, query):
+        with self.driver.session() as session:
+            result = session.run(query)
+            return [record for record in result]
+    
+    def modify_query(self, query):
+        lower_query = query.lower()
+        
+        return_pos = lower_query.find("return")
+        
+        if return_pos != -1:
+            after_return = query[return_pos + 6:]
+            if "r" in after_return:
+                return query
+        modified_query = query + ",r" 
+        return modified_query
+    
+    def node_to_dict(self, node):
+        return {
+            'element_id': node.element_id,
+            'labels': list(node.labels),
+            'properties': dict(node.items())
+        }
+    
+    def rel_to_dict(self, rel):
+        return {
+        'element_id': rel.element_id,
+        'type': rel.type,
+        'properties': dict(rel.items()),
+        'start_node': self.node_to_dict(rel.start_node),
+        'end_node': self.node_to_dict(rel.end_node)
+        }
+    
+    # def query_graph(self, query):
+    #     query = self.modify_query(query)
 
-    // Update the graph data
-    setGraphData(data);
-  };
+    #     match = re.search('RETURN (.*)', query, re.IGNORECASE)
+    #     if match:
+    #         variables = match.group(1).split(',')
+    #         variables = [var.strip() for var in variables]
 
-  const saveQuery = () => {
-      fetch(saveCypherQuery, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          cypher_query: editorValue,
-          save: true,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-  };
-  
+    #     print(list(variables))
 
-  const handleFileUpload = event => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  
-    const formData = new FormData();
-    formData.append('json_file', file);
-  
-    fetch(sendToAPI, {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('File uploaded successfully:', data);
-    })
-    .catch(error => {
-      console.error('Error uploading file:', error);
-    });
-  };
+    #     nodes = {}
+    #     final_nodes = {}
+    #     edges = {}
 
-  useEffect(() => {
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        // Convert the data to the format expected by Cytoscape
-        const nodes = data.nodes.map(node => ({ data: { id: node.elementId, label: node.name ? node.name : node.elementId } }));
-        const edges = data.edges
-          .filter(edge => edge.source && edge.target) // Ensure that both start and end are not null
-          .map(edge => ({ data: { source: edge.source, target: edge.target, label: edge.label ? edge.label : '' } }));
-        const graphData = { nodes, edges };
-        console.log(graphData);
-        setGraphData(graphData);
-        const layoutName = chooseLayout(nodes.length, edges.length);
-        setLayout({
-          ...layouts[layoutName],
-          fit: false, // Set fit to false to allow the graph to expand
-        });
-        })
-      .catch(error => console.error("Error fetching data: ", error));
-  }, []);
+    #     final_edges = {}
 
-  //the logic should be fixed
-  function chooseLayout(nodesCount, edgesCount) {
-    if (nodesCount < 50 && edgesCount < 50) {
-      return 'grid';
-    } else if (nodesCount < 100 && edgesCount < 100) {
-      return 'circle';
-    } else if (nodesCount < 200 && edgesCount < 200) {
-      return 'breadthfirst';
-    } else if (nodesCount < 300 && edgesCount < 300) {
-      return 'klay';
-    } else if (nodesCount < 400 && edgesCount < 400) {
-      return 'fcose';
-    } else if (nodesCount < 500 && edgesCount < 500) {
-      return 'cose';
-    } else if (nodesCount < 600 && edgesCount < 600) {
-      return 'cola';
-    } else if (nodesCount < 700 && edgesCount < 700) {
-      return 'dagre';
-    } else {
-      return 'elk_random'; // default to 'elk_random' layout for larger graphs
-    }
-  }
+    #     with self.driver.session() as session:
+    #         result = session.run(query)
+    #         for record in result:
+    #             for key in record.keys():
+    #                 name = record[key].element_id
+    #                 if(key[0] == "n" and name not in nodes):
+    #                     nodes[name] = record[key]
 
-  const styleSheet = [
-    {
-      selector: "node",
-      style: {
-        backgroundColor: "#4a56a6",
-        width: 30,
-        height: 30,
-        label: "data(label)",
+    #                 if(key[0] == "r" and name not in edges):
+    #                     edges[name] = record[key]
+        
+    #     for node in nodes:
+    #         final_nodes[node] = self.node_to_dict(nodes[node])
 
-        // "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
-        // "height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
-        // "text-valign": "center",
-        // "text-halign": "center",
-        "overlay-padding": "6px",
-        "z-index": "10",
-        //text props
-        "text-outline-color": "#4a56a6",
-        "text-outline-width": "2px",
-        color: "white",
-        fontSize: 20
-      }
-    },
-    {
-      selector: "node:selected",
-      style: {
-        "border-width": "6px",
-        "border-color": "#AAD8FF",
-        "border-opacity": "0.5",
-        "background-color": "#77828C",
-        width: 50,
-        height: 50,
-        //text props
-        "text-outline-color": "#77828C",
-        "text-outline-width": 8
-      }
-    },
-    {
-      selector: "node[type='device']",
-      style: {
-        shape: "rectangle"
-      }
-    },
-    {
-      selector: "edge",
-      style: {
-        width: 3,
-        // "line-color": "#6774cb",
-        "line-color": "#AAD8FF",
-        "target-arrow-color": "#6774cb",
-        "target-arrow-shape": "triangle",
-        "curve-style": "bezier",
-        "label": "data(label)"
-      }
-    }
-  ];
+    #     for edge in edges:
+    #         start_id = edges[edge].start_node.element_id
+    #         end_id = edges[edge].end_node.element_id
+            
+    #         if(start_id not in nodes or end_id not in nodes):
+    #             continue
 
-  let myCyRef;
+    #         final_edges[edge] = self.rel_to_dict(edges[edge])
+            
+    #     return [list(final_nodes.values()), list(final_edges.values())]
+    
+        def extract_relations(text):
+            pattern = r'\((.*?)\)'
+            matches = re.findall(pattern, text)
+            return matches
+        
+        def extract_nodes(text):
+            pattern = r'\([.*?]\)'
+            matches = re.findall(pattern, text)
+            return matches
+    
+        def query_graph(self, query):
+            query = self.modify_query(query)
 
-  return (
-    <>
-      <div>
-        <input type="file" onChange={handleFileUpload} />
-        {selectedFile && <p>File selected: {selectedFile.name}</p>}
-      </div>
-      <div>
-        <h1>Cytoscape example</h1>
-        <div
-          style={{
-            border: "1px solid",
-            backgroundColor: "#f5f6fe"
-          }}
-        >
-          <CytoscapeComponent
-            elements={CytoscapeComponent.normalizeElements(graphData)}
-            // pan={{ x: 200, y: 200 }}
-            style={{ width: width, height: height }}
-            zoomingEnabled={true}
-            maxZoom={3}
-            minZoom={0.1}
-            autounselectify={false}
-            boxSelectionEnabled={true}
-            layout={layout}
-            stylesheet={styleSheet}
-            cy={cy => {
-              myCyRef = cy;
-  
-              console.log("EVT", cy);
-  
-              cy.on('tap', 'node', function(evt){
-                const node = evt.target;
-                // Display the data of the node in a popup
-                alert(JSON.stringify(node.data(), null, 2));
-              });
-              cy.on('tap', 'edge', function(evt){
-                const edge = evt.target;
-                // Display the data of the edge in a popup
-                alert(JSON.stringify(edge.data(), null, 2));
-              });
-            }}
-            abc={console.log("myCyRef", myCyRef)}
-          />
-        </div>
-      </div>
-      <div>
-        <h1>Cypher Editor</h1>
-        <CypherEditor ref={cypherEditorRef} onValueChanged={handleEditorChange} {...editorProps}/>
-      </div>
-      <button onClick={saveQuery}>Save</button>
-      <button onClick={runQuery}>Run</button>
-    </>
-  );
-}
+            match = re.search('RETURN (.*)', query, re.IGNORECASE)
+            if match:
+                variables = match.group(1).split(',')
+                variables = [var.strip() for var in variables]
 
+            print(list(variables))
+
+            nodes = {}
+            final_nodes = {}
+            edges = {}
+
+            final_edges = {}
+
+            relation = self.extract_relations(query)[0]
+            node = self.extract_nodes(relation)[0]
+
+            with self.driver.session() as session:
+                result = session.run(query)
+                for record in result:
+                    for key in record.keys():
+                        name = record[key].element_id
+                        if(key[:len(node)] == node and name not in nodes):
+                            nodes[name] = record[key]
+
+                        if(key[:len(relation)] == relation and name not in edges):
+                            edges[name] = record[key]
+            
+            for node in nodes:
+                final_nodes[node] = self.node_to_dict(nodes[node])
+
+            for edge in edges:
+                start_id = edges[edge].start_node.element_id
+                end_id = edges[edge].end_node.element_id
+                
+                if(start_id not in nodes or end_id not in nodes):
+                    continue
+
+                final_edges[edge] = self.rel_to_dict(edges[edge])
+                
+            return [list(final_nodes.values()), list(final_edges.values())]

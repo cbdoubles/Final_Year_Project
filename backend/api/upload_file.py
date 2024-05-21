@@ -12,6 +12,8 @@ def determine_file_format(file_path):
     return file_extension.lower()
 
 # Function to import JSON data into Neo4j
+
+
 def import_json_data(tx, data):
     # Import nodes
     for node in data["nodes"]:
@@ -26,6 +28,8 @@ def import_json_data(tx, data):
         tx.run(query, source=edge["source"], target=edge["target"])
 
 # Function to import CSV data into Neo4j, has to be fixed
+
+
 def import_csv_data(tx, csv_file):
     with open(csv_file, 'r') as file:
         reader = csv.DictReader(file)
@@ -33,23 +37,26 @@ def import_csv_data(tx, csv_file):
             tx.run("CREATE (n:Data $props)", props=row)
 
 
-
 # Function to import GraphML data into Neo4j, currently works only for graphid = directed
 def import_graphml_data(tx, xml_string):
     root = ET.fromstring(xml_string)
-    keys = {key.attrib['id']: key.attrib.get('attr.name', '') for key in root.findall('.//{http://graphml.graphdrawing.org/xmlns}key')}
+    keys = {key.attrib['id']: key.attrib.get('attr.name', '') for key in root.findall(
+        './/{http://graphml.graphdrawing.org/xmlns}key')}
 
     for node in root.findall('.//{http://graphml.graphdrawing.org/xmlns}node'):
         node_id = node.attrib['id']
-        props = {keys[data.attrib['key']]: data.text for data in node.findall('.//{http://graphml.graphdrawing.org/xmlns}data') if data.attrib['key'] in keys}
+        props = {keys[data.attrib['key']]: data.text for data in node.findall(
+            './/{http://graphml.graphdrawing.org/xmlns}data') if data.attrib['key'] in keys}
         props.pop('id', None)  # Remove 'id' from props if it exists
-        query = "CREATE (n:Data {id: $id, " + ', '.join(f'{k}: ${k}' for k in props.keys()) + "}) RETURN n"
+        query = "CREATE (n:Data {id: $id, " + \
+            ', '.join(f'{k}: ${k}' for k in props.keys()) + "}) RETURN n"
         tx.run(query, id=node_id, **props)
 
     for edge in root.findall('.//{http://graphml.graphdrawing.org/xmlns}edge'):
         source = edge.attrib['source']
         target = edge.attrib['target']
-        props = {keys[data.attrib['key']]: data.text for data in edge.findall('.//{http://graphml.graphdrawing.org/xmlns}data')}
+        props = {keys[data.attrib['key']]: data.text for data in edge.findall(
+            './/{http://graphml.graphdrawing.org/xmlns}data')}
         props.pop('id', None)  # Remove 'id' from props if it exists
 
         query = """
@@ -74,9 +81,10 @@ driver = GraphDatabase.driver(uri, auth=(user, password))
 def process_file(file_name):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     file_path = os.path.join(current_dir, 'downloads', file_name)
-    file_path = os.path.normpath(file_path)  # Normalize the path, resolve any '..'
+    # Normalize the path, resolve any '..'
+    file_path = os.path.normpath(file_path)
     file_format = determine_file_format(file_path)
-    
+
     # Import data into Neo4j based on file format
     with driver.session() as session:
         if file_format == ".json":
