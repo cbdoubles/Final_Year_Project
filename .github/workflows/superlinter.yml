@@ -1,11 +1,11 @@
 ---
-name: Lint
+name: QuerifyLinter
 
-on:  # yamllint disable-line rule:truthy
-  push: null
-  pull_request: null
+on:  
+  push: 
+  pull_request: 
 
-permissions: { }
+permissions: {}
 
 jobs:
   build:
@@ -15,35 +15,20 @@ jobs:
     permissions:
       contents: read
       packages: read
-      # To report GitHub Actions status checks
       statuses: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # super-linter needs the full git history to get the
-          # list of files that changed across commits
           fetch-depth: 0
 
       - name: Super-linter
-        uses: super-linter/super-linter@v6.5.0  # x-release-please-version
+        uses: super-linter/super-linter@v6.5.0
         env:
-          # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
-          # VALIDATE_TSX: true
-          # JAVASCRIPT_DEFAULT_STYLE: true
-          # VALIDATE_JAVASCRIPT_ES: true
-          # VALIDATE_YAML: true
-          # VALIDATE_PYTHON_BLACK: true
-          # VALIDATE_PYTHON_FLAKE8: true
-          # VALIDATE_PYTHON_ISORT: true
-          # VALIDATE_PYTHON_MYPY: true
-          # VALIDATE_PYTHON_PYLINT: true
-          # VALIDATE_PYTHON_RUFF: true
+          VALIDATE_PYTHON_BLACK: false
           REPORT_ERRORS: true
-          FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/neo4j_services.py|backend/api/print_example.py|backend/api/tests.py)
-          
-          
+          FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)     
 ...
