@@ -1,16 +1,18 @@
+import React, { MouseEvent } from "react"
 import SelectGroup from "@/src/components/favouriteFolder/SelectGroup"
-import { MouseEvent } from "react"
 
-const items = [
-  {
-    employee: "Szymon",
-    favorites: ["favourite1", "favourite2", "favourite3", "favourite4"]
-  },
-  { employee: "Geri", favorites: ["favourite1"] },
-  { employee: "Caolán", favorites: ["favourite1"] }
-]
+interface Item {
+  employee: string
+  favorites: string[]
+}
 
-function Select() {
+interface SelectProps {
+  title: string
+  items: Item[]
+  type: "default" | "custom" | "favorite"
+}
+
+const FolderTest: React.FC<SelectProps> = ({ title, items, type }) => {
   // Event handler
   const handleClick = (event: MouseEvent) => console.log(event)
 
@@ -27,7 +29,12 @@ function Select() {
   return (
     <>
       <div className="bg-slate-600 text-center py-3 text-lg font-bold text-white">
-        Select a Favourite Query
+        {title}
+      </div>
+      <div className="text-center py-2 text-lg font-medium">
+        {type === "default" && "Showing Default Queries"}
+        {type === "custom" && "Showing Custom Queries"}
+        {type === "favorite" && "Showing Favorite Queries"}
       </div>
       {items.length === 0 ? (
         <p>No query found</p>
@@ -55,4 +62,5 @@ function Select() {
   )
 }
 
-export default Select
+export default FolderTest
+
