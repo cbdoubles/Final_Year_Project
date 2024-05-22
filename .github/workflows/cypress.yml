@@ -14,21 +14,20 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '20'
+          
+      - name: Change directory
+        run: cd frontend_next
 
       - name: Install dependencies
-        working-directory: frontend_next
         run: npm install
 
       - name: Start application
-        working-directory: frontend_next
         run: npm run dev
 
       - name: Wait for application to be ready
-        working-directory: frontend_next
         run: npx wait-on http://localhost:3000
 
       - name: Run Cypress tests
-        working-directory: frontend_next
         run: npx cypress run --config-file cypress.config.ts --reporter junit --reporter-options "mochaFile=results/my-test-output.xml,toConsole=true"
 
       - name: Upload test results
