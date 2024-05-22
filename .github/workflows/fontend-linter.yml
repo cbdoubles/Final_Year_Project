@@ -37,7 +37,7 @@
 #           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
 # ...
 
-name: Lint
+name: Frontend Lint
 
 on:  
   push: 
