@@ -1,7 +1,7 @@
 import React from 'react';
 import QueryTextbox from '@/components/QueryTextbox/QueryTextbox';
 
-const HomePage = () => {
+const BasicQueryTextbox = () => {
   return (
     <div>
       <QueryTextbox />
@@ -9,4 +9,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default BasicQueryTextbox;

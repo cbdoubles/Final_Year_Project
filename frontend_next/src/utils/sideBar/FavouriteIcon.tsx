@@ -4,7 +4,7 @@ import { StarIcon } from "@heroicons/react/24/outline"
 //Detail for icon
 const properties = {
   name: "Favourite",
-  href: "/sideBar",
+  href: "/projectpage/favourite",
   icon: StarIcon
 }
 
