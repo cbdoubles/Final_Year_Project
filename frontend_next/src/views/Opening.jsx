@@ -218,6 +218,7 @@ const Opening = () => {
         <div style={{ padding: "20px" }}>
           <h1>Welcome to Neo4j Cypher Query Runner</h1>
           <QueryTextbox />
+          <QueryTextboxAdvanced />
         </div>
       </div>
     </>
