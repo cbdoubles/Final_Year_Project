@@ -13,22 +13,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14' # Adjust the Node.js version as needed
+          node-version: '20'
 
       - name: Install dependencies
         working-directory: frontend_next
         run: npm install
 
       - name: Start application
+        working-directory: frontend_next
         run: npm run dev
 
       - name: Wait for application to be ready
+        working-directory: frontend_next
         run: npx wait-on http://localhost:3000
 
       - name: Run Cypress tests
+        working-directory: frontend_next
         run: npx cypress run --config-file cypress.config.ts --reporter junit --reporter-options "mochaFile=results/my-test-output.xml,toConsole=true"
 
       - name: Upload test results
+        working-directory: frontend_next
         if: always()
         uses: actions/upload-artifact@v2
         with:
@@ -36,6 +40,7 @@ jobs:
           path: results/my-test-output.xml
 
       - name: Upload Cypress screenshots and videos
+        working-directory: frontend_next
         if: always()
         uses: actions/upload-artifact@v2
         with:
