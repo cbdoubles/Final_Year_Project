@@ -1,0 +1,147 @@
+# ---
+# name: Lint
+
+# on:  # yamllint disable-line rule:truthy
+#   push: null
+#   pull_request: null
+
+# permissions: { }
+
+# jobs:
+#   build:
+#     name: Lint
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       contents: read
+#       packages: read
+#       # To report GitHub Actions status checks
+#       statuses: write
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           # super-linter needs the full git history to get the
+#           # list of files that changed across commits
+#           fetch-depth: 0
+
+#       - name: Super-linter
+#         uses: super-linter/super-linter@v6.5.0  # x-release-please-version
+#         env:
+#           # To report GitHub Actions status checks
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           VALIDATE_ALL_CODEBASE: true
+#           VALIDATE_PYTHON_BLACK: false
+#           REPORT_ERRORS: true
+#           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
+# ...
+
+name: Lint
+
+on:  
+  push: 
+  pull_request: 
+
+permissions: {}
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set Node.js memory limit
+        run: |
+          echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v6.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_PYTHON_BLACK: false
+          FILTER_REGEX_EXCLUDE: .*backend/.*
+          REPORT_ERRORS: true
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Radon and other dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon
+
+      - name: Check Cyclomatic Complexity
+        run: radon cc . > radon_cc_output.txt
+
+      - name: Check Maintainability Index
+        run: radon mi . > radon_mi_output.txt
+
+      - name: Check Raw Metrics
+        run: radon raw . > radon_raw_output.txt
+
+      - name: Output Cyclomatic Complexity results
+        run: cat radon_cc_output.txt
+
+      - name: Output Maintainability Index results
+        run: cat radon_mi_output.txt
+
+      - name: Output Raw Metrics results
+        run: cat radon_raw_output.txt
+
+      - name: Check Complexity Thresholds
+        run: |
+          avg_threshold=10
+          max_threshold=20
+          avg_complexity=$(radon cc . -as | awk '{sum+=$5; count++} END {print (count==0)?0:sum/count}')
+          max_complexity=$(radon cc . -ns | awk '{if ($5 > max) max=$5} END {print (max=="")?0:max}')
+          echo "Average Cyclomatic Complexity: $avg_complexity"
+          echo "Maximum Cyclomatic Complexity: $max_complexity"
+          if (( $(echo "$avg_complexity > $avg_threshold" | bc -l) )); then
+            echo "Average Cyclomatic Complexity exceeds threshold of $avg_threshold"
+            exit 1
+          fi
+          if (( $(echo "$max_complexity > $max_threshold" | bc -l) )); then
+            echo "Maximum Cyclomatic Complexity exceeds threshold of $max_threshold"
+            exit 1
+          fi
+
+      - name: Check Complexity Thresholds
+        run: |
+          avg_threshold=10
+          max_threshold=20
+          
+          avg_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | wc -l)
+          sum_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | awk '{sum += (substr($0,3) == "A") ? 1 : (substr($0,3) == "B") ? 2 : (substr($0,3) == "C") ? 3 : (substr($0,3) == "D") ? 4 : (substr($0,3) == "E") ? 5 : 6} END {print sum}')
+          max_complexity=$(radon cc . -s | grep -oE ' - [A-F]' | awk 'BEGIN {max = 0} {val = (substr($0,3) == "A") ? 1 : (substr($0,3) == "B") ? 2 : (substr($0,3) == "C") ? 3 : (substr($0,3) == "D") ? 4 : (substr($0,3) == "E") ? 5 : 6; if (val > max) max = val} END {print max}')
+          
+          if [ "$avg_complexity" -ne 0 ]; then
+            avg_complexity=$(echo "scale=2; $sum_complexity / $avg_complexity" | bc)
+          else
+            avg_complexity=0
+          fi
+    
+          echo "Average Cyclomatic Complexity: $avg_complexity"
+          echo "Maximum Cyclomatic Complexity: $max_complexity"
+    
+          if (( $(echo "$avg_complexity > $avg_threshold" | bc -l) )); then
+            echo "Average Cyclomatic Complexity exceeds threshold of $avg_threshold"
+            exit 1
+          fi
+    
+          if (( $(echo "$max_complexity > $max_threshold" | bc -l) )); then
+            echo "Maximum Cyclomatic Complexity exceeds threshold of $max_threshold"
+            exit 1
+          fi
