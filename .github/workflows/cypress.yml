@@ -32,19 +32,17 @@ jobs:
         run: npx cypress run --config-file cypress.config.ts --reporter junit --reporter-options "mochaFile=results/my-test-output.xml,toConsole=true"
 
       - name: Upload test results
-        working-directory: frontend_next
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: cypress-test-results
-          path: results/my-test-output.xml
+          path: frontend_next/results/my-test-output.xml
 
       - name: Upload Cypress screenshots and videos
-        working-directory: frontend_next
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: cypress-artifacts
           path: |
-            cypress/screenshots
-            cypress/videos
+            frontend_next/cypress/screenshots
+            frontend_next/cypress/videos
