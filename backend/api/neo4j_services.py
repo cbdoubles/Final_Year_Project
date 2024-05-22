@@ -1,15 +1,17 @@
 """
 This module provides a service for interacting with a Neo4j database.
 
-It includes a class, Neo4jService, which provides methods for establishing a connection to a Neo4j database,
-running Cypher queries against the database, and converting the results into a more usable format.
-It also provides methods for modifying Cypher queries to ensure they return a result,
+It includes a class, Neo4jService, which provides methods for establishing
+a connection to a Neo4j database, running Cypher queries against the database,
+and converting the results into a more usable format. It also provides methods
+for modifying Cypher queries to ensure they return a result,
 and for extracting nodes and relationships from a text string.
 
-The module uses the neo4j package to interact with the Neo4j database, and the re package for regular expressions.
+The module uses the neo4j package to interact with the Neo4j database,
+and the re package for regular expressions.
 
-The module defines a URI, user, and password for connecting to the Neo4j database. These should be replaced with
-the actual URI, user, and password for your Neo4j database.
+The module defines a URI, user, and password for connecting to the Neo4j database.
+These should be replaced with the actual URI, user, and password for your Neo4j database.
 
 Classes:
     Neo4jService: A service for interacting with a Neo4j database.
@@ -28,7 +30,8 @@ class Neo4jService:
     A service class for interacting with a Neo4j database.
 
     This class provides methods for establishing a connection to a Neo4j database,
-    running Cypher queries against the database, and converting the results into a more usable format.
+    running Cypher queries against the database,
+    and converting the results into a more usable format.
     It also provides methods for modifying Cypher queries to ensure they return a result,
     and for extracting nodes and relationships from a text string.
 
@@ -191,15 +194,16 @@ class Neo4jService:
         Query the graph and return nodes and relationships.
 
         This method modifies the provided Cypher query to ensure it returns a result,
-        then runs the query against the Neo4j database. It extracts nodes and relationships from the query results,
+        then runs the query against the Neo4j database.
+        It extracts nodes and relationships from the query results,
         converts them to dictionaries, and returns them as a list of nodes and relationships.
 
         Parameters:
         query (str): The Cypher query to run.
 
         Returns:
-        list: A list containing two lists: the first list contains the nodes as dictionaries, and the second 
-        list contains the relationships as dictionaries.
+        list: A list containing two lists: the first list contains the nodes as dictionaries,
+        and the second list contains the relationships as dictionaries.
         """
         query = self.modify_query(query)
 
