@@ -1,5 +1,5 @@
 import React from "react"
-import QueryTextbox from "@/components/QueryTextbox/QueryTextbox"
+import QueryTextbox from "@/src/components/queryTextbox/QueryTextbox"
 
 const BasicQueryTextbox = () => {
   return (

@@ -1,7 +1,7 @@
 // FavouritePage.js
 import React from "react"
 import ProjectPageView from "@/views/ProjectPageView"
-import SelectQuery from "@/components/select/Select"
+import SelectQuery from "@/src/components/favouriteFolder/FavouriteFolder"
 
 const FavouritePage = () => {
   return (

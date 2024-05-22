@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import CreateButton from "./CreateButton"
-import ShowNaturalLangButton from "./ShowNaturalLangButton"
-import FavouritesButton from "../../utils/FavoriteButton"
-import RunButton from "../../utils/RunButton"
+import CreateButton from "../../utils/queryboxButtons/CreateButton"
+import ShowNaturalLangButton from "../../utils/queryboxButtons/ShowNaturalLangButton"
+import FavouritesButton from "../../utils/queryboxButtons/FavoriteButton"
+import RunButton from "../../utils/queryboxButtons/RunButton"
 
 const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("")
