@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import FavouritesButton from "./FavoriteButton"
-import RunButton from "./RunButton"
-import CypherButton from "./CypherButton"
+import FavouritesButton from "../../utils/FavoriteButton"
+import RunButton from "../../utils/RunButton"
+import CypherButton from "../../utils/CypherButton"
 
 const QueryTextbox: React.FC = () => {
   const [query, setQuery] = useState("")
