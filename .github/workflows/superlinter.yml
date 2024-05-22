@@ -60,6 +60,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Set Node.js memory limit
+        run: |
+          echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
 
       - name: Super-linter
         uses: super-linter/super-linter@v6.5.0
