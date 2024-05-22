@@ -4,7 +4,9 @@ import ProjectPageView from "@/src/views/ProjectPageView"
 function ProjectPage() {
   return (
     <div>
-      <ProjectPageView></ProjectPageView>
+      <ProjectPageView>
+        <></>
+      </ProjectPageView>
     </div>
   )
 }
