@@ -25,3 +25,7 @@ body {
   padding: 0;
   height: 100vh;
 }
+
+.even-element {
+  background-color: #b0eff7;
+}

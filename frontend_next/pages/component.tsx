@@ -1,6 +1,6 @@
 // pages/index.tsx
 import React from "react"
-import Button from "../src/utils/Button"
+import Button from "../src/utils/SelectExistingProjectButton"
 import Image from "next/image"
 import CapGemini from "../public/images/capgemini.jpg"
 import Background from "../public/images/background.jpg"

@@ -1,12 +1,28 @@
 import React, { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPencilAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
+import {
+  faPencilAlt,
+  faTrashAlt,
+  faTimes
+} from "@fortawesome/free-solid-svg-icons"
 
-const SelectExistingProject = () => {
+type SelectExistingProjectProps = {
+  onClose: () => void
+}
+
+const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({
+  onClose
+}) => {
   console.log("SelectExistingProject")
   type Element = {
     name: string
     value: string
+  }
+
+  const handleClose = () => {
+    console.log("Close button clicked")
+    onClose()
+    // Implement your close functionality here
   }
 
   const [elements, setElements] = useState<Element[]>([
@@ -65,49 +81,24 @@ const SelectExistingProject = () => {
   }
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "#f8f9fa",
-          color: "#212529",
-          width: "80%",
-          maxHeight: "90%",
-          overflowY: "auto",
-          padding: "20px",
-          borderRadius: "10px"
-        }}
-      >
-        <h1
-          style={{
-            color: "#007bff",
-            textAlign: "center",
-            borderBottom: "1px solid #007bff"
-          }}
+    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-gray-100 text-gray-800 w-4/5 max-h-90 overflow-y-auto p-5 rounded-lg relative">
+        <button
+          className="text-black text-xl absolute top-2 right-2 bg-transparent border-none"
+          onClick={handleClose}
         >
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+        <h1 className="text-blue-500 text-center border-b border-blue-500">
           Select New Project
         </h1>
         <h2>Select Elements</h2>
         {elements.map((element, index) => (
           <div
             key={index}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}
+            className={`flex justify-between items-center ${
+              index % 2 === 0 ? "even-element" : ""
+            }`}
           >
             {editingElement && editingElement.value === element.value ? (
               <form onSubmit={(event) => handleEditSubmit(event, element)}>
@@ -116,6 +107,7 @@ const SelectExistingProject = () => {
                   value={element.name}
                   onChange={(event) => handleEditChange(event, element)}
                   autoFocus
+                  className="focus:outline-none"
                 />
               </form>
             ) : (
@@ -141,53 +133,19 @@ const SelectExistingProject = () => {
         ))}
       </div>
       {deletingElement && (
-        <div
-          style={{
-            position: "absolute",
-            top: "35%",
-            left: "25%",
-            width: "50%",
-            height: "20%",
-            backgroundColor: "lightblue",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            borderRadius: "20%"
-          }}
-        >
-          <h2 style={{ fontSize: "2em", textAlign: "center" }}>
+        <div className="absolute top-1/3 left-1/4 w-1/2 h-2/5 bg-blue-600 flex flex-col items-center justify-center z-50 rounded-2xl">
+          <h2 className="text-2xl text-center">
             This will delete the project. Are you sure?
           </h2>
-          <div
-            style={{
-              position: "absolute",
-              bottom: "20px",
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "0 20px"
-            }}
-          >
+          <div className="absolute bottom-5 w-full flex justify-between px-5">
             <button
-              style={{
-                backgroundColor: "orange",
-                fontSize: "1.5em",
-                padding: "10px 20px",
-                borderRadius: "50px"
-              }}
+              className="bg-orange-500 text-xl px-5 py-2 rounded-full"
               onClick={handleDeleteCancel}
             >
               Cancel
             </button>
             <button
-              style={{
-                backgroundColor: "orange",
-                fontSize: "1.5em",
-                padding: "10px 20px",
-                borderRadius: "50px"
-              }}
+              className="bg-orange-500 text-xl px-5 py-2 rounded-full"
               onClick={handleDeleteConfirm}
             >
               Yes

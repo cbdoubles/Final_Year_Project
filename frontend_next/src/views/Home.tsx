@@ -1,35 +1,46 @@
 // pages/index.tsx
-import React, { useState, useEffect } from "react"
-import Button from "@/src/utils/Button"
+import React, { useState } from "react"
 import Nav from "@/src/components/nav/Nav"
-import SelectExistingProject from "@/src/components/select/SelectExistingProject"
+import SelectExistingProject from "@/src/components/home/SelectExistingProject"
+import SelectExistingProjectButton from "@/src/utils/SelectExistingProjectButton"
+import CreateNewProjectButton from "@/src/utils/StartNewProjectButton"
+import StartNewProject from "@/src/components/home/StartNewProject"
 
 export default function Home() {
-  const [showComponent, setShowComponent] = useState(false)
-  const handleButtonClick = () => {
-    setShowComponent(true)
-    console.log(showComponent)
+  const [showSelectExistingProject, setShowSelectExistingProject] =
+    useState(false)
+  const [showStartNewProject, setShowStartNewProject] = useState(false)
+
+  const handleSelectExistingProjectButtonClick = () => {
+    setShowSelectExistingProject(true)
   }
-  useEffect(() => {
-    console.log(showComponent)
-  }, [showComponent])
+
+  const handleStartNewProjectButtonClick = () => {
+    setShowStartNewProject(true)
+  }
 
   return (
-    // <div className="centered-column">
     <div className="h-[100vh] flex flex-col">
       <Nav title="" />
       <div className="flex w-full flex-grow items-center justify-center">
         <div className="grid gap-10 items-center justify-center bg-blue-300/80 rounded-xl p-20">
-          <Button
-            title={"Existing Project"}
-            color={"#0077C8"}
-            size={"20px"}
-            onClick={handleButtonClick}
+          <SelectExistingProjectButton
+            onClick={handleSelectExistingProjectButtonClick}
           />
-          <Button title={"New Project"} color={"#0077C8"} size={"20px"} />
+          <CreateNewProjectButton onClick={handleStartNewProjectButtonClick} />
         </div>
       </div>
-      {showComponent && <SelectExistingProject />}
+      {showSelectExistingProject && (
+        <SelectExistingProject
+          onClose={() => setShowSelectExistingProject(false)}
+        />
+      )}
+      {showStartNewProject && (
+        <StartNewProject
+          isVisable={showStartNewProject}
+          onClose={() => setShowStartNewProject(false)}
+        />
+      )}
     </div>
   )
 }
