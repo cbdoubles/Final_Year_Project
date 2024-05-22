@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react"
 import SideBarView from "@/views/sideBar/SideBarView"
 import HeaderFunct from "@/src/components/header/Header"
-import QueryTextbox from "@/src/components/queryTextbox/QueryTextbox"
+import QueryTextbox from "@/src/components/QueryTextbox/QueryTextbox"
 
 interface ProjectPageViewProps {
   children: ReactNode
