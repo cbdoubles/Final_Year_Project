@@ -135,7 +135,7 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({
       {deletingElement && (
         <div className="absolute top-1/3 left-1/4 w-1/2 h-2/5 bg-blue-600 flex flex-col items-center justify-center z-50 rounded-2xl">
           <h2 className="text-2xl text-center">
-            This will delete the project. Are you sure?
+            Are you sure you want to delete this project?
           </h2>
           <div className="absolute bottom-5 w-full flex justify-between px-5">
             <button
