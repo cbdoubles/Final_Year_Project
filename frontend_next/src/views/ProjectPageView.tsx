@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react"
-import SideBarView2 from "@/views/sideBar/SideBarView2"
+import SideBarView from "@/views/sideBar/SideBarView"
 import HeaderFunct from "@/components/Header"
 import QueryTextbox from "@/components/QueryTextbox/QueryTextbox"
 
@@ -13,7 +13,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
       <HeaderFunct />
       <div style={{ flex: 1, display: "flex" }}>
         <div style={{ flex: 1 }}>
-          <SideBarView2 />
+          <SideBarView />
         </div>
         <div style={{ flex: 3, display: "flex", flexDirection: "column" }}>
           <QueryTextbox />
