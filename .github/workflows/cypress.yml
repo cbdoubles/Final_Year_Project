@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: '20'
           
-      - name: Change directory
-        run: cd frontend_next
+      - name: Change directory to frontend_next
+        run: cd ${{ github.workspace }}/frontend_next
 
       - name: Install dependencies
         run: npm install
