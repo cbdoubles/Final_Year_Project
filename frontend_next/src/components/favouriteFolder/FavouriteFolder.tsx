@@ -1,4 +1,4 @@
-import SelectGroup from "@/src/components/select/SelectGroup"
+import SelectGroup from "@/src/components/favouriteFolder/SelectGroup"
 import { MouseEvent } from "react"
 
 const items = [

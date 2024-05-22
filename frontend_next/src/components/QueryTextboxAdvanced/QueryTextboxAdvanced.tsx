@@ -1,14 +1,20 @@
 import React, { useState } from "react"
+import CreateButton from "../../utils/queryboxButtons/CreateButton"
+import ShowNaturalLangButton from "../../utils/queryboxButtons/ShowNaturalLangButton"
 import FavouritesButton from "../../utils/queryboxButtons/FavoriteButton"
 import RunButton from "../../utils/queryboxButtons/RunButton"
-import CypherButton from "../../utils/queryboxButtons/CypherButton"
 
-const QueryTextbox: React.FC = () => {
+const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("")
 
-  const handleShowQuery = () => {
-    // Add logic to show cypher query
-    alert(`Cypher Query: ${query}`)
+  const handleCreate = () => {
+    // Add logic to create something
+    console.log("Creating with query:", query)
+  }
+
+  const handleShowNaturalLang = () => {
+    // Add logic to show natural language equivalent of the query
+    alert(`Natural Language Query: ${query}`)
   }
 
   const handleRunQuery = () => {
@@ -27,10 +33,13 @@ const QueryTextbox: React.FC = () => {
         className="query-textbox-textarea"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Select a favorite result query, custom query or default query"
+        placeholder="Enter your query here"
       />
       <div className="query-textbox-buttons">
-        <CypherButton onClick={handleShowQuery}>Show Cypher Query</CypherButton>
+        <CreateButton onClick={handleCreate}>Create</CreateButton>
+        <ShowNaturalLangButton onClick={handleShowNaturalLang}>
+          Show Natural Lang
+        </ShowNaturalLangButton>
         <RunButton onClick={handleRunQuery}>Run</RunButton>
         <FavouritesButton onClick={handleFavourite}>Favourite</FavouritesButton>
       </div>
@@ -38,4 +47,4 @@ const QueryTextbox: React.FC = () => {
   )
 }
 
-export default QueryTextbox
+export default QueryTextboxAdvanced

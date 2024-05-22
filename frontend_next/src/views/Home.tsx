@@ -1,7 +1,7 @@
 // pages/index.tsx
 import React from "react"
 import Button from "@/src/utils/Button"
-import Nav from "@/src/components/nav/Nav"
+import Nav from "@/src/components/nav/nav"
 
 export default function Home() {
   return (

@@ -11,7 +11,7 @@ const Opening = () => {
   const [selectedFile, setSelectedFile] = useState()
   const apiUrl = "http://127.0.0.1:8000/api/graphData"
   const sendToAPI = "http://127.0.0.1:8000/download_file/"
-  const QueryTextbox = dynamic(() => import("../components/QueryTextbox"), {
+  const QueryTextbox = dynamic(() => import("../components/queryTextbox"), {
     ssr: false
   })
 
@@ -218,6 +218,7 @@ const Opening = () => {
         <div style={{ padding: "20px" }}>
           <h1>Welcome to Neo4j Cypher Query Runner</h1>
           <QueryTextbox />
+          <QueryTextboxAdvanced />
         </div>
       </div>
     </>
