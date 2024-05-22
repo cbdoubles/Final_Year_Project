@@ -1,0 +1,44 @@
+name: Run Cypress Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' # Adjust to the appropriate Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start application
+        run: npm run dev & # Adjust the start command as per your application
+
+      - name: Wait for application to be ready
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Cypress tests
+        run: npx cypress run --config-file cypress.config.js --reporter junit --reporter-options "mochaFile=results/my-test-output.xml,toConsole=true"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-test-results
+          path: results/my-test-output.xml
+
+      - name: Upload Cypress screenshots and videos
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots
+            cypress/videos
