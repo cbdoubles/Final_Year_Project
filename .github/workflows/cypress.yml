@@ -16,7 +16,7 @@ jobs:
           node-version: '14' # Adjust the Node.js version as needed
 
       - name: Install dependencies
-        working-directory: Querify\frontend_next
+        working-directory: frontend_next
         run: npm install
 
       - name: Start application
