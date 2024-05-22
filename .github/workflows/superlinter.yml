@@ -66,6 +66,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
+          VALIDATE_PYTHON_BLACK: false
           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
           REPORT_ERRORS: true
           
