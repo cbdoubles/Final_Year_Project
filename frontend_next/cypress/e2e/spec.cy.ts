@@ -5,14 +5,10 @@ describe("template spec", () => {
   })
 
   it("passes", () => {
-    //cy.visit(" http://localhost:3000")
-
     cy.get('[data-frame="header-1"]').should("contain.text", "Querify")
   })
 
   it("should display the buttons", () => {
-    //cy.visit(" http://localhost:3000")
-
     // Check if the buttons are displayed and have the correct text
     cy.contains("button", "Existing Project").should("be.visible")
 
