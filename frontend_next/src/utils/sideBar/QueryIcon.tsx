@@ -36,16 +36,15 @@ const QueryFolderIcon: React.FC<SelectProps> = ({
 
   return (
     <>
-      <a
-        key={type}
+      <button
         onClick={handleClick}
         className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
       >
         <Icon className="w-6" />
         <p className="hidden md:block">{type}</p>
-      </a>
+      </button>
       {showSelect && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 animate-show">
           <div className="bg-white p-5 rounded shadow-lg relative">
             <button
               onClick={handleClose}
