@@ -1,6 +1,6 @@
 // pages/index.tsx
 import React from "react"
-import Button from "../src/utils/SelectExistingProjectButton"
+import Link from "next/link"
 import Image from "next/image"
 import CapGemini from "../public/images/capgemini.jpg"
 import Background from "../public/images/background.jpg"
@@ -8,21 +8,26 @@ import Background from "../public/images/background.jpg"
 const Header = () => (
   <div
     style={{
-      // backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3)), url(/images/background.jpg)`,
       backgroundColor: "white",
       height: "70px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: "0 25px"
+      padding: "0 25px",
+      borderBottom: "1px solid #ccc" // optional: for visual separation
     }}
   >
-    <img
-      src={"/images/blackminiNG.png"}
-      alt="Capgemini Logo"
-      width={200}
-      height={300}
-    />
+    <Link href="/" legacyBehavior>
+      <a>
+        <img
+          src={"/images/blackminiNG.png"}
+          alt="Capgemini Logo"
+          width={200}
+          height={300}
+          style={{ cursor: "pointer" }}
+        />
+      </a>
+    </Link>
     <div
       style={{
         display: "flex",
@@ -33,16 +38,14 @@ const Header = () => (
         padding: "20px",
         borderRadius: "10px",
         width: "200px",
-        height: "30px",
-        marginRight: "-15px"
+        height: "60px"
       }}
     >
       <p
         style={{
           margin: 0,
           fontSize: "15px",
-          color: "black",
-          marginLeft: "-10px"
+          color: "black"
         }}
       >
         Project:
@@ -51,19 +54,16 @@ const Header = () => (
         style={{
           margin: 0,
           fontSize: "15px",
-          color: "black",
-          marginLeft: "-10px"
+          color: "black"
         }}
       >
         Graph File:
       </p>
     </div>
-
-    {}
   </div>
 )
 
-export default function home() {
+export default function HeaderFunct() {
   return (
     <div>
       <Header />
@@ -73,21 +73,12 @@ export default function home() {
           background-repeat: no-repeat;
           background-position: center;
           background-attachment: fixed;
-          color: white; 
-
-          margin: 0; 
+          color: white;
+          margin: 0;
           padding: 0;
-          height: 100vh; 
+          height: 100vh;
+        }
       `}</style>
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh"
-        }}
-      ></div>
     </div>
   )
 }
