@@ -150,38 +150,39 @@ export default function App() {
   };
 
   const processGraphData = (data) => {
-    console.log(data);
+    const nodeMap = new Map();
+
     const nodes = data.nodes.map((node) => {
-      const { id, ...otherProperties } = node;
-      return {
+      const { id, elementId, ...otherProperties } = node;
+      const newNode = {
         data: {
-          id: node.elementId,
+          id: elementId,
           label: node.name ? node.name : node.labels[0], // Assuming there's at least one label or node name
           ...otherProperties,
         },
       };
+      nodeMap.set(elementId, newNode);
+      return newNode;
     });
 
     const edges = data.edges
-      .filter((edge) => edge.source && edge.target) // Ensure that both start and end are not null
-      .map((edge) => {
-        if (
-          nodes.find((n) => n.data.id === edge.source) &&
-          nodes.find((n) => n.data.id === edge.target)
-        ) {
-          return {
-            data: {
-              id: edge.id,
-              source: edge.source,
-              target: edge.target,
-              label: edge.label,
-              ...edge,
-            },
-          };
-        }
-        return null; // Return null if the condition is not met
-      })
-      .filter((edge) => edge !== null); // Filter out null values
+      .filter(
+        (edge) =>
+          edge.source &&
+          edge.target &&
+          nodeMap.has(edge.source) &&
+          nodeMap.has(edge.target)
+      )
+      .map((edge) => ({
+        data: {
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          label: edge.label,
+          ...edge,
+        },
+      }));
+
     const graphData = { nodes, edges };
     console.log(graphData);
     setGraphData(graphData);
