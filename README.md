@@ -128,6 +128,62 @@
  ```
    npx cypress open
  ```
+4. Select the E2E testing - and choose configure files if necessary
+5. Select or create a new test file
+6. Open project on VS Code - open the **cypress.config.ts** and change it to:
+```
+import { defineConfig } from "cypress"
+
+export default defineConfig({
+  e2e: {
+    baseUrl: "http://localhost:3000",
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+    }
+  }
+})
+
+```
+7. **Note:** In each describe function e.g:
+```
+describe("template spec", () => {
+  
+})
+```
+makes sure to write:
+
+```
+describe("template spec", () => {
+  beforeEach(() => {
+    // cy.visit("you write the page you are writing your tests about")
+    cy.visit("/") // This visits the home page
+  }) 
+})
+```
+- **Example Tests**
+```
+describe("template spec", () => {
+  beforeEach(() => {
+    // Visit the home page before each test
+    cy.visit("/")
+  })
+
+  it("should display the buttons", () => {
+
+    // Check if the buttons are displayed and have the correct text
+    cy.contains("button", "Existing Project").should("be.visible")
+
+    cy.contains("button", "New Project").should("be.visible")
+  })
+})
+
+```
+
+
+
+
+
+   
 
   
 
