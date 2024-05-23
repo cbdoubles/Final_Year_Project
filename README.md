@@ -115,4 +115,19 @@
 ## Version Compatibility
 - The application is designed to work specifically with Python 3.12 and Node.js 22. Using versions other than these may lead to issues.
 ## Cypress
+- Move to the frontend_next directory
+1. **Install cypress** Open command prompt(1) and run the following command to install cypress:
+ ```
+   npm install cypress --save-dev
+ ```
+2. **Run the webpage** Open another command prompt(2) run and deploy the webpage:
+ ```
+   npm run dev
+ ```
+3. **Run cypress** In the command prompt(1) run the following command to run cypress:
+ ```
+   npx cypress open
+ ```
+
+  
 
