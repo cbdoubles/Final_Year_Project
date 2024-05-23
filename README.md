@@ -178,6 +178,10 @@ describe("template spec", () => {
 })
 
 ```
+- **Helpful Links**
+- https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test
+- https://docs.cypress.io/guides/component-testing/overview
+- https://www.youtube.com/watch?v=6BkcHAEWeTU
 
 
 
