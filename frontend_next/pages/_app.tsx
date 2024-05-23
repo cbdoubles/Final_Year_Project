@@ -5,6 +5,7 @@ import React from "react"
 import "../public/styles/globals.css"
 import "../public/styles/style.css"
 import "../public/styles/querytext.css"
+import { PropsProvider } from "@/src/contexts/PropsContext"
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
@@ -16,7 +17,9 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
           name="viewport"
         />
       </Head>
-      <Component {...pageProps} />
+      <PropsProvider>
+        <Component {...pageProps} />
+      </PropsProvider>
     </>
   )
 }
