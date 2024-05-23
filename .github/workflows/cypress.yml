@@ -1,51 +1,45 @@
-name: Run Cypress Tests
-
+name: End-to-end tests
 on: [push, pull_request]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  cypress-run:
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # Step 1: Check out the repository
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-          
-      - name: Change directory to frontend_next
-        run: cd frontend_next
-
-      - name: List directory contents
-        run: ls -la
-
-
+      # Step 2: Set up Node.js environment and install dependencies
       - name: Install dependencies
         run: npm install
+        working-directory: frontend_next
 
-      - name: Start application
-        run: npm run dev
+      # Step 3: Build the Next.js application
+      - name: Build application
+        run: npm run build
+        working-directory: frontend_next
 
-      - name: Wait for application to be ready
-        run: npx wait-on http://localhost:3000
+      # Step 4: Start the server
+      - name: Start server
+        run: |
+          npm start &
+          echo "Waiting for server to start..."
+          sleep 15  # Wait for 15 seconds to give the server time to start
+        working-directory: frontend_next
 
-      - name: Run Cypress tests
-        run: npx cypress run --config-file cypress.config.ts --reporter junit --reporter-options "mochaFile=results/my-test-output.xml,toConsole=true"
+      # Step 5: Wait for the server to be ready
+      - name: Wait for server to be ready
+        run: |
+          echo "Waiting for server to be ready..."
+          until curl -sSf http://localhost:3000 > /dev/null; do
+            echo "Server is not ready yet..."
+            sleep 5
+          done
+        working-directory: frontend_next
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v2
+      # Step 6: Run Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
         with:
-          name: cypress-test-results
-          path: frontend_next/results/my-test-output.xml
-
-      - name: Upload Cypress screenshots and videos
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: cypress-artifacts
-          path: |
-            frontend_next/cypress/screenshots
-            frontend_next/cypress/videos
+          working-directory: frontend_next
