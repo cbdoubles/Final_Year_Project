@@ -114,4 +114,5 @@
 - Ensure that your username and password are correctly set in `views.py` and `neo4j_services.py`. The application can't connect to the neo4j database without these credentials
 ## Version Compatibility
 - The application is designed to work specifically with Python 3.12 and Node.js 22. Using versions other than these may lead to issues.
+## Cypress
 
