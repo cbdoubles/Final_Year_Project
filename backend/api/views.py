@@ -11,6 +11,10 @@ import json
 import requests
 import errno
 from .upload_file import process_file
+from rest_framework import viewsets  # used to write views for the models
+from .models import Project
+from .serializers import ProjectSerializer
+
 
 # Initialize Neo4j connection
 neo4j_service = Neo4jService(
@@ -157,3 +161,8 @@ def run_query(request):
         return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
     else:
         return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.filter(name='test_project')
+    serializer_class = ProjectSerializer

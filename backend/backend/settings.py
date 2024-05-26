@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'rest_framework',
     'backend',
     'api',
 ]
@@ -83,7 +84,7 @@ DATABASES = {
         'NAME': 'querify_db',
         'USER': 'querify_remote',
         'PASSWORD': 'querifyrocks',
-        'HOST': '145.220.75.94',  
+        'HOST': '145.220.75.94',
         'PORT': '3306',
     }
 }

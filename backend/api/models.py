@@ -1,35 +1,41 @@
 from django.db import models
 
-# OLD MODEL 
+# OLD MODEL
+
+
 class Query(models.Model):
     cypher_query = models.TextField()
     natural_query = models.TextField()
-    graph = models.TextField()  # if you want to store the graph as a text file, we can do binary as well
+    # if you want to store the graph as a text file, we can do binary as well
+    graph = models.TextField()
 
     def __str__(self):
         return self.cypher_query
 
 # NEW MODEL
+
+
 class Project(models.Model):
     """
     Represents a project. Each project has a uiniqe name.
     """
-    project_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Project: {self.project_name}, ID: {self.id}"
+        return f"Project: {self.name}, ID: {self.id}"
+
 
 class FavoriteQuery(models.Model):
     """
     Represents a favorite query belonging to a project.
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    favorite_query_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
 
     def __str__(self):
-        return f"Favorite Query: {self.favorite_query_name} (Project: {self.project.project_name})"
+        return f"Favorite Query: {self.name} (Project: {self.project.name})"
 
 
 class CustomQuery(models.Model):
@@ -37,24 +43,24 @@ class CustomQuery(models.Model):
     Represents a custom query belonging to a project.
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    custom_query_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
 
     def __str__(self):
-        return f"Custom Query: {self.custom_query_name} (Project: {self.project.project_name})"
+        return f"Custom Query: {self.name} (Project: {self.project.name})"
 
 
 class DefaultQuery(models.Model):
     """
     Represents a default query.
     """
-    default_query_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     cypher_query = models.TextField()
-    natural_language_query = models.TextField() 
+    natural_language_query = models.TextField()
 
     def __str__(self):
-        return f"Default Query: {self.default_query_name}"
+        return f"Default Query: {self.name}"
 
 
 class GraphFile(models.Model):
@@ -64,10 +70,10 @@ class GraphFile(models.Model):
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
     file_type = models.CharField(max_length=255)
     file_path = models.CharField(max_length=255)
-    last_uploaded = models.DateTimeField()
+    last_uploaded = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Graph File: {self.file_type} (Project: {self.project.project_name})"
+        return f"Graph File: {self.file_type} (Project: {self.project.name})"
 
 
 class Result(models.Model):
@@ -77,7 +83,7 @@ class Result(models.Model):
     query = models.OneToOneField(FavoriteQuery, on_delete=models.CASCADE)
     result_type = models.CharField(max_length=255)
     file_path = models.CharField(max_length=255)
-    last_generated = models.DateTimeField()
+    last_generated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Result: {self.result_type} (Query: {self.query.favorite_query_name})"
