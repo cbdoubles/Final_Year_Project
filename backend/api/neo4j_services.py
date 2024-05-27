@@ -55,8 +55,8 @@ class Neo4jService:
         pattern = r"\((.*?)\)"
         matches = re.findall(pattern, text)
         return matches
-
-    def query_graph(self, query):
+    
+    def get_variables(self, query):
         query = self.modify_query(query)
 
         match = re.search("RETURN (.*)", query, re.IGNORECASE)
@@ -66,26 +66,17 @@ class Neo4jService:
 
         print(list(variables))
 
-        nodes = {}
-        final_nodes = {}
-        edges = {}
-        final_edges = {}
-
         relation = self.extract_relations(query)
         node = self.extract_nodes(query)
 
         relation = relation[0]
         node = node[0]
 
-        with self.driver.session() as session:
-            result = session.run(query)
-            for record in result:
-                for key in record.keys():
-                    name = record[key].element_id
-                    if key.startswith(node) and name not in nodes:
-                        nodes[name] = record[key]
-                    if key.startswith(relation) and name not in edges:
-                        edges[name] = record[key]
+        return query, node, relation
+    
+    def return_query_result(self, nodes, edges):
+        final_nodes = {}
+        final_edges = {}
 
         for node_id, node_value in nodes.items():
             final_nodes[node_id] = self.node_to_dict(node_value)
@@ -100,3 +91,21 @@ class Neo4jService:
             final_edges[edge_id] = self.rel_to_dict(edge_value)
 
         return [list(final_nodes.values()), list(final_edges.values())]
+
+    def query_graph(self, query):
+        query, node, relation = self.get_variables(query)
+
+        nodes = {}
+        edges = {}
+
+        with self.driver.session() as session:
+            result = session.run(query)
+            for record in result:
+                for key in record.keys():
+                    name = record[key].element_id
+                    if key.startswith(node) and name not in nodes:
+                        nodes[name] = record[key]
+                    if key.startswith(relation) and name not in edges:
+                        edges[name] = record[key]
+
+        return self.return_query_result(nodes, edges)
