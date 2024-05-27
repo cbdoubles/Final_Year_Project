@@ -13,7 +13,7 @@ import errno
 from .upload_file import process_file
 
 # Initialize Neo4j connection
-neo4j_service = Neo4jService('neo4j://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
+neo4j_service = Neo4jService('bolt://localhost:7687', 'neo4j', 'password3')
 
 #replace the password inside the upload_file
 @csrf_exempt

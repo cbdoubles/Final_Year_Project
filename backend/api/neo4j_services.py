@@ -2,8 +2,8 @@ from neo4j import GraphDatabase
 import re
 
 uri = "bolt://localhost:7687"
-user = "admin"
-password = "password"
+user = "neo4j"
+password = "password3"
 
 class Neo4jService:
     def __init__(self, uri, user, password):
@@ -46,12 +46,13 @@ class Neo4jService:
         }
 
     def extract_relations(self, text):
-        pattern = r"\((.*?)\)"
+        pattern = r"\[(.*?)\]"
         matches = re.findall(pattern, text)
-        return matches
+        nodes = [match.split(':')[0] for match in matches]
+        return nodes
 
     def extract_nodes(self, text):
-        pattern = r"\(\[.*?\]\)"
+        pattern = r"\((.*?)\)"
         matches = re.findall(pattern, text)
         return matches
 
@@ -70,8 +71,11 @@ class Neo4jService:
         edges = {}
         final_edges = {}
 
-        relation = self.extract_relations(query)[0]
-        node = self.extract_nodes(relation)[0]
+        relation = self.extract_relations(query)
+        node = self.extract_nodes(query)
+
+        relation = relation[0]
+        node = node[0]
 
         with self.driver.session() as session:
             result = session.run(query)
