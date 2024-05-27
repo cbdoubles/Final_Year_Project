@@ -13,24 +13,56 @@ import errno
 from .upload_file import process_file
 
 # Initialize Neo4j connection
-neo4j_service = Neo4jService('bolt://localhost:7687', 'neo4j', 'password3')
+neo4j_service = Neo4jService('bolt://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
 
 #replace the password inside the upload_file
+# @csrf_exempt
+# def upload_file(request):
+#     if request.method == 'POST' and request.FILES.get('json_file'):
+#         uploaded_file = request.FILES['json_file']
+#         file_name = uploaded_file.name
+#         current_dir = os.path.dirname(os.path.realpath(__file__))
+#         file_path = os.path.join(current_dir, '..', 'api', 'downloads', file_name)
+#         file_path = os.path.normpath(file_path)  # Normalize the path, resolve any '..'
+#         if not os.path.exists(os.path.dirname(file_path)):
+#             os.makedirs(os.path.dirname(file_path), exist_ok=True)
+#         with open(file_path, 'wb') as destination:
+#             for chunk in uploaded_file.chunks():
+#                 destination.write(chunk)
+
+#         #writes the data into api/graphData
+#         process_file(file_name)
+    
+#         return FileResponse(open(file_path, 'rb'))
+#     else:
+#         return JsonResponse({'status': 'error', 'error': 'Invalid request'}, status=400)
+
 @csrf_exempt
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('json_file'):
         uploaded_file = request.FILES['json_file']
         file_name = uploaded_file.name
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        file_path = os.path.join(current_dir, '..', 'api', 'downloads', file_name)
+
+        # Define the path to the Neo4j directory
+        neo4j_dir = r"C:\Program Files\neo4j-community-5.19.0-windows\neo4j-community-5.19.0\data\databases\graph.db"
+
+        # Define the path to the downloads directory within the Neo4j directory
+        downloads_dir = os.path.join(neo4j_dir, 'downloads')
+
+        # Construct the file path
+        file_path = os.path.join(downloads_dir, file_name)
         file_path = os.path.normpath(file_path)  # Normalize the path, resolve any '..'
+
+        # Create the directory if it doesn't exist
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        # Save the uploaded file to the file path
         with open(file_path, 'wb') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
 
-        #writes the data into api/graphData
+        # Process the file
         process_file(file_name)
     
         return FileResponse(open(file_path, 'rb'))
@@ -70,26 +102,71 @@ def view_graph(request, query_id):
         'graph': graph_json
     })
 
+# @csrf_exempt
+# def graph_data(request):
+#     try:
+#       # Define the Cypher queries
+#       query_nodes = "MATCH (n) RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties"
+#       query_edges = "MATCH (n)-[r]->(m) RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, elementId(m) AS endId, properties(r) AS properties"
+
+#       # Run the Cypher queries using the run_query method
+#       result_nodes = neo4j_service.run_query(query_nodes)
+#       result_edges = neo4j_service.run_query(query_edges)
+
+#       # Process the results
+#       nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result_nodes]
+#       edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result_edges]
+
+#       # Return the data as JSON
+#       return JsonResponse({"nodes": nodes, "edges": edges})
+#     except Exception as e:
+#       return JsonResponse({'error': 'Neo4j query error', 'message': str(e)}, status=500)
+
 @csrf_exempt
 def graph_data(request):
     try:
-      # Define the Cypher queries
-      query_nodes = "MATCH (n) RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties"
-      query_edges = "MATCH (n)-[r]->(m) RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, elementId(m) AS endId, properties(r) AS properties"
+        # Define the Cypher queries
+        query_nodes = """
+        CALL apoc.export.json.query(
+            "MATCH (n) 
+            RETURN collect({data: {id: id(n), label: labels(n)[0], properties: properties(n)}}) AS nodes", 
+            null, 
+            {stream: true}
+        )
+        """
 
-      # Run the Cypher queries using the run_query method
-      result_nodes = neo4j_service.run_query(query_nodes)
-      result_edges = neo4j_service.run_query(query_edges)
+        query_edges = """
+        CALL apoc.export.json.query(
+            "MATCH (n)-[r]->(m) 
+            RETURN collect({data: {id: id(r), source: id(startNode(r)), target: id(endNode(r)), label: type(r), properties: properties(r)}}) AS edges", 
+            null, 
+            {stream: true}
+        )
+        """
+        # Run the Cypher queries using the run_query method
+        result_nodes = neo4j_service.run_query(query_nodes)[0]
+        result_edges = neo4j_service.run_query(query_edges)[0]
 
-      # Process the results
-      nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result_nodes]
-      edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result_edges]
+        print(f"raw result nodes: {result_nodes}")
+        print(f"raw result nodes: {result_edges}")
 
-      # Return the data as JSON
-      return JsonResponse({"nodes": nodes, "edges": edges})
+        nodes_data_str = result_nodes['data']
+        edges_data_str = result_edges['data']
+
+        # Process the results
+        nodes_data = json.loads(nodes_data_str)
+        edges_data = json.loads(edges_data_str)
+
+        # Prepare the graph data
+        graph_data = {
+            "nodes": nodes_data["nodes"],
+            "edges": edges_data["edges"]
+        }
+
+        # Return the data as JSON
+        return JsonResponse(graph_data)
     except Exception as e:
-      return JsonResponse({'error': 'Neo4j query error', 'message': str(e)}, status=500)
-
+        return JsonResponse({'error': 'Neo4j query error', 'message': str(e)}, status=500)
   
 @csrf_exempt
 def cypher_query(request):

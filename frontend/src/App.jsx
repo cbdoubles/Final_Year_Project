@@ -116,10 +116,10 @@ export default function App() {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-
+  
     const formData = new FormData();
     formData.append("json_file", file);
-
+  
     fetch(sendToAPI, {
       method: "POST",
       body: formData,
@@ -131,7 +131,7 @@ export default function App() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        //result is in binary as it is a file
+        // result is in binary as it is a file
         return response.blob();
       })
       .then((blob) => {
@@ -143,7 +143,16 @@ export default function App() {
         console.log("Raw response: ", response);
         return response.json();
       })
-      .then(processGraphData)
+      .then((data) => {
+        console.log("Graph data:", data);
+        setGraphData(data);
+  
+        const layoutName = chooseLayout(data.nodes.length, data.edges.length);
+        setLayout({
+          ...layouts[layoutName],
+          fit: false,
+        });
+      })
       .catch((error) => {
         console.error("Error:", error);
       });
@@ -183,7 +192,7 @@ export default function App() {
         },
       }));
 
-    const graphData = { nodes, edges };
+    //const graphData = { nodes, edges };
     console.log(graphData);
     setGraphData(graphData);
     const layoutName = chooseLayout(nodes.length, edges.length);

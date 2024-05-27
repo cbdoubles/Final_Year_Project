@@ -3,7 +3,7 @@ import re
 
 uri = "bolt://localhost:7687"
 user = "neo4j"
-password = "password3"
+password = "cobra-paprika-nylon-conan-tobacco-2599"
 
 class Neo4jService:
     def __init__(self, uri, user, password):
