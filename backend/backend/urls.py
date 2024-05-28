@@ -18,7 +18,9 @@ from django.contrib import admin
 from api.views import upload_file, save_graph, view_graph, graph_data, cypher_query, run_query, ProjectViewSet
 from django.urls import path, re_path, include
 from django.http import JsonResponse
+from backend import settings
 from rest_framework.routers import DefaultRouter
+from django.conf.urls.static import static
 
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
@@ -39,3 +41,7 @@ urlpatterns = [
     re_path(
         '.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

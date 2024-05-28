@@ -164,5 +164,5 @@ def run_query(request):
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.filter(name='test_project')
+    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
