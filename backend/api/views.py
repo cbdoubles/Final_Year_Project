@@ -87,7 +87,7 @@ def graph_data(request):
         query_nodes = """
         CALL apoc.export.json.query(
             "MATCH (n) 
-            RETURN collect({data: {id: id(n), label: labels(n)[0], properties: properties(n)}}) AS nodes", 
+            RETURN collect({data: {id: id(n), label: properties(n).labels, properties: apoc.map.removeKey(properties(n), 'labels')}}) AS nodes", 
             null, 
             {stream: true}
         )
@@ -96,7 +96,7 @@ def graph_data(request):
         query_edges = """
         CALL apoc.export.json.query(
             "MATCH (n)-[r]->(m) 
-            RETURN collect({data: {id: id(r), source: id(startNode(r)), target: id(endNode(r)), label: type(r), properties: properties(r)}}) AS edges", 
+            RETURN collect({data: {id: id(r), source: id(startNode(r)), target: id(endNode(r)), label: type(r), properties: apoc.map.removeKey(properties(r), 'label')}}) AS edges", 
             null, 
             {stream: true}
         )
