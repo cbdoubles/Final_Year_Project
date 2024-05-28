@@ -15,28 +15,6 @@ from .upload_file import process_file
 # Initialize Neo4j connection
 neo4j_service = Neo4jService('bolt://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
 
-#replace the password inside the upload_file
-# @csrf_exempt
-# def upload_file(request):
-#     if request.method == 'POST' and request.FILES.get('json_file'):
-#         uploaded_file = request.FILES['json_file']
-#         file_name = uploaded_file.name
-#         current_dir = os.path.dirname(os.path.realpath(__file__))
-#         file_path = os.path.join(current_dir, '..', 'api', 'downloads', file_name)
-#         file_path = os.path.normpath(file_path)  # Normalize the path, resolve any '..'
-#         if not os.path.exists(os.path.dirname(file_path)):
-#             os.makedirs(os.path.dirname(file_path), exist_ok=True)
-#         with open(file_path, 'wb') as destination:
-#             for chunk in uploaded_file.chunks():
-#                 destination.write(chunk)
-
-#         #writes the data into api/graphData
-#         process_file(file_name)
-    
-#         return FileResponse(open(file_path, 'rb'))
-#     else:
-#         return JsonResponse({'status': 'error', 'error': 'Invalid request'}, status=400)
-
 @csrf_exempt
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('json_file'):
@@ -101,26 +79,6 @@ def view_graph(request, query_id):
         'natural_query': query.natural_query,
         'graph': graph_json
     })
-
-# @csrf_exempt
-# def graph_data(request):
-#     try:
-#       # Define the Cypher queries
-#       query_nodes = "MATCH (n) RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties"
-#       query_edges = "MATCH (n)-[r]->(m) RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, elementId(m) AS endId, properties(r) AS properties"
-
-#       # Run the Cypher queries using the run_query method
-#       result_nodes = neo4j_service.run_query(query_nodes)
-#       result_edges = neo4j_service.run_query(query_edges)
-
-#       # Process the results
-#       nodes = [{"id": record["id"], "elementId": record["elementId"], **record["properties"]} for record in result_nodes]
-#       edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"], "type": record["type"], **record["properties"]} for record in result_edges]
-
-#       # Return the data as JSON
-#       return JsonResponse({"nodes": nodes, "edges": edges})
-#     except Exception as e:
-#       return JsonResponse({'error': 'Neo4j query error', 'message': str(e)}, status=500)
 
 @csrf_exempt
 def graph_data(request):
@@ -209,7 +167,6 @@ def run_query(request):
         edges = original_graph_data['edges']
 
         # Run the Cypher query on the graph data
-        # This is a placeholder, replace with your actual logic
         new_graph_data = neo4j_service.query_graph(query)
 
         # Process the results

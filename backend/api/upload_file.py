@@ -34,33 +34,6 @@ def import_csv_data(tx, file_path):
 
 
 # Function to import GraphML data into Neo4j, currently works only for graphid = directed
-# def import_graphml_data(tx, xml_string):
-#     root = ET.fromstring(xml_string)
-#     keys = {key.attrib['id']: key.attrib.get('attr.name', '') for key in root.findall('.//{http://graphml.graphdrawing.org/xmlns}key')}
-
-#     for node in root.findall('.//{http://graphml.graphdrawing.org/xmlns}node'):
-#         node_id = node.attrib['id']
-#         props = {keys[data.attrib['key']]: data.text for data in node.findall('.//{http://graphml.graphdrawing.org/xmlns}data') if data.attrib['key'] in keys}
-#         props.pop('id', None)  # Remove 'id' from props if it exists
-#         query = "CREATE (n:Data {id: $id, " + ', '.join(f'{k}: ${k}' for k in props.keys()) + "}) RETURN n"
-#         tx.run(query, id=node_id, **props)
-
-#     for edge in root.findall('.//{http://graphml.graphdrawing.org/xmlns}edge'):
-#         source = edge.attrib['source']
-#         target = edge.attrib['target']
-#         props = {keys[data.attrib['key']]: data.text for data in edge.findall('.//{http://graphml.graphdrawing.org/xmlns}data')}
-#         props.pop('id', None)  # Remove 'id' from props if it exists
-
-#         query = """
-#             MATCH (a:Data {id: $source})
-#             MATCH (b:Data {id: $target})
-#             MERGE (a)-[r:CONNECTS_TO]->(b)
-#         """
-#         for key, value in props.items():
-#             query += f" SET r.{key} = '{value}'"
-#         query += " RETURN r"
-#         tx.run(query, source=source, target=target)
-
 def import_graphml_data(tx, file_path):
     query = "CALL apoc.import.graphml($file_path, {})"
     tx.run(query, file_path=file_path)

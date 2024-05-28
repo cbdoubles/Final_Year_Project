@@ -158,58 +158,6 @@ export default function App() {
       });
   };
 
-  const processGraphData = (data) => {
-    const nodeMap = new Map();
-
-    const nodes = data.nodes.map((node) => {
-      const { id, elementId, ...otherProperties } = node;
-      const newNode = {
-        data: {
-          id: elementId,
-          label: node.name ? node.name : node.labels[0], // Assuming there's at least one label or node name
-          ...otherProperties,
-        },
-      };
-      nodeMap.set(elementId, newNode);
-      return newNode;
-    });
-
-    const edges = data.edges
-      .filter(
-        (edge) =>
-          edge.source &&
-          edge.target &&
-          nodeMap.has(edge.source) &&
-          nodeMap.has(edge.target)
-      )
-      .map((edge) => ({
-        data: {
-          id: edge.id,
-          source: edge.source,
-          target: edge.target,
-          label: edge.label,
-          ...edge,
-        },
-      }));
-
-    //const graphData = { nodes, edges };
-    console.log(graphData);
-    setGraphData(graphData);
-    const layoutName = chooseLayout(nodes.length, edges.length);
-    setLayout({
-      ...layouts[layoutName],
-      fit: false, // Set fit to false to allow the graph to expand
-    });
-  };
-
-  //commented as it duplicates data we will upload data only through upload file for the demo
-  // useEffect(() => {
-  //   fetch(apiUrl)
-  //     .then((response) => response.json())
-  //     .then(processGraphData)
-  //     .catch((error) => console.error("Error fetching data: ", error));
-  // }, []);
-
   //the logic should be fixed
   function chooseLayout(nodesCount, edgesCount) {
     if (nodesCount < 50 && edgesCount < 50) {
