@@ -84,10 +84,11 @@ def view_graph(request, query_id):
 def graph_data(request):
     try:
         # Define the Cypher queries
+        # Depending on the clients wishes we can keep the labels for both nodes and edges inside of properties
         query_nodes = """
         CALL apoc.export.json.query(
             "MATCH (n) 
-            RETURN collect({data: {id: id(n), label: properties(n).labels, properties: apoc.map.removeKey(properties(n), 'labels')}}) AS nodes", 
+            RETURN collect({data: {id: elementId(n), label: properties(n).labels, properties: apoc.map.removeKey(properties(n), 'labels')}}) AS nodes", 
             null, 
             {stream: true}
         )
@@ -96,7 +97,7 @@ def graph_data(request):
         query_edges = """
         CALL apoc.export.json.query(
             "MATCH (n)-[r]->(m) 
-            RETURN collect({data: {id: id(r), source: id(startNode(r)), target: id(endNode(r)), label: type(r), properties: apoc.map.removeKey(properties(r), 'label')}}) AS edges", 
+            RETURN collect({data: {id: elementId(r), source: elementId(startNode(r)), target: elementId(endNode(r)), label: type(r), properties: apoc.map.removeKey(properties(r), 'label')}}) AS edges", 
             null, 
             {stream: true}
         )
@@ -105,9 +106,9 @@ def graph_data(request):
         result_nodes = neo4j_service.run_query(query_nodes)[0]
         result_edges = neo4j_service.run_query(query_edges)[0]
 
-        print(f"raw result nodes: {result_nodes}")
-        print(f"raw result nodes: {result_edges}")
-
+        print(f"result_nodes: {result_nodes}")
+        print(f"result_edges: {result_edges}")
+        
         nodes_data_str = result_nodes['data']
         edges_data_str = result_edges['data']
 
@@ -160,19 +161,23 @@ def run_query(request):
         data = json.loads(request.body)
         query = data.get('query')
 
-        # Send a POST request to the graph_data URL
-        response = requests.post('http://127.0.0.1:8000/api/graphData')
-        original_graph_data = response.json()
-        nodes = original_graph_data['nodes']
-        edges = original_graph_data['edges']
-
         # Run the Cypher query on the graph data
-        new_graph_data = neo4j_service.query_graph(query)
+        result = neo4j_service.query_graph(query)
 
         # Process the results
-        nodes = new_graph_data[0]
-        edges = new_graph_data[1]
-        # Return the new graph data
-        return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
+        nodes_data_str = result['nodes']
+        edges_data_str = result['edges']
+
+        nodes_data = json.loads(nodes_data_str)
+        edges_data = json.loads(edges_data_str)
+
+        # Prepare the graph data
+        graph_data = {
+            "nodes": nodes_data,
+            "edges": edges_data
+        }
+
+        # Return the data as JSON
+        return JsonResponse(graph_data, safe=False)
     else:
         return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
