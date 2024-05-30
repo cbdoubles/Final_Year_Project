@@ -566,16 +566,18 @@ const TestingDataFetch: React.FC = () => {
   }
 
   const handleDeleteButtonClick = (projectId: number) => {
-    fetch(`http://localhost:8000/api/projects/${projectId}/`, {
-      method: "DELETE"
-    }).then((response) => {
-      if (response.ok) {
-        setProjects(projects.filter((project) => project.id !== projectId))
-        console.log("Deleted project:", projectId)
-      } else {
-        console.error("Failed to delete project:", projectId)
-      }
-    })
+    if (window.confirm("Are you sure you want to delete this project?")) {
+      fetch(`http://localhost:8000/api/projects/${projectId}/`, {
+        method: "DELETE"
+      }).then((response) => {
+        if (response.ok) {
+          setProjects(projects.filter((project) => project.id !== projectId))
+          console.log("Deleted project:", projectId)
+        } else {
+          console.error("Failed to delete project:", projectId)
+        }
+      })
+    }
   }
 
   return (
