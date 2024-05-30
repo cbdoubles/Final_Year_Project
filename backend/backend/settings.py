@@ -141,3 +141,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 #     "http://localhost:5173",
 #     # Add any other origins you want to allow here
 # ]
+
+
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]

@@ -25,6 +25,7 @@ from django.conf.urls.static import static
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 
+
 # TODO: if the existing views that are not part of a viewset
 # (e.g., custom actions or non-RESTful views), then we can leave them as it is.
 # otherwise we should change them to use the default router.

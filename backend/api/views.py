@@ -1,9 +1,13 @@
+from .serializers import ProjectSerializer, GraphFileSerializer
+from .models import Project, GraphFile
 from django.http import FileResponse, JsonResponse, HttpResponse, Http404
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from py2neo import DatabaseError
 from .neo4j_services import Neo4jService
 from django.conf import settings
-from .models import Query
+from .models import Folder, Query
 import networkx as nx
 from networkx.readwrite import json_graph
 import os
@@ -11,9 +15,10 @@ import json
 import requests
 import errno
 from .upload_file import process_file
-from rest_framework import viewsets  # used to write views for the models
+# used to write views for the models
+from rest_framework import viewsets, status
 from .models import Project
-from .serializers import ProjectSerializer
+from .serializers import FolderSerializer, GraphFileSerializer, ProjectSerializer
 
 
 # Initialize Neo4j connection
@@ -25,7 +30,7 @@ neo4j_service = Neo4jService(
 
 @csrf_exempt
 def upload_file(request):
-    if request.method == 'POST' and request.FILES.get('json_file'):
+    if request.method == 'POST' and equest.FILES.get('rjson_file'):
         uploaded_file = request.FILES['json_file']
         file_name = uploaded_file.name
         current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -163,6 +168,149 @@ def run_query(request):
         return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
 
 
+# class ProjectViewSet(viewsets.ModelViewSet):
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectSerializer
+
+
+# class ProjectViewSet(viewsets.ModelViewSet):
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectSerializer
+#     parser_classes = (MultiPartParser, FormParser)
+
+#     def create(self, request, *args, **kwargs):
+#         print(request.data)
+#         project_serializer = ProjectSerializer(data=request.data)
+#         if project_serializer.is_valid():
+#             project = project_serializer.save()
+#             file_data = {
+#                 'project': project.id,
+#                 # hardcoded for now
+#                 'file_type': request.data.get('file_type'),
+#                 'file_path': request.FILES.get('file'),
+#             }
+#             file_serializer = GraphFileSerializer(data=file_data)
+#             if file_serializer.is_valid():
+#                 file_serializer.save()
+#                 return Response(project_serializer.data, status=status.HTTP_201_CREATED)
+#             else:
+#                 project.delete()
+#                 return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class ProjectViewSet(viewsets.ModelViewSet):
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectSerializer
+#     parser_classes = (MultiPartParser, FormParser)
+
+#     def create(self, request, *args, **kwargs):
+#         project_serializer = ProjectSerializer(data=request.data)
+#         if project_serializer.is_valid():
+#             project = project_serializer.save()
+#             print(project.id)
+
+#             # Handling file upload
+#             if 'file_path' in request.FILES:
+#                 file_data = {
+#                     'project': project.id,
+#                     'file_type': request.data.get('file_type'),
+#                     'file_path': request.FILES['file_path'],
+#                 }
+#                 file_serializer = GraphFileSerializer(data=file_data)
+#                 if file_serializer.is_valid():
+#                     file_serializer.save()
+#                     return Response(project_serializer.data, status=status.HTTP_201_CREATED)
+#                 else:
+#                     project.delete()  # Rollback project creation if file creation fails
+#                     return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#             else:
+#                 project.delete()  # Rollback project creation if file is not provided
+#                 return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class ProjectViewSet(viewsets.ModelViewSet):
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectSerializer
+#     parser_classes = (MultiPartParser, FormParser)
+
+#     def create(self, request, *args, **kwargs):
+#         project_serializer = ProjectSerializer(data=request.data)
+#         if project_serializer.is_valid():
+#             project = project_serializer.save()
+
+#             # Handling file upload
+#             if 'file_path' in request.FILES:
+#                 file_data = {
+#                     'project': project.id,
+#                     'file_type': request.data.get('file_type'),
+#                     'file_path': request.FILES['file_path'],
+#                 }
+#                 file_serializer = GraphFileSerializer(
+#                     data=request.data, context={'request': request})
+#                 # file_serializer = GraphFileSerializer(data=file_data)
+#                 if file_serializer.is_valid():
+#                     file_serializer.save()
+#                     return Response(project_serializer.data, status=status.HTTP_201_CREATED)
+#                 else:
+#                     project.delete()  # Rollback project creation if file creation fails
+#                     return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#             else:
+#                 project.delete()  # Rollback project creation if file is not provided
+#                 return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def create(self, request, *args, **kwargs):
+        project_serializer = ProjectSerializer(data=request.data)
+        if project_serializer.is_valid():
+            project = project_serializer.save()
+
+            # Handling file upload
+            if 'file_path' in request.FILES:
+                file_data = {
+                    'project': project.id,
+                    'file_type': request.data.get('file_type'),
+                    'file_path': request.FILES['file_path'],
+                }
+                file_serializer = GraphFileSerializer(
+                    data=file_data, context={'request': request})
+                if file_serializer.is_valid():
+                    file_serializer.save()
+                    return Response(project_serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    project.delete()  # Rollback project creation if file creation fails
+                    return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                project.delete()  # Rollback project creation if file is not provided
+                return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FolderViewSet(viewsets.ModelViewSet):
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        # data[Project] = Project.objects.get(id=data[Project])
+
+
+# def create(self, request, *args, **kwargs):
+#         data = request.data.copy()  # Make a mutable copy of the data
+#         project_id = self.kwargs['project_id']  # Get the project ID from the URL
+#         data['project'] = Project.objects.get(id=project_id)  # Get the Project instance
+#         serializer = self.get_serializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

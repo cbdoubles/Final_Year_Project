@@ -17,7 +17,7 @@ class Query(models.Model):
 
 class Project(models.Model):
     """
-    Represents a project. Each project has a uiniqe name.
+    Represents a project. Each project has a unique name.
     """
     name = models.CharField(max_length=255, unique=True)
 
