@@ -460,6 +460,8 @@ import React, { useEffect, useState, FormEvent, ChangeEvent } from "react"
 interface Project {
   id: number
   name: string
+  file_type?: string
+  uploaded_file?: string
 }
 
 const TestingDataFetch: React.FC = () => {
@@ -469,6 +471,8 @@ const TestingDataFetch: React.FC = () => {
   const [fileType, setFileType] = useState("")
   const [editProjectId, setEditProjectId] = useState<number | null>(null)
   const [editProjectName, setEditProjectName] = useState("")
+  const [editFile, setEditFile] = useState<File | null>(null)
+  const [editFileType, setEditFileType] = useState("")
 
   useEffect(() => {
     fetch("http://localhost:8000/api/projects/")
@@ -535,9 +539,20 @@ const TestingDataFetch: React.FC = () => {
     setEditProjectName(event.target.value)
   }
 
+  const handleEditFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setEditFile(event.target.files[0])
+    }
+  }
+
+  const handleEditFileTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setEditFileType(event.target.value)
+  }
+
   const handleEditButtonClick = (project: Project) => {
     setEditProjectId(project.id)
     setEditProjectName(project.name)
+    setEditFileType(project.file_type || "")
   }
 
   const handleEditFormSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -545,12 +560,16 @@ const TestingDataFetch: React.FC = () => {
 
     if (editProjectId === null) return
 
+    const formData = new FormData()
+    formData.append("name", editProjectName)
+    formData.append("file_type", editFileType)
+    if (editFile) {
+      formData.append("file_path", editFile)
+    }
+
     fetch(`http://localhost:8000/api/projects/${editProjectId}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ name: editProjectName })
+      method: "PATCH",
+      body: formData
     })
       .then((response) => response.json())
       .then((data) => {
@@ -562,6 +581,8 @@ const TestingDataFetch: React.FC = () => {
         )
         setEditProjectId(null)
         setEditProjectName("")
+        setEditFile(null)
+        setEditFileType("")
       })
   }
 
@@ -616,6 +637,24 @@ const TestingDataFetch: React.FC = () => {
               value={editProjectName}
               onChange={handleEditProjectNameChange}
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300 text-black"
+            />
+          </label>
+          <label className="block">
+            <span className="text-gray-700">Edit File Type:</span>
+            <input
+              type="text"
+              value={editFileType}
+              onChange={handleEditFileTypeChange}
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300 text-black"
+            />
+          </label>
+          <label className="block">
+            <span className="text-gray-700">Upload New File (optional):</span>
+            <input
+              type="file"
+              onChange={handleEditFileChange}
+              id="editFileInput"
+              className="mt-1 block w-full text-black"
             />
           </label>
           <button

@@ -20,6 +20,8 @@ from rest_framework import viewsets, status
 from .models import Project
 from .serializers import FolderSerializer, GraphFileSerializer, ProjectSerializer
 from .services import ProjectService, FileService
+import logging
+
 
 
 # Initialize Neo4j connection
@@ -210,7 +212,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project, errors = ProjectService.create_project(request.data, request)
         if project:
             if 'file_path' in request.FILES:
-                file, file_errors = FileService.create_graph_file(project, request)
+                file, file_errors = FileService.upload_file(project, request)
                 if file:
                     return Response(ProjectSerializer(project).data, status=status.HTTP_201_CREATED)
                 ProjectService.delete_project(project)
@@ -225,7 +227,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project, errors = ProjectService.update_project(instance, request.data, partial)
         if project:
             if 'file_path' in request.FILES:
-                file, file_errors = FileService.create_graph_file(project, request)
+                logging.warning('We have a file here')
+                file, file_errors = FileService.reupload_file(project, request)
                 if file:
                     return Response(ProjectSerializer(project).data)
                 return Response(file_errors, status=status.HTTP_400_BAD_REQUEST)
@@ -266,14 +269,3 @@ class FolderViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
         # data[Project] = Project.objects.get(id=data[Project])
-
-
-# def create(self, request, *args, **kwargs):
-#         data = request.data.copy()  # Make a mutable copy of the data
-#         project_id = self.kwargs['project_id']  # Get the project ID from the URL
-#         data['project'] = Project.objects.get(id=project_id)  # Get the Project instance
-#         serializer = self.get_serializer(data=data)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-#         headers = self.get_success_headers(serializer.data)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
