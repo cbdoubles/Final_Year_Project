@@ -64,17 +64,23 @@ def graph_data(request):
             {stream: true}
         )
         """
-        # Run the Cypher queries using the run_query method
-        result_nodes = neo4j_service.run_query(query_nodes)
-        result_edges = neo4j_service.run_query(query_edges)
+        result_nodes = neo4j_service.run_query(query_nodes)[0]
+        result_edges = neo4j_service.run_query(query_edges)[0]
 
         print(f"result_nodes: {result_nodes}")
         print(f"result_edges: {result_edges}")
-        
+
+        nodes_data_str = result_nodes['data']
+        edges_data_str = result_edges['data']
+
+        # Process the results
+        nodes_data = json.loads(nodes_data_str)
+        edges_data = json.loads(edges_data_str)
+
         # Prepare the graph data
         graph_data = {
-            "nodes": result_nodes["nodes"],
-            "edges": result_edges["edges"]
+            "nodes": nodes_data["nodes"],
+            "edges": edges_data["edges"]
         }
 
         # Return the data as JSON
