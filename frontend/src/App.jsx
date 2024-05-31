@@ -9,12 +9,11 @@ export default function App() {
   const [width] = useState("100%");
   const [height] = useState("400px");
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
-  const [layout, setLayout] = useState(layouts["grid"]); // default to 'grid' layout
+  const [layout, setLayout] = useState(layouts["grid"]);
   const [selectedFile, setSelectedFile] = useState();
   const apiUrl = "http://127.0.0.1:8000/api/graphData";
   const sendToAPI = "http://127.0.0.1:8000/upload_file/";
   const runCypherQuery = "http://127.0.0.1:8000/run_query/";
-  const saveCypherQuery = "http://127.0.0.1:8000/cypher_query/";
   const cypherEditorRef = useRef();
   const [editorValue, setEditorValue] = useState("");
   const editorProps = {
@@ -36,7 +35,7 @@ export default function App() {
     setEditorValue(newValue);
   };
 
-  //change it so that it displays the result in the cytoscape window
+  //change it depending on implementation of run_query
   const runQuery = async () => {
     console.log(editorValue);
     const response = await fetch(runCypherQuery, {
@@ -48,8 +47,8 @@ export default function App() {
     });
 
     // Parse the response as JSON
-    const data = await response.json();
-    console.log(data);
+    const run_data = await response.json();
+    console.log(run_data);
     try {
       let run_nodes = [];
       let run_edges = [];
@@ -59,7 +58,7 @@ export default function App() {
         run_nodes.push({
           data: {
             id: node.element_id,
-            label: node.labels[0], // Assuming there's at least one label
+            label: node.labels[0],
             ...node.otherProperties,
             ...node.data,
           },
@@ -95,31 +94,13 @@ export default function App() {
     }
   };
 
-  const saveQuery = () => {
-    fetch(saveCypherQuery, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cypher_query: editorValue,
-        save: true,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-  
+
     const formData = new FormData();
     formData.append("json_file", file);
-  
+
     fetch(sendToAPI, {
       method: "POST",
       body: formData,
@@ -146,8 +127,7 @@ export default function App() {
       .then((data) => {
         console.log("Graph data:", data);
         setGraphData(data);
-  
-        const layoutName = chooseLayout(data.nodes.length, data.edges.length);
+        const layoutName = chooseLayout();
         setLayout({
           ...layouts[layoutName],
           fit: false,
@@ -158,27 +138,8 @@ export default function App() {
       });
   };
 
-  //the logic should be fixed
-  function chooseLayout(nodesCount, edgesCount) {
-    if (nodesCount < 50 && edgesCount < 50) {
-      return "grid";
-    } else if (nodesCount < 100 && edgesCount < 100) {
-      return "circle";
-    } else if (nodesCount < 200 && edgesCount < 200) {
-      return "breadthfirst";
-    } else if (nodesCount < 300 && edgesCount < 300) {
-      return "klay";
-    } else if (nodesCount < 400 && edgesCount < 400) {
-      return "fcose";
-    } else if (nodesCount < 500 && edgesCount < 500) {
-      return "cose";
-    } else if (nodesCount < 600 && edgesCount < 600) {
-      return "cola";
-    } else if (nodesCount < 700 && edgesCount < 700) {
-      return "dagre";
-    } else {
-      return "elk_random"; // default to 'elk_random' layout for larger graphs
-    }
+  function chooseLayout() {
+    return "grid";
   }
 
   const styleSheet = [
@@ -189,14 +150,8 @@ export default function App() {
         width: 30,
         height: 30,
         label: "data(label)",
-
-        // "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
-        // "height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
-        // "text-valign": "center",
-        // "text-halign": "center",
         "overlay-padding": "6px",
         "z-index": "10",
-        //text props
         "text-outline-color": "#4a56a6",
         "text-outline-width": "2px",
         color: "white",
@@ -212,7 +167,6 @@ export default function App() {
         "background-color": "#77828C",
         width: 50,
         height: 50,
-        //text props
         "text-outline-color": "#77828C",
         "text-outline-width": 8,
       },
@@ -227,7 +181,6 @@ export default function App() {
       selector: "edge",
       style: {
         width: 3,
-        // "line-color": "#6774cb",
         "line-color": "#AAD8FF",
         "target-arrow-color": "#6774cb",
         "target-arrow-shape": "triangle",
@@ -268,17 +221,6 @@ export default function App() {
               myCyRef = cy;
 
               console.log("EVT", cy);
-
-              cy.on("tap", "node", function (evt) {
-                const node = evt.target;
-                // Display the data of the node in a popup
-                alert(JSON.stringify(node.data(), null, 2));
-              });
-              cy.on("tap", "edge", function (evt) {
-                const edge = evt.target;
-                // Display the data of the edge in a popup
-                alert(JSON.stringify(edge.data(), null, 2));
-              });
             }}
             abc={console.log("myCyRef", myCyRef)}
           />
@@ -292,7 +234,6 @@ export default function App() {
           {...editorProps}
         />
       </div>
-      <button onClick={saveQuery}>Save</button>
       <button onClick={runQuery}>Run</button>
     </>
   );

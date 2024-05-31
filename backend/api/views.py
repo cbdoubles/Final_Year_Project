@@ -45,8 +45,6 @@ def upload_file(request):
 @csrf_exempt
 def graph_data(request):
     try:
-        # Define the Cypher queries
-        # Depending on the clients wishes we can keep the labels for both nodes and edges inside of properties
         query_nodes = """
         CALL apoc.export.json.query(
             "MATCH (n) 
