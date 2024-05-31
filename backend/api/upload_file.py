@@ -45,9 +45,9 @@ password = 'cobra-paprika-nylon-conan-tobacco-2599'
 driver = GraphDatabase.driver(uri, auth=(user, password))
 
 # Path to the uploaded file and it's name
-def process_file(file_name):
+def process_file(file_name, neo4j_dir):
     # Define the path to the Neo4j directory
-    neo4j_dir = r"C:\Program Files\neo4j-community-5.19.0-windows\neo4j-community-5.19.0\data\databases\graph.db"
+    neo4j_dir = neo4j_dir
 
     # Define the path to the downloads directory within the Neo4j directory
     downloads_dir = os.path.join(neo4j_dir, 'downloads')

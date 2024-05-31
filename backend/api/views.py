@@ -41,7 +41,7 @@ def upload_file(request):
                 destination.write(chunk)
 
         # Process the file
-        process_file(file_name)
+        process_file(file_name, neo4j_dir)
     
         return FileResponse(open(file_path, 'rb'))
     else:
