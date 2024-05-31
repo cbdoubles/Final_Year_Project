@@ -1,7 +1,6 @@
 from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .neo4j_services import Neo4jService
-from django.conf import settings
 import os
 import json
 from .upload_file import process_file
