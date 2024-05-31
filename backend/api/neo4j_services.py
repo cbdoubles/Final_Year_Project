@@ -1,9 +1,13 @@
 from neo4j import GraphDatabase
 import re
+import os
+
+neo4j_user = os.getenv('NEO4J_USER')
+neo4j_password = os.getenv('NEO4J_PASSWORD')
 
 uri = "bolt://localhost:7687"
-user = "neo4j"
-password = "cobra-paprika-nylon-conan-tobacco-2599"
+user = neo4j_user
+password = neo4j_password
 
 class Neo4jService:
     def __init__(self, uri, user, password):

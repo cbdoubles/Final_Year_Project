@@ -5,6 +5,12 @@ from neo4j import GraphDatabase
 import sqlite3
 from xml.etree import ElementTree as ET
 
+neo4j_user = os.getenv('NEO4J_USER')
+neo4j_password = os.getenv('NEO4J_PASSWORD')
+neo4j_dir = os.environ.get('NEO4J_HOME')
+uri = "bolt://localhost:7687"
+
+driver = GraphDatabase.driver(uri, auth=(neo4j_user, neo4j_password))
 
 # Function to determine file format
 def determine_file_format(file_path):
@@ -38,16 +44,9 @@ def import_graphml_data(tx, file_path):
     query = "CALL apoc.import.graphml($file_path, {})"
     tx.run(query, file_path=file_path)
 
-# Connect to Neo4j
-uri = "bolt://localhost:7687"
-user = 'neo4j'
-password = 'cobra-paprika-nylon-conan-tobacco-2599'
-driver = GraphDatabase.driver(uri, auth=(user, password))
-
 # Path to the uploaded file and it's name
-def process_file(file_name, neo4j_dir):
+def process_file(file_name):
     # Define the path to the Neo4j directory
-    neo4j_dir = neo4j_dir
 
     # Define the path to the downloads directory within the Neo4j directory
     downloads_dir = os.path.join(neo4j_dir, 'downloads')
@@ -64,7 +63,7 @@ def process_file(file_name, neo4j_dir):
         elif file_format == ".csv":
             session.write_transaction(import_csv_data, file_path)
         elif file_format == ".graphml":
-            file_path_in_neo4j = os.path.join(file_path)  # Correctly set the file path in Neo4j
+            file_path_in_neo4j = os.path.join(file_path)  
             session.write_transaction(import_graphml_data, "file:///" + file_path_in_neo4j.replace('\\', '/'))
         else:
             print(f"File path: {file_format}")
