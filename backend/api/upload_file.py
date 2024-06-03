@@ -4,6 +4,7 @@ import csv
 from neo4j import GraphDatabase
 import sqlite3
 from xml.etree import ElementTree as ET
+from datetime import datetime
 
 neo4j_user = os.getenv('NEO4J_USER')
 neo4j_password = os.getenv('NEO4J_PASSWORD')
@@ -39,6 +40,19 @@ def import_csv_data(tx, file_path):
     tx.run(query, file_path=file_path)
 
 
+# Function to set project_id for nodes and relationships
+# Assumes each project has a unique name and that the input file doesn't have project_id properties for both nodes and edges
+def set_project_id(tx, label):
+    query_set_node_project_id = """
+    MATCH (n) WHERE n.project_id IS NULL SET n.project_id = $project_id
+    """
+    tx.run(query_set_node_project_id, parameters={'project_id': label})
+
+    query_set_relationship_project_id = """
+    MATCH ()-[r]->() WHERE r.project_id IS NULL SET r.project_id = $project_id
+    """
+    tx.run(query_set_relationship_project_id, parameters={'project_id': label})
+
 # Function to import GraphML data into Neo4j, currently works only for graphid = directed
 def import_graphml_data(tx, file_path):
     query = "CALL apoc.import.graphml($file_path, {})"
@@ -49,7 +63,11 @@ def process_file(file_name):
     # Define the path to the Neo4j directory
 
     # Define the path to the downloads directory within the Neo4j directory
+    print(f"file_name: {file_name}")
     downloads_dir = os.path.join(neo4j_dir, 'downloads')
+    label = os.path.splitext(file_name)[0]
+
+    print(f"label: {label}")
 
     # Construct the file path
     file_path = os.path.join(downloads_dir, file_name)
@@ -65,6 +83,7 @@ def process_file(file_name):
         elif file_format == ".graphml":
             file_path_in_neo4j = os.path.join(file_path)  
             session.write_transaction(import_graphml_data, "file:///" + file_path_in_neo4j.replace('\\', '/'))
+            session.write_transaction(set_project_id, label)
         else:
             print(f"File path: {file_format}")
             print("Unsupported file format.")
