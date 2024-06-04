@@ -1,17 +1,35 @@
 import { SelectGroupInterface } from "@/src/libs/interfaces"
 import { useState, MouseEvent } from "react"
-import { LuTrash2, LuFolder, LuCornerDownRight } from "react-icons/lu"
+import {
+  LuTrash2,
+  LuFolder,
+  LuCornerDownRight,
+  LuShare,
+  LuPenSquare
+} from "react-icons/lu"
+import CustomPopUp from "@/views/PopUps/CustomPopUp"
+import UIButton from "../ui/UIButton"
+import UIModal from "../ui/UIModal"
 
 const SelectGroup = ({
   item,
+  canBeShared,
   handlerClick,
   handlerTrashClick
 }: {
   item: SelectGroupInterface
+  type: string
+  canBeShared: boolean
   handlerClick: (event: MouseEvent) => void
   handlerTrashClick: (favorite: string) => void
 }) => {
   const [open, setOpen] = useState(true)
+  const [selectedFavorite, setSelectedFavorite] = useState("")
+
+  // Implement deleteing a file
+  const handleConfirmDelete = () => {
+    handlerTrashClick(selectedFavorite)
+  }
 
   return (
     <div className={"bg-sky-600"}>
@@ -38,10 +56,52 @@ const SelectGroup = ({
                   {favorite}
                 </p>
               </button>
-              <LuTrash2
-                className="mr-10 text-black"
-                onClick={() => handlerTrashClick(favorite)}
-              />
+              <div className="flex gap-2 ">
+                <button>
+                  {canBeShared && <LuShare className="text-black" />}
+                </button>
+
+                <UIModal
+                  button={({ onOpen }) => (
+                    <button onClick={onOpen}>
+                      <LuPenSquare className="text-black" />
+                    </button>
+                  )}
+                  header={
+                    <span className="text-primary">Edit chosen query</span>
+                  }
+                  body={<CustomPopUp></CustomPopUp>}
+                  footer={({ onClose }) => (
+                    <UIButton onClick={onClose}>save</UIButton>
+                  )}
+                ></UIModal>
+
+                <UIModal
+                  button={({ onOpen }) => (
+                    <button onClick={onOpen}>
+                      <LuTrash2 className="text-black"></LuTrash2>
+                    </button>
+                  )}
+                  body={
+                    <p className="text-primary text-lg">
+                      Are you sure you want to delete this project?
+                    </p>
+                  }
+                  footer={({ onClose }) => (
+                    <>
+                      <UIButton className="bg-danger" onClick={onClose}>
+                        Cancel
+                      </UIButton>
+                      <UIButton
+                        className="bg-success-700"
+                        onClick={handleConfirmDelete}
+                      >
+                        Yes
+                      </UIButton>
+                    </>
+                  )}
+                ></UIModal>
+              </div>
             </div>
           ))}
         </div>

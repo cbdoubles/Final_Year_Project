@@ -1,23 +1,27 @@
+import React, { useState } from "react"
+import QueryIcon from "@/utils/sideBar/QueryIcon"
 import { GlobeAsiaAustraliaIcon } from "@heroicons/react/24/outline"
-/*import DefaultIcon from  '/public/sidebarImages/defaulticon.png';*/
 
-//Detail for icon
-const properties = {
-  name: "Default",
-  href: "/sideBar",
-  icon: GlobeAsiaAustraliaIcon
-}
+const items = [
+  {
+    employee: "Szymon",
+    favorites: ["def1", "def2", "def3", "def4"]
+  },
+  { employee: "Geri", favorites: ["def1", "def2"] },
+  { employee: "Caolán", favorites: ["def1"] }
+]
 
-export default function Default() {
-  const LinkIcon = properties.icon
+export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
+  const loadItems = async () => {
+    await new Promise((r) => setTimeout(r, 2000))
+    return items
+  }
   return (
-    <a
-      key={properties.name}
-      href={properties.href}
-      className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-    >
-      <LinkIcon className="w-6" />
-      <p className="hidden md:block">{properties.name}</p>
-    </a>
+    <QueryIcon
+      loadItems={loadItems}
+      type="Default"
+      icon={GlobeAsiaAustraliaIcon}
+      collapsed={collapsed}
+    />
   )
 }

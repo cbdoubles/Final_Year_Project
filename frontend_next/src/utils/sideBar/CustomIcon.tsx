@@ -1,23 +1,27 @@
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline"
-/*import DefaultIcon from  '/public/sidebarImages/defaulticon.png';*/
+import React, { useState } from "react"
+import QueryIcon from "@/utils/sideBar/QueryIcon"
 
-//Detail for icon
-const properties = {
-  name: "Customised",
-  href: "/sideBar",
-  icon: ClipboardDocumentCheckIcon
-}
+const items = [
+  {
+    employee: "Szymon",
+    favorites: ["cust1", "cust1", "cust1", "cust2"]
+  },
+  { employee: "Geri", favorites: ["cust1", "cust2"] },
+  { employee: "Caolán", favorites: ["cust1"] }
+]
 
-export default function Custom() {
-  const LinkIcon = properties.icon
+export default function CustomIcon({ collapsed }: { collapsed: boolean }) {
+  const loadItems = async () => {
+    await new Promise((r) => setTimeout(r, 2000))
+    return items
+  }
   return (
-    <a
-      key={properties.name}
-      href={properties.href}
-      className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-    >
-      <LinkIcon className="w-6" />
-      <p className="hidden md:block">{properties.name}</p>
-    </a>
+    <QueryIcon
+      loadItems={loadItems}
+      collapsed={collapsed}
+      type="Custom"
+      icon={ClipboardDocumentCheckIcon}
+    />
   )
 }

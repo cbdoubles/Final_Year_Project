@@ -1,41 +1,118 @@
-import React, { useState } from "react"
-import FavouritesButton from "../../utils/queryboxButtons/FavoriteButton"
-import RunButton from "../../utils/queryboxButtons/RunButton"
-import CypherButton from "../../utils/queryboxButtons/CypherButton"
+import React, { useState } from "react";
+import UIButton from "../ui/UIButton";
+import UIModal from "../ui/UIModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import NatLangBox from "@/src/utils/NatLangBox";
+import { useProps } from "@/src/contexts/PropsContext";
 
-const QueryTextbox: React.FC = () => {
-  const [query, setQuery] = useState("")
+interface QueryTextboxProps {
+  readOnly?: boolean;
+  initialQuery?: string;
+  hideButtons?: boolean;
+}
+
+const dataArray: string[] = [
+  "Match the actor",
+  "$actorname:str$",
+  "to all the movies they did.",
+];
+
+interface InputValues {
+  [key: string]: string;
+}
+
+interface QueryTextboxProps {
+  readOnly?: boolean;
+  initialQuery?: string;
+  hideButtons?: boolean;
+}
+
+interface QueryTextboxProps {
+  readOnly?: boolean;
+  initialQuery?: string;
+  hideButtons?: boolean;
+}
+
+const QueryTextbox: React.FC<QueryTextboxProps> = ({
+  readOnly = false,
+  initialQuery = "",
+  hideButtons = false,
+}) => {
+  const [query, setQuery] = useState(initialQuery);
+  const { queryRunClicked, setQueryRunTrue } = useProps();
+
+  const [inputValues, setInputValues] = useState<InputValues>({});
+
+  const handleInputChange = (placeholder: string, value: string) => {
+    setInputValues((prev) => ({ ...prev, [placeholder]: value }));
+  };
 
   const handleShowQuery = () => {
     // Add logic to show cypher query
-    alert(`Cypher Query: ${query}`)
-  }
+    alert(`Cypher Query: ${query}`);
+  };
 
   const handleRunQuery = () => {
     // Add logic to run the query
-    console.log("Running query:", query)
-  }
-
-  const handleFavourite = () => {
-    // Add logic to save the query as a favorite
-    console.log("Favouriting query:", query)
-  }
+    console.log("Run query - input values:", inputValues);
+    setQueryRunTrue();
+  };
 
   return (
-    <div className="query-textbox-container">
-      <textarea
-        className="query-textbox-textarea"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Select a favorite result query, custom query or default query"
+    <div className="flex flex-col">
+      <NatLangBox
+        dataArray={dataArray}
+        inputValues={inputValues}
+        onInputChange={handleInputChange}
       />
-      <div className="query-textbox-buttons">
-        <CypherButton onClick={handleShowQuery}>Show Cypher Query</CypherButton>
-        <RunButton onClick={handleRunQuery}>Run</RunButton>
-        <FavouritesButton onClick={handleFavourite}>Favourite</FavouritesButton>
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-2 mb-2">
+          <UIButton
+            onClick={handleShowQuery}
+            disabled={readOnly}
+            className="bg-primary"
+          >
+            Show Cypher
+          </UIButton>
+          <UIButton
+            onClick={handleRunQuery}
+            disabled={readOnly}
+            className="bg-success-700"
+          >
+            Run
+          </UIButton>
+          <UIModal
+            button={({ onOpen }) => (
+              <UIButton className="bg-gray-500" onClick={onOpen}>
+                <FontAwesomeIcon icon={faStar} className="w-6" />
+                <p>Add to Favorites</p>
+              </UIButton>
+            )}
+            header={<span className="text-primary">Save favorite query</span>}
+            body={<FavouritePopUp></FavouritePopUp>}
+            footer={({ onClose }) => (
+              <>
+                <UIButton
+                  className=" bg-danger w-full text-lg"
+                  onClick={onClose}
+                >
+                  Cancel
+                </UIButton>
+                <UIButton
+                  className="bg-success-700 w-full text-lg"
+                  onClick={onClose}
+                >
+                  Save
+                </UIButton>
+              </>
+            )}
+          ></UIModal>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default QueryTextbox
+export default QueryTextbox;
