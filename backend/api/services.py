@@ -1,7 +1,8 @@
 import os
 from rest_framework.exceptions import ValidationError
 from .models import Project, GraphFile
-from .serializers import ProjectSerializer, GraphFileSerializer
+from .serializers import CustomQuerySerializer, FolderSerializer, ProjectSerializer, GraphFileSerializer
+
 
 class ProjectService:
     @staticmethod
@@ -13,7 +14,8 @@ class ProjectService:
 
     @staticmethod
     def update_project(instance, data, partial):
-        project_serializer = ProjectSerializer(instance, data=data, partial=partial)
+        project_serializer = ProjectSerializer(
+            instance, data=data, partial=partial)
         if project_serializer.is_valid():
             return project_serializer.save(), None
         return None, project_serializer.errors
@@ -21,6 +23,7 @@ class ProjectService:
     @staticmethod
     def delete_project(project):
         project.delete()
+
 
 class FileService:
     @staticmethod
@@ -35,7 +38,7 @@ class FileService:
         if file_serializer.is_valid():
             return file_serializer.save(), None
         return None, file_serializer.errors
-    
+
     @staticmethod
     def reupload_file(project, request):
         file = GraphFile.objects.get(project=project)
@@ -51,9 +54,24 @@ class FileService:
         if file_serializer.is_valid():
             return file_serializer.save(), None
         return None, file_serializer.errors
-    
+
     @staticmethod
     def delete_file(project):
         file = GraphFile.objects.filter(project=project)
-        if file.file_path and os.path.isfile(file.file_path.path):
-            os.remove(file.file_path.path)
+        if file:
+            try:
+                if file.file_path and os.path.isfile(file.file_path.path):
+                    os.remove(file.file_path.path)
+                file.delete()
+            except Exception as e:
+                return None, f"Error deleting file: {e}"
+        return None, "No file found for this project"
+
+
+class CustomQueryService:
+    @staticmethod
+    def create_query(data, request):
+        custom_query_serializer = CustomQuerySerializer(data=data)
+        if custom_query_serializer.is_valid():
+            return custom_query_serializer.save(), None
+        return None, custom_query_serializer.errors
