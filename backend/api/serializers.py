@@ -1,5 +1,6 @@
+from logging import info
 from rest_framework import serializers
-from .models import Folder, GraphFile, Project
+from .models import CustomQuery, Folder, GraphFile, Project
 from rest_framework.exceptions import ValidationError
 
 
@@ -30,3 +31,12 @@ class FolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Folder
         fields = '__all__'
+
+
+class CustomQuerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomQuery
+        fields = '__all__'
+
+    def create(self, validated_data):
+        info("create")
