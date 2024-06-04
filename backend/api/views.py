@@ -31,11 +31,11 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from py2neo import DatabaseError
 from django.conf import settings
-from .serializers import ProjectSerializer, GraphFileSerializer, FolderSerializer
-from .models import Project, GraphFile, Folder, Query
+from .serializers import *
+from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
 from .upload_file import process_file
-from .services import ProjectService, FileService
+from .services import *
 import logging
 
 # Initialize Neo4j connection
@@ -367,3 +367,16 @@ class FolderViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
         # data[Project] = Project.objects.get(id=data[Project])
+
+class CustomQueryViewSet(viewsets.ModelViewSet):
+    cust_query_set = CustomQuery.objects.all()
+    serializer_class = CustomQuerySerializer
+    
+    def create(self, request, *args, **kwargs):
+        custom_query, errors = CustomQueryService.create_query(request.data, request)
+        if custom_query:
+            return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
+        return Response(errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    
+

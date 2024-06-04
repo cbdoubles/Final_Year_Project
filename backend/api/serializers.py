@@ -39,4 +39,12 @@ class CustomQuerySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        info("create")
+        project_id = self.context['request'].data.get('project_id')
+        if project_id:
+            try:
+                project = Project.objects.get(id=project_id)
+                validated_data['project'] = project
+            except Project.DoesNotExist:
+                raise ValidationError(
+                    f"Project with id {project_id} does not exist.")
+        return super().create(validated_data)

@@ -71,7 +71,7 @@ class FileService:
 class CustomQueryService:
     @staticmethod
     def create_query(data, request):
-        custom_query_serializer = CustomQuerySerializer(data=data)
+        custom_query_serializer = CustomQuerySerializer(data=data, context={'request': request})
         if custom_query_serializer.is_valid():
             return custom_query_serializer.save(), None
         return None, custom_query_serializer.errors

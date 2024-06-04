@@ -17,21 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.http import JsonResponse
-from api.views import (
-    upload_file,
-    save_graph,
-    view_graph,
-    graph_data,
-    cypher_query,
-    run_query,
-    ProjectViewSet
-)
+from api.views import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 from backend import settings
 
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
+router.register(r"custom_queries", CustomQueryViewSet)
 
 # TODO: if the existing views that are not part of a viewset
 # (e.g., custom actions or non-RESTful views), then we can leave them as it is.
