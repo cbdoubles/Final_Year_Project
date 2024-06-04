@@ -23,7 +23,6 @@ from .services import ProjectService, FileService
 import logging
 
 
-
 # Initialize Neo4j connection
 neo4j_service = Neo4jService(
     'neo4j://localhost:7687', 'neo4j', 'cobra-paprika-nylon-conan-tobacco-2599')
@@ -201,7 +200,8 @@ def run_query(request):
 
 #         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# --------------------------------------------------------------------------------------------------------	
+# --------------------------------------------------------------------------------------------------------
+
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
@@ -224,7 +224,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        project, errors = ProjectService.update_project(instance, request.data, partial)
+        project, errors = ProjectService.update_project(
+            instance, request.data, partial)
         if project:
             if 'file_path' in request.FILES:
                 logging.warning('We have a file here')
@@ -241,6 +242,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         ProjectService.delete_project(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class GraphFileViewSet(viewsets.ModelViewSet):
     queryset = GraphFile.objects.all()
     serializer_class = GraphFileSerializer
@@ -248,7 +250,8 @@ class GraphFileViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
