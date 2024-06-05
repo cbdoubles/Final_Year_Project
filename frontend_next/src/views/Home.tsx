@@ -5,8 +5,16 @@ import { Card, CardBody } from "@nextui-org/card";
 import UIButton from "@/src/components/ui/UIButton";
 import UIModal from "@/src/components/ui/UIModal";
 import Header from "../components/header/Header";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleSelect = () => {
+    //Handle Select
+    router.push("/projectpage");
+  };
+
   return (
     <div className="h-[100vh] flex flex-col">
       <Header />
@@ -29,7 +37,7 @@ export default function Home() {
                   <UIButton color="danger" onClick={onClose}>
                     Close
                   </UIButton>
-                  <UIButton color="primary" onClick={onClose}>
+                  <UIButton color="primary" onClick={handleSelect}>
                     Select
                   </UIButton>
                 </>

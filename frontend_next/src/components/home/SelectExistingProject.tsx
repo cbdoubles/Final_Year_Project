@@ -12,11 +12,6 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
     value: string;
   };
 
-  const handleClose = () => {
-    console.log("Close button clicked");
-    // Implement your close functionality here
-  };
-
   const [elements, setElements] = useState<Element[]>([
     { name: "Element 1", value: "Object1" },
     { name: "Element 2", value: "Object2" },
@@ -59,9 +54,14 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
   };
 
   const handleDeleteConfirm = () => {
-    // Delete the element here
-    console.log(`Deleted ${deletingElement?.name}`);
-    setDeletingElement(null);
+    if (deletingElement) {
+      const updatedElements = elements.filter(
+        (el) => el.value !== deletingElement.value
+      );
+      setElements(updatedElements);
+      console.log(`Deleted ${deletingElement.name}`);
+      setDeletingElement(null);
+    }
   };
 
   return (
@@ -93,7 +93,12 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
             <LuPenSquare onClick={() => handleIconClick1(element)} />
             <UIModal
               button={({ onOpen }) => (
-                <button onClick={onOpen}>
+                <button
+                  onClick={() => {
+                    setDeletingElement(element);
+                    onOpen();
+                  }}
+                >
                   <LuTrash2></LuTrash2>
                 </button>
               )}
@@ -109,7 +114,10 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
                   </UIButton>
                   <UIButton
                     className="bg-success-700"
-                    onClick={handleDeleteConfirm}
+                    onClick={() => {
+                      handleDeleteConfirm();
+                      onClose();
+                    }}
                   >
                     Yes
                   </UIButton>
