@@ -6,6 +6,8 @@ import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
+import QueryTextboxAdvanced from "../QueryTextboxAdvanced/QueryTextboxAdvanced";
+import { HARDCODED_CYPHER_QUERY } from "./hardcodedQuery";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -29,12 +31,6 @@ interface QueryTextboxProps {
   hideButtons?: boolean;
 }
 
-interface QueryTextboxProps {
-  readOnly?: boolean;
-  initialQuery?: string;
-  hideButtons?: boolean;
-}
-
 const QueryTextbox: React.FC<QueryTextboxProps> = ({
   readOnly = false,
   initialQuery = "",
@@ -42,6 +38,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 }) => {
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
+  const [showAdvancedTextbox, setShowAdvancedTextbox] = useState(false);
 
   const [inputValues, setInputValues] = useState<InputValues>({});
 
@@ -50,8 +47,10 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   };
 
   const handleShowQuery = () => {
-    // Add logic to show cypher query
-    alert(`Cypher Query: ${query}`);
+    setShowAdvancedTextbox((prev) => !prev);
+    if (!showAdvancedTextbox) {
+      setQuery(HARDCODED_CYPHER_QUERY);
+    }
   };
 
   const handleRunQuery = () => {
@@ -74,7 +73,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
             disabled={readOnly}
             className="bg-primary"
           >
-            Show Cypher
+            {showAdvancedTextbox ? "Hide Cypher" : "Show Cypher"}
           </UIButton>
           <UIButton
             onClick={handleRunQuery}
@@ -110,6 +109,12 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
             )}
           ></UIModal>
         </div>
+      )}
+      {showAdvancedTextbox && (
+        <QueryTextboxAdvanced
+          initialQuery={HARDCODED_CYPHER_QUERY}
+          readOnly={true}
+        />
       )}
     </div>
   );

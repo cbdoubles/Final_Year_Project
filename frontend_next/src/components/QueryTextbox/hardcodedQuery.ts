@@ -1,0 +1,1 @@
+export const HARDCODED_CYPHER_QUERY = "MATCH (n) RETURN n LIMIT 25";

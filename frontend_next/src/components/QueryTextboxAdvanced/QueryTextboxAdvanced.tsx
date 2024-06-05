@@ -7,9 +7,23 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
 
-const QueryTextboxAdvanced: React.FC = () => {
-  const [query, setQuery] = useState("");
+interface QueryTextboxAdvancedProps {
+  initialQuery?: string;
+  readOnly?: boolean;
+}
+
+const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
+  initialQuery = "",
+  readOnly = false,
+}) => {
+  const [query, setQuery] = useState(initialQuery);
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
+
+  const handleQueryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!readOnly) {
+      setQuery(e.target.value);
+    }
+  };
 
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
@@ -24,7 +38,9 @@ const QueryTextboxAdvanced: React.FC = () => {
       <textarea
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        // onChange={(e) => setQuery(e.target.value)}
+        onChange={handleQueryChange}
+        readOnly={readOnly}
         placeholder="Enter your query here"
       />
       <div className="flex justify-end gap-2 mb-2">
