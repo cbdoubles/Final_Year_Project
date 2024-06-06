@@ -11,7 +11,7 @@ const items = [
   { employee: "Caolán", favorites: ["cust1"] }
 ]
 
-export default function CustomIcon({ collapsed }: { collapsed: boolean }) {
+export default function CustomIcon({ collapsed }: { collapsed?: boolean }) {
   const loadItems = async () => {
     await new Promise((r) => setTimeout(r, 2000))
     return items

@@ -4,12 +4,19 @@ import CustomButton from "@/src/utils/sideBar/CustomIcon"
 import Favourite from "@/src/utils/sideBar/FavouriteIcon"
 import Default from "@/src/utils/sideBar/DefaultIcon"
 import Reupload from "@/src/utils/sideBar/ReuploadIcon"
-import Settings from "@/src/utils/sideBar/SettingsIcon"
+import Import from "@/src/utils/sideBar/ImportIcon"
 import { LuAlignJustify } from "react-icons/lu"
 import QueryIconButton from "@/src/utils/sideBar/QueryIconButton"
 import GraphToolBoxContainer from "@/components/graphDisplay/GraphToolBoxContainer"
 import { Card } from "@nextui-org/react"
 import { useProps } from "@/src/contexts/PropsContext"
+import UIModal from "../ui/UIModal"
+import UIButton from "../ui/UIButton"
+import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp"
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
+import SelectExistingProject from "../home/SelectExistingProject"
+import ChooseProjectProps from "../importChain/ChooseProject"
+import ChooseProject from "../importChain/ChooseProject"
 
 export default function SideBar({
   collapsed,
@@ -34,7 +41,20 @@ export default function SideBar({
         <Default collapsed={collapsed} />
         <Reupload collapsed={collapsed} />
         <SwitchMode collapsed={collapsed} />
-        <Settings collapsed={collapsed} />
+    
+        <UIModal  
+          button={({ onOpen }) => (
+            <UIButton name = "Import" collapsed = {collapsed}  className="flex h-[48px] grow items-center justify-center relative gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3" onClick={onOpen}>
+              <ArrowDownTrayIcon className="mr-2 h-6 w-6" />
+            </UIButton>
+          )}
+          header={<span className="text-primary">Select source</span>}
+          body={<ChooseProject></ChooseProject>}
+          footer={({ onClose }) => (
+            <>
+            </>
+          )}
+        ></UIModal>
         {!collapsed && (
           <>
             {queryRunClicked && (
