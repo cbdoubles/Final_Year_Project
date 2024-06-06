@@ -7,13 +7,13 @@ import { useProjectProps } from "@/src/contexts/ProjectContext";
 type SelectExistingProjectProps = {};
 
 const projects = [
-  { projectId: "Object1", projectName: "Project 1" },
+  { projectId: "40", projectName: "Ana" },
   { projectId: "Object2", projectName: "Project 2" },
   { projectId: "Object3", projectName: "Project 3" },
 ];
 
 const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
-  console.log("SelectExistingProject");
+  // console.log("SelectExistingProject");
 
   type Element = {
     projectId: string;
@@ -44,11 +44,17 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
     //   try {
     //     const response = await fetch("http://localhost:8000/api/projects/"); // Adjust the API endpoint accordingly
     //     const data = await response.json();
+    //     console.log(data);
+
     //     setElements(data);
     //   } catch (error) {
     //     console.error("Error fetching elements:", error);
     //   }
     // };
+
+    // fetchElements();
+    // console.log("printing use effect elements");
+    // console.log(elements);
 
     // fetchElements();
   }, []);
@@ -79,58 +85,59 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
     setElements(updatedElements);
   };
 
-  const handleEditSubmit = (
-    event: React.FormEvent<HTMLFormElement>,
-    element: Element
-  ) => {
-    event.preventDefault();
-    // Submit the changes here
-    console.log(`Updated name for ${element.projectName}`);
-    setEditingElement(null);
-    setProjectName(element.projectName);
-  };
-
-  // TO BE USED AS handleEditSubmit WHEN WE CONNECT FE AND BE
-  // const handleEditSubmit = async (
+  // const handleEditSubmit = (
   //   event: React.FormEvent<HTMLFormElement>,
   //   element: Element
   // ) => {
   //   event.preventDefault();
-
+  //   // Submit the changes here
+  //   console.log(`Updated name for ${element.projectName}`);
   //   setEditingElement(null);
-
-  //   try {
-  //     // Send API request to update the project name on the backend
-  //     const response = await fetch("http://localhost:8000/api/projects", {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         projectId: element.projectId,
-  //         projectName: element.projectName,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       // If the API request is not successful, throw an error
-  //       throw new Error("Failed to update project name on the backend");
-  //     } else {
-  //       setProjectName(element.projectName);
-  //     }
-  //   } catch (error) {
-  //     // If an error occurs during the API request (e.g., network error or backend error),
-  //     // log the error and revert the elements state to its previous state
-  //     console.error("Error updating project name:", error);
-
-  //     const updatedElements = elements.map((element) =>
-  //       element.projectId === prevElementState.projectId
-  //         ? prevElementState
-  //         : element
-  //     );
-  //     setElements(updatedElements);
-  //   }
+  //   setProjectName(element.projectName);
   // };
+
+  // TO BE USED AS handleEditSubmit WHEN WE CONNECT FE AND BE
+  const handleEditSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+    element: Element
+  ) => {
+    event.preventDefault();
+
+    setEditingElement(null);
+
+    try {
+      // Construct the URL with the project ID
+      const formData = new FormData();
+      formData.append("name", element.projectName);
+
+      console.log("first fetch");
+      const response = await fetch(
+        `http://localhost:8000/api/projects/${element.projectId}/`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        // If the API request is not successful, throw an error
+        const errorData = await response.json();
+        console.log("response not ok");
+        throw new Error(errorData.error || "Unknown error");
+      }
+    } catch (error) {
+      // If an error occurs during the API request (e.g., network error or backend error),
+      // log the error and revert the elements state to its previous state
+      console.error("Error updating project name:", error);
+
+      const updatedElements = elements.map((element) =>
+        element.projectId === prevElementState.projectId
+          ? prevElementState
+          : element
+      );
+      setElements(updatedElements);
+    }
+  };
 
   const handleDeleteConfirm = () => {
     if (deletingElement) {

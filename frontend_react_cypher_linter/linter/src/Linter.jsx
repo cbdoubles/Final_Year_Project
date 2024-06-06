@@ -25,7 +25,6 @@ const Linter = () => {
 
   return (
     <div>
-      <h1>Cypher Editor</h1>
       <CypherEditor
         ref={cypherEditorRef}
         onValueChanged={handleEditorChange}
