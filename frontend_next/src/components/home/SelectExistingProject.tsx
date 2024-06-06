@@ -20,6 +20,11 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
     projectName: string;
   };
 
+  type ProjectType = {
+    id: string;
+    name: string;
+  };
+
   const defaultElement: Element = {
     projectId: "",
     projectName: "",
@@ -35,28 +40,33 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
   const { setProjectId, setProjectName } = useProjectProps();
 
   useEffect(() => {
-    setElements(projects);
+    // setElements(projects);
     console.log("useEffect");
 
     // TO TRY CODE BELOW FOR UseEffect WHEN CONNECTING WITH BACKEND
     // Replace with your backend API call
-    // const fetchElements = async () => {
-    //   try {
-    //     const response = await fetch("http://localhost:8000/api/projects/"); // Adjust the API endpoint accordingly
-    //     const data = await response.json();
-    //     console.log(data);
+    const fetchElements = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/projects/"); // Adjust the API endpoint accordingly
+        const data: ProjectType[] = await response.json();
+        console.log("printing data");
+        data.forEach((element) => {
+          console.log(element.id);
+        });
 
-    //     setElements(data);
-    //   } catch (error) {
-    //     console.error("Error fetching elements:", error);
-    //   }
-    // };
+        // Transform data from ProjectType[] to Element[]
+        const transformedData: Element[] = data.map((project) => ({
+          projectId: project.id,
+          projectName: project.name,
+        }));
 
-    // fetchElements();
-    // console.log("printing use effect elements");
-    // console.log(elements);
+        setElements(transformedData);
+      } catch (error) {
+        console.error("Error fetching elements:", error);
+      }
+    };
 
-    // fetchElements();
+    fetchElements();
   }, []);
 
   const handleElementClick = (element: Element) => {
