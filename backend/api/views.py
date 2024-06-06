@@ -21,14 +21,22 @@ This module also initializes a connection to the Neo4j database at the start.
 import os
 import json
 import requests
+import errno
 import networkx as nx
-from django.http import FileResponse, JsonResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
 from networkx.readwrite import json_graph
+from django.http import FileResponse, JsonResponse, HttpResponse, Http404
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import viewsets, status
 from py2neo import DatabaseError
-from .models import Query
-from .upload_file import process_file
+from django.conf import settings
+from .serializers import *
+from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
+from .upload_file import process_file
+from .services import *
+import logging
 
 # Initialize Neo4j connection
 neo4j_service = Neo4jService(
@@ -288,3 +296,87 @@ def run_query(request):
         # Return the new graph data
         return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
     return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
+
+
+# -----------------------------------------------------------------------------------------------------
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def create(self, request, *args, **kwargs):
+        project, errors = ProjectService.create_project(request.data, request)
+        if project:
+            if 'file_path' in request.FILES:
+                file, file_errors = FileService.upload_file(project, request)
+                if file:
+                    return Response(ProjectSerializer(project).data, status=status.HTTP_201_CREATED)
+                ProjectService.delete_project(project)
+                return Response(file_errors, status=status.HTTP_400_BAD_REQUEST)
+            ProjectService.delete_project(project)
+            return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        project, errors = ProjectService.update_project(
+            instance, request.data, partial)
+        if project:
+            if 'file_path' in request.FILES:
+                logging.warning('We have a file here')
+                file, file_errors = FileService.reupload_file(project, request)
+                if file:
+                    return Response(ProjectSerializer(project).data)
+                return Response(file_errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(ProjectSerializer(project).data)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        FileService.delete_file(instance)
+        ProjectService.delete_project(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GraphFileViewSet(viewsets.ModelViewSet):
+    queryset = GraphFile.objects.all()
+    serializer_class = GraphFileSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FolderViewSet(viewsets.ModelViewSet):
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        # data[Project] = Project.objects.get(id=data[Project])
+
+class CustomQueryViewSet(viewsets.ModelViewSet):
+    cust_query_set = CustomQuery.objects.all()
+    serializer_class = CustomQuerySerializer
+    
+    def create(self, request, *args, **kwargs):
+        custom_query, errors = CustomQueryService.create_query(request.data, request)
+        if custom_query:
+            return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
+        return Response(errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    
+
