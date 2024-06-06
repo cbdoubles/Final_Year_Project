@@ -10,3 +10,4 @@ backend/api/migrations/*
 backend/backend/__pycache__/*
 *.pyc
 frontend_react_cypher_linter\linter/node_modules
+.DS_Store
