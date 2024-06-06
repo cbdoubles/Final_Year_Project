@@ -80,7 +80,7 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'querify_db',
+        'NAME':   'querify_db_test', #'querify_db',
         'USER': 'querify_remote',
         'PASSWORD': 'querifyrocks',
         'HOST': '145.220.75.94',

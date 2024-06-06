@@ -27,6 +27,7 @@ from networkx.readwrite import json_graph
 from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from py2neo import DatabaseError
@@ -34,6 +35,7 @@ from django.conf import settings
 from .serializers import *
 from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
+from django.db import IntegrityError
 from .upload_file import process_file
 from .services import *
 import logging
@@ -372,11 +374,20 @@ class CustomQueryViewSet(viewsets.ModelViewSet):
     queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
     
+    # def create(self, request, *args, **kwargs):
+    #     custom_query, errors = CustomQueryService.create_query(request.data, request)
+    #     if custom_query:
+    #         return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
+    #     return Response(errors, status = status.HTTP_400_BAD_REQUEST)
+
     def create(self, request, *args, **kwargs):
-        custom_query, errors = CustomQueryService.create_query(request.data, request)
-        if custom_query:
-            return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
-        return Response(errors, status = status.HTTP_400_BAD_REQUEST)
-    
-    
+        serializer = self.get_serializer(data=request.data)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                self.perform_create(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError as e:
+            raise ValidationError({"detail": str(e)})
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
