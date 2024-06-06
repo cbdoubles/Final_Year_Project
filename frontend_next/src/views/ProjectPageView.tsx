@@ -1,21 +1,28 @@
-import React, { ReactNode, useState } from "react"
-import Header from "@/src/components/header/Header"
-import QueryTextboxAdvanced from "../components/QueryTextboxAdvanced/QueryTextboxAdvanced"
-import SideBar from "../components/sideBar/SideBar"
-import { useProps } from "../contexts/PropsContext"
-import QueryTextbox from "../components/QueryTextbox/QueryTextbox"
-import { Card } from "@nextui-org/react"
-import GraphDisplayBoxContainer from "@/components/graphDisplay/GraphDisplayBoxContainer"
-import { GraphDataProvider } from "@/components/graphDisplay/GraphDataContext"
+import React, { ReactNode, useState, useEffect } from "react";
+import Header from "@/src/components/header/Header";
+import QueryTextboxAdvanced from "../components/QueryTextboxAdvanced/QueryTextboxAdvanced";
+import SideBar from "../components/sideBar/SideBar";
+import { useProps } from "../contexts/PropsContext";
+import QueryTextbox from "../components/queryTextbox/QueryTextbox";
+import { Card } from "@nextui-org/react";
+import GraphDisplayBoxContainer from "@/components/graphDisplay/GraphDisplayBoxContainer";
+import { GraphDataProvider } from "@/components/graphDisplay/GraphDataContext";
+import { useProjectProps } from "../contexts/ProjectContext";
 
 interface ProjectPageViewProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 const ProjectPageView = ({ children }: ProjectPageViewProps) => {
-  const { advancedMode, queryRunClicked } = useProps()
+  const { advancedMode, queryRunClicked } = useProps();
+  const { projectId, projectName } = useProjectProps();
 
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    console.log("Project ID:", projectId);
+    console.log("Project Name:", projectName);
+  }, []);
 
   return (
     <div className="flex flex-col h-screen">
@@ -43,7 +50,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
         </GraphDataProvider>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProjectPageView
+export default ProjectPageView;

@@ -6,11 +6,15 @@ import UIButton from "@/src/components/ui/UIButton";
 import UIModal from "@/src/components/ui/UIModal";
 import Header from "../components/header/Header";
 import { useRouter } from "next/router";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
 
 export default function Home() {
   const router = useRouter();
+  const { projectId, projectName } = useProjectProps();
 
   const handleSelect = () => {
+    console.log("Selected Project Name:", projectName);
+    console.log("Selected Project ID:", projectId);
     //Handle Select
     router.push("/projectpage");
   };

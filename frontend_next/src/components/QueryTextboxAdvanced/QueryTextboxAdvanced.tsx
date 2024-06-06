@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import QueryTextbox from "../QueryTextbox/QueryTextbox";
+import QueryTextbox from "../queryTextbox/QueryTextbox";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
