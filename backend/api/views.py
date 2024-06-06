@@ -369,7 +369,7 @@ class FolderViewSet(viewsets.ModelViewSet):
         # data[Project] = Project.objects.get(id=data[Project])
 
 class CustomQueryViewSet(viewsets.ModelViewSet):
-    cust_query_set = CustomQuery.objects.all()
+    queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
     
     def create(self, request, *args, **kwargs):

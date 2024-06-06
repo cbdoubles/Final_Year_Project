@@ -24,7 +24,8 @@ from backend import settings
 
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
-router.register(r"custom_queries", CustomQueryViewSet)
+# router.register(r"custom_queries", CustomQueryViewSet)
+router.register(r"custom_queries", CustomQueryViewSet, basename='customquery')
 
 # TODO: if the existing views that are not part of a viewset
 # (e.g., custom actions or non-RESTful views), then we can leave them as it is.
