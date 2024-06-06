@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 interface SelectProps {
   handleClick: () => void
-  collapsed: boolean
+  collapsed?: boolean
   type: "Default" | "Custom" | "Favorite" | "Collapse"
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>> // Updated icon prop type
 }
