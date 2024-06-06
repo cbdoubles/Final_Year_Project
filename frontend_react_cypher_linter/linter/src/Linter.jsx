@@ -24,14 +24,23 @@ const Linter = () => {
   };
 
   return (
-    <div>
       <CypherEditor
+       style={{
+         width: "99%",
+         height: "50vh", 
+         fontSize: "0.75rem", 
+         border: "2px solid #D1D5DB", 
+         borderRadius: "0.375rem", 
+         backgroundColor: "white",
+         position: "relative",
+         overflow: "auto",
+       }}
         ref={cypherEditorRef}
         onValueChanged={handleEditorChange}
         {...editorProps}
       />
-    </div>
   );
 };
 
 export default Linter;
+
