@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
 
 const NeovisComponent: React.FC = () => {
   const visRef = useRef<HTMLDivElement>(null);
@@ -30,7 +29,7 @@ const NeovisComponent: React.FC = () => {
             solver: "forceAtlas2Based",
             stabilization: {
               enabled: true,
-              iterations: 1000, // We can increase the number of iterations to ensure a stable layout
+              iterations: 10000, // We can increase the number of iterations to ensure a stable layout
               fit: true,
             },
             forceAtlas2Based: {
