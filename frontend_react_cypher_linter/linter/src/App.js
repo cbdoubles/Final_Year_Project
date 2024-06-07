@@ -1,6 +1,6 @@
 import "./App.css";
+import NeovisComponent from "./components/NeovisComponent";
 import Linter from "./Linter";
-import { NeoGraph, ResponsiveNeoGraph } from "./neo4jVis";
 
 const NEO4J_URI = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -11,23 +11,7 @@ function App() {
     <div>
       <Linter />
       <h1>React Neovis Example</h1>
-      {/* <ResponsiveNeoGraph
-        containerId={"id0"}
-        neo4jUri={NEO4J_URI}
-        neo4jUser={NEO4J_USER}
-        neo4jPassword={NEO4J_PASSWORD}
-        width={400}
-        height={300}
-      /> */}
-      <NeoGraph
-        width={400}
-        height={300}
-        containerId={"id1"}
-        neo4jUri={NEO4J_URI}
-        neo4jUser={NEO4J_USER}
-        neo4jPassword={NEO4J_PASSWORD}
-        backgroundColor={"#b2beb5"}
-      />
+      <NeovisComponent />
     </div>
   );
 }

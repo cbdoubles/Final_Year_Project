@@ -1,21 +1,27 @@
-import React, { ReactNode, useState } from "react"
-import Header from "@/src/components/header/Header"
-import QueryTextboxAdvanced from "../components/QueryTextboxAdvanced/QueryTextboxAdvanced"
-import SideBar from "../components/sideBar/SideBar"
-import { useProps } from "../contexts/PropsContext"
-import QueryTextbox from "../components/QueryTextbox/QueryTextbox"
-import { Card } from "@nextui-org/react"
-import GraphDisplayBoxContainer from "@/components/graphDisplay/GraphDisplayBoxContainer"
-import { GraphDataProvider } from "@/components/graphDisplay/GraphDataContext"
+import React, { ReactNode, useState } from "react";
+import Header from "@/src/components/header/Header";
+import QueryTextboxAdvanced from "../components/QueryTextboxAdvanced/QueryTextboxAdvanced";
+import SideBar from "../components/sideBar/SideBar";
+import { useProps } from "../contexts/PropsContext";
+import QueryTextbox from "../components/QueryTextbox/QueryTextbox";
+import { Card } from "@nextui-org/react";
+import GraphDisplayBoxContainer from "@/components/graphDisplay/GraphDisplayBoxContainer";
+import { GraphDataProvider } from "@/components/graphDisplay/GraphDataContext";
+// import NeovisComponent from "../components/neovisGraph/NeovisComponent";
+import dynamic from "next/dynamic";
 
 interface ProjectPageViewProps {
-  children: ReactNode
+  children: ReactNode;
 }
+const NeovisComponent = dynamic(
+  () => import("../components/neovisGraph/NeovisComponent"),
+  { ssr: false }
+);
 
 const ProjectPageView = ({ children }: ProjectPageViewProps) => {
-  const { advancedMode, queryRunClicked } = useProps()
+  const { advancedMode, queryRunClicked } = useProps();
 
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="flex flex-col h-screen">
@@ -34,7 +40,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             <div>
               {queryRunClicked && (
                 <Card className="flex-grow bg-capgemini-gray mt-4 p-2">
-                  <GraphDisplayBoxContainer />
+                  <NeovisComponent />
                 </Card>
               )}
             </div>
@@ -43,7 +49,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
         </GraphDataProvider>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProjectPageView
+export default ProjectPageView;
