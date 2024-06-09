@@ -304,7 +304,6 @@ def run_query(request):
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
     parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
@@ -342,38 +341,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GraphFileViewSet(viewsets.ModelViewSet):
-    queryset = GraphFile.objects.all()
-    serializer_class = GraphFileSerializer
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(
-            instance, data=request.data, partial=partial)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class FolderViewSet(viewsets.ModelViewSet):
-    queryset = Folder.objects.all()
-    serializer_class = FolderSerializer
-
-    def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        # data[Project] = Project.objects.get(id=data[Project])
-
 class CustomQueryViewSet(viewsets.ModelViewSet):
     queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
-    
+
     # def create(self, request, *args, **kwargs):
     #     custom_query, errors = CustomQueryService.create_query(request.data, request)
     #     if custom_query:
@@ -391,3 +362,15 @@ class CustomQueryViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class FolderViewSet(viewsets.ModelViewSet):
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Use the FolderService to handle the creation logic
+        folder, errors = FolderService.create_folder(request.data)
+
+        if folder:
+            return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)

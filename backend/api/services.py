@@ -1,4 +1,5 @@
 import os
+from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError
 from .models import Project, GraphFile
 from .serializers import CustomQuerySerializer, FolderSerializer, ProjectSerializer, GraphFileSerializer
@@ -71,7 +72,21 @@ class FileService:
 class CustomQueryService:
     @staticmethod
     def create_query(data, request):
-        custom_query_serializer = CustomQuerySerializer(data=data, context={'request': request})
+        custom_query_serializer = CustomQuerySerializer(
+            data=data, context={'request': request})
         if custom_query_serializer.is_valid():
             return custom_query_serializer.save(), None
         return None, custom_query_serializer.errors
+
+
+class FolderService:
+    @staticmethod
+    def create_folder(data):
+        serializer = FolderSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            try:
+                folder = serializer.save()
+                return folder, None
+            except IntegrityError as e:
+                raise ValidationError({"detail": str(e)})
+        return None, serializer.errors
