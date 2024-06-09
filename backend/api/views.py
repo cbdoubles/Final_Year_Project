@@ -304,6 +304,7 @@ def run_query(request):
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
     parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):

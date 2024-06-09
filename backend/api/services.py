@@ -1,16 +1,27 @@
 import os
 from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError
-from .models import Project, GraphFile
+from .models import Folder, Project, GraphFile
 from .serializers import CustomQuerySerializer, FolderSerializer, ProjectSerializer, GraphFileSerializer
 
 
 class ProjectService:
     @staticmethod
+    # def create_project(data, request):
+    #     project_serializer = ProjectSerializer(data=data)
+    #     if project_serializer.is_valid():
+    #         return project_serializer.save(), None
+    #     return None, project_serializer.errors
     def create_project(data, request):
         project_serializer = ProjectSerializer(data=data)
         if project_serializer.is_valid():
-            return project_serializer.save(), None
+            project = project_serializer.save()
+            folders, folder_errors = FolderService.create_default_folders(
+                project, request)
+            if folder_errors:
+                project.delete()  # Roll back the project creation if folder creation fails
+                return None, folder_errors
+            return project, None
         return None, project_serializer.errors
 
     @staticmethod
@@ -81,8 +92,8 @@ class CustomQueryService:
 
 class FolderService:
     @staticmethod
-    def create_folder(data):
-        serializer = FolderSerializer(data=data)
+    def create_folder(data, request):
+        serializer = FolderSerializer(data=data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             try:
                 folder = serializer.save()
@@ -90,3 +101,34 @@ class FolderService:
             except IntegrityError as e:
                 raise ValidationError({"detail": str(e)})
         return None, serializer.errors
+
+    @staticmethod
+    def create_default_folders(project, request):
+        folders_data = [
+            {'project': project.id, 'name': 'Custom Queries', 'type': Folder.CUSTOM},
+            {'project': project.id, 'name': 'Favorite Queries', 'type': Folder.FAVORITE}
+        ]
+
+        # for data in folders_data:
+        #     folder, errors = FolderService.create_folder(data)
+        #     if errors:
+        #         return None, errors
+        #     return folder, None
+
+        created_folders = []
+        for data in folders_data:
+            try:
+                folder, errors = FolderService.create_folder(data, request)
+                if errors:
+                    # If there is an error, roll back any created folders
+                    for created_folder in created_folders:
+                        created_folder.delete()
+                    return None, errors
+                created_folders.append(folder)
+            except ValidationError as e:
+                # If a validation error occurs, roll back any created folders
+                for created_folder in created_folders:
+                    created_folder.delete()
+                return None, {"detail": str(e)}
+
+        return created_folders, None
