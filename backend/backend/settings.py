@@ -26,6 +26,7 @@ SECRET_KEY = "django-insecure-5t8(w$h5$_2+a@wb=4-4-s3bcv+4$!#fsega6^=0x7q!%^d^3r
 DEBUG = True
 
 ALLOWED_HOSTS = ['*'] 
+ALLOWED_HOSTS = ['*'] 
 
 # Application definition
 
@@ -81,7 +82,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':   'querify_db',
-        'USER': 'querify_remote',
+        'USER': 'querify_remote_test',
         'PASSWORD': 'querifyrocks',
         'HOST': '145.220.75.94',
         'PORT': '3306',

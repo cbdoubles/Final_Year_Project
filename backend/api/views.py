@@ -28,6 +28,7 @@ from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from py2neo import DatabaseError
@@ -35,6 +36,7 @@ from django.conf import settings
 from .serializers import *
 from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
+from django.db import IntegrityError
 from django.db import IntegrityError
 from .upload_file import process_file
 from .services import *
@@ -341,34 +343,83 @@ class ProjectViewSet(viewsets.ModelViewSet):
         ProjectService.delete_project(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+#-------------------Custom query Views---------------------#
+# class CustomQueryViewSet(viewsets.ModelViewSet):
+#     queryset = CustomQuery.objects.all()
+#     serializer_class = CustomQuerySerializer
+
+#     # def create(self, request, *args, **kwargs):
+#     #     custom_query, errors = CustomQueryService.create_query(request.data, request)
+#     #     if custom_query:
+#     #         return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
+#     #     return Response(errors, status = status.HTTP_400_BAD_REQUEST)
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         try:
+#             if serializer.is_valid(raise_exception=True):
+#                 self.perform_create(serializer)
+#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         except IntegrityError as e:
+#             raise ValidationError({"detail": str(e)})
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from .models import CustomQuery
+from .serializers import CustomQuerySerializer
+from .services import CustomQueryService
 
 class CustomQueryViewSet(viewsets.ModelViewSet):
     queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     custom_query, errors = CustomQueryService.create_query(request.data, request)
-    #     if custom_query:
-    #         return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
-    #     return Response(errors, status = status.HTTP_400_BAD_REQUEST)
-
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
         try:
-            if serializer.is_valid(raise_exception=True):
-                self.perform_create(serializer)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except IntegrityError as e:
-            raise ValidationError({"detail": str(e)})
+            custom_query = CustomQueryService.create_custom_query(request.data)
+            serializer = self.get_serializer(custom_query)
+            return Response({
+                'message': 'Custom query created successfully.',
+                'data': serializer.data
+            }, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        try:
+            custom_query = CustomQueryService.update_custom_query(instance, request.data)
+            serializer = self.get_serializer(custom_query)
+            return Response({
+                'message': 'Custom query updated successfully.',
+                'data': serializer.data
+            })
+        except ValidationError as e:
+            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({
+            'message': 'Custom query deleted successfully.'
+        }, status=status.HTTP_204_NO_CONTENT)
 
 
+
+#-------------------Folder related views---------------------#
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
 
     def create(self, request, *args, **kwargs):
+        # Use the FolderService to handle the creation logic
+        folder, errors = FolderService.create_folder(request.data)
+
+        if folder:
+            return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         # Use the FolderService to handle the creation logic
         folder, errors = FolderService.create_folder(request.data)
 
