@@ -13,8 +13,6 @@ const projects = [
 ];
 
 const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
-  // console.log("SelectExistingProject");
-
   type Element = {
     projectId: string;
     projectName: string;
@@ -40,19 +38,12 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
   const { setProjectId, setProjectName } = useProjectProps();
 
   useEffect(() => {
-    // setElements(projects);
-    console.log("useEffect");
-
     // TO TRY CODE BELOW FOR UseEffect WHEN CONNECTING WITH BACKEND
     // Replace with your backend API call
     const fetchElements = async () => {
       try {
         const response = await fetch("http://localhost:8000/api/projects/"); // Adjust the API endpoint accordingly
         const data: ProjectType[] = await response.json();
-        console.log("printing data");
-        data.forEach((element) => {
-          console.log(element.id);
-        });
 
         // Transform data from ProjectType[] to Element[]
         const transformedData: Element[] = data.map((project) => ({
@@ -95,17 +86,6 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
     setElements(updatedElements);
   };
 
-  // const handleEditSubmit = (
-  //   event: React.FormEvent<HTMLFormElement>,
-  //   element: Element
-  // ) => {
-  //   event.preventDefault();
-  //   // Submit the changes here
-  //   console.log(`Updated name for ${element.projectName}`);
-  //   setEditingElement(null);
-  //   setProjectName(element.projectName);
-  // };
-
   // TO BE USED AS handleEditSubmit WHEN WE CONNECT FE AND BE
   const handleEditSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -120,7 +100,6 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
       const formData = new FormData();
       formData.append("name", element.projectName);
 
-      console.log("first fetch");
       const response = await fetch(
         `http://localhost:8000/api/projects/${element.projectId}/`,
         {
@@ -147,16 +126,45 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
       );
       setElements(updatedElements);
     }
+
+    setProjectId(element.projectId);
+    setProjectName(element.projectName);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletingElement) {
-      const updatedElements = elements.filter(
-        (el) => el.projectId !== deletingElement.projectId
-      );
-      setElements(updatedElements);
-      console.log(`Deleted ${deletingElement.projectName}`);
-      setDeletingElement(null);
+      try {
+        // Construct the URL with the project ID
+        const formData = new FormData();
+        formData.append("name", deletingElement.projectName);
+
+        console.log("first fetch");
+        const response = await fetch(
+          `http://localhost:8000/api/projects/${deletingElement.projectId}/`,
+          {
+            method: "DELETE",
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          // If the API request is not successful, throw an error
+          const errorData = await response.json();
+          console.log("response not ok");
+          throw new Error(errorData.error || "Unknown error");
+        } else {
+          const updatedElements = elements.filter(
+            (el) => el.projectId !== deletingElement.projectId
+          );
+          setElements(updatedElements);
+          console.log(`Deleted ${deletingElement.projectName}`);
+          setDeletingElement(null);
+        }
+      } catch (error) {
+        // If an error occurs during the API request (e.g., network error or backend error),
+        // log the error and revert the elements state to its previous state
+        console.error("Error updating project name:", error);
+      }
     }
   };
 
