@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':   'querify_db',
-        'USER': 'querify_remote',
+        'USER': 'querify_remote_test',
         'PASSWORD': 'querifyrocks',
         'HOST': '145.220.75.94',
         'PORT': '3306',
