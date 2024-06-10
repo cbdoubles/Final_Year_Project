@@ -28,7 +28,6 @@ from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import ValidationError
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from py2neo import DatabaseError
@@ -36,7 +35,6 @@ from django.conf import settings
 from .serializers import *
 from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
-from django.db import IntegrityError
 from django.db import IntegrityError
 from .upload_file import process_file
 from .services import *
@@ -414,12 +412,6 @@ class FolderViewSet(viewsets.ModelViewSet):
     serializer_class = FolderSerializer
 
     def create(self, request, *args, **kwargs):
-        # Use the FolderService to handle the creation logic
-        folder, errors = FolderService.create_folder(request.data)
-
-        if folder:
-            return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         # Use the FolderService to handle the creation logic
         folder, errors = FolderService.create_folder(request.data)
 
