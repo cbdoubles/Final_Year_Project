@@ -1,7 +1,9 @@
+from .models import CustomQuery
 from logging import info
 from rest_framework import serializers
 from .models import *
 from rest_framework.exceptions import ValidationError
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,14 +38,14 @@ class FolderSerializer(serializers.ModelSerializer):
         if project_id:
             try:
                 project = Project.objects.get(id=project_id)
-                validated_data[project] = project
+                validated_data['project'] = project
             except Project.DoesNotExist:
                 raise ValidationError(
                     f"Project with id {project_id} does not exist.")
         return super().create(validated_data)
 
 
-#-------------------Custom query serializer---------------------#
+# -------------------Custom query serializer---------------------#
 # class CustomQuerySerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = CustomQuery
@@ -83,13 +85,11 @@ class FolderSerializer(serializers.ModelSerializer):
 #                     f"Project with id {project_id} does not exist.")
 #         return super().create(validated_data)
 
-from rest_framework import serializers
-from .models import CustomQuery
 
 class CustomQuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomQuery
-        fields = '__all__' 
+        fields = '__all__'
 
     def validate(self, data):
         project = data.get('project')
@@ -97,6 +97,6 @@ class CustomQuerySerializer(serializers.ModelSerializer):
         name = data.get('name')
 
         if CustomQuery.objects.filter(project=project, folder=folder, name=name).exists():
-            raise serializers.ValidationError("A query with this name already exists in the specified folder.")
-
+            raise serializers.ValidationError(
+                "A query with this name already exists in the specified folder.")
         return data
