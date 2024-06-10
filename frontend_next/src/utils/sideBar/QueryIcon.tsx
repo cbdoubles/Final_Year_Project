@@ -12,7 +12,7 @@ interface Item {
 
 interface SelectProps {
   loadItems: () => Promise<Item[]>
-  collapsed: boolean
+  collapsed?: boolean
   type: "Default" | "Custom" | "Favorite" | "Collapse"
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }

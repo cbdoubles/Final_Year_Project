@@ -1,11 +1,13 @@
 import React, { useRef, useState } from "react";
 import UIButton from "../ui/UIButton";
+import { useRouter } from "next/router";
 
 type SelectFileProps = {};
 
 const SelectFile: React.FC<SelectFileProps> = ({}) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -21,6 +23,7 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
   const handleSave = () => {
     // Implement the save functionality here
     console.log("File saved:", selectedFileName);
+    router.push("/projectpage");
   };
 
   return (

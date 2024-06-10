@@ -1,35 +1,35 @@
-import { SelectGroupInterface } from "@/src/libs/interfaces"
-import { useState, MouseEvent } from "react"
+import { SelectGroupInterface } from "@/src/libs/interfaces";
+import { useState, MouseEvent } from "react";
 import {
   LuTrash2,
   LuFolder,
   LuCornerDownRight,
   LuShare,
-  LuPenSquare
-} from "react-icons/lu"
-import CustomPopUp from "@/views/PopUps/CustomPopUp"
-import UIButton from "../ui/UIButton"
-import UIModal from "../ui/UIModal"
+  LuPenSquare,
+} from "react-icons/lu";
+import CustomPopUp from "@/views/PopUps/CustomPopUp";
+import UIButton from "../ui/UIButton";
+import UIModal from "../ui/UIModal";
 
 const SelectGroup = ({
   item,
   canBeShared,
   handlerClick,
-  handlerTrashClick
+  handlerTrashClick,
 }: {
-  item: SelectGroupInterface
-  type: string
-  canBeShared: boolean
-  handlerClick: (event: MouseEvent) => void
-  handlerTrashClick: (favorite: string) => void
+  item: SelectGroupInterface;
+  type: string;
+  canBeShared: boolean;
+  handlerClick: (event: MouseEvent) => void;
+  handlerTrashClick: (favorite: string) => void;
 }) => {
-  const [open, setOpen] = useState(true)
-  const [selectedFavorite, setSelectedFavorite] = useState("")
+  const [open, setOpen] = useState(true);
+  const [selectedFavorite, setSelectedFavorite] = useState("");
 
   // Implement deleteing a file
   const handleConfirmDelete = () => {
-    handlerTrashClick(selectedFavorite)
-  }
+    handlerTrashClick(selectedFavorite);
+  };
 
   return (
     <div className={"bg-sky-600"}>
@@ -107,7 +107,7 @@ const SelectGroup = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default SelectGroup
+export default SelectGroup;

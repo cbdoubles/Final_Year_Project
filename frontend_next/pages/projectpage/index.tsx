@@ -1,5 +1,5 @@
-import React from "react"
-import ProjectPageView from "@/src/views/ProjectPageView"
+import React from "react";
+import ProjectPageView from "@/src/views/ProjectPageView";
 
 function ProjectPage() {
   return (
@@ -8,7 +8,7 @@ function ProjectPage() {
         <></>
       </ProjectPageView>
     </div>
-  )
+  );
 }
 
-export default ProjectPage
+export default ProjectPage;
