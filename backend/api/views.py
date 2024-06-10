@@ -18,6 +18,9 @@ Functions:
 
 This module also initializes a connection to the Neo4j database at the start.
 """
+from .services import CustomQueryService
+from .serializers import CustomQuerySerializer
+from .models import CustomQuery
 import os
 import json
 import requests
@@ -28,7 +31,6 @@ from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import ValidationError
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from py2neo import DatabaseError
@@ -36,7 +38,6 @@ from django.conf import settings
 from .serializers import *
 from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
-from django.db import IntegrityError
 from django.db import IntegrityError
 from .upload_file import process_file
 from .services import *
@@ -343,7 +344,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         ProjectService.delete_project(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-#-------------------Custom query Views---------------------#
+# -------------------Custom query Views---------------------#
 # class CustomQueryViewSet(viewsets.ModelViewSet):
 #     queryset = CustomQuery.objects.all()
 #     serializer_class = CustomQuerySerializer
@@ -365,11 +366,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from .models import CustomQuery
-from .serializers import CustomQuerySerializer
-from .services import CustomQueryService
 
 class CustomQueryViewSet(viewsets.ModelViewSet):
     queryset = CustomQuery.objects.all()
@@ -390,7 +386,8 @@ class CustomQueryViewSet(viewsets.ModelViewSet):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         try:
-            custom_query = CustomQueryService.update_custom_query(instance, request.data)
+            custom_query = CustomQueryService.update_custom_query(
+                instance, request.data)
             serializer = self.get_serializer(custom_query)
             return Response({
                 'message': 'Custom query updated successfully.',
@@ -407,19 +404,12 @@ class CustomQueryViewSet(viewsets.ModelViewSet):
         }, status=status.HTTP_204_NO_CONTENT)
 
 
-
-#-------------------Folder related views---------------------#
+# -------------------Folder related views---------------------#
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
 
     def create(self, request, *args, **kwargs):
-        # Use the FolderService to handle the creation logic
-        folder, errors = FolderService.create_folder(request.data)
-
-        if folder:
-            return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         # Use the FolderService to handle the creation logic
         folder, errors = FolderService.create_folder(request.data)
 

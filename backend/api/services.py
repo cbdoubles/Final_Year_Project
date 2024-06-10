@@ -1,5 +1,6 @@
+from .serializers import CustomQuerySerializer
+from .models import CustomQuery
 import os
-from django.db import IntegrityError
 from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError
 from .models import *
@@ -13,21 +14,9 @@ class ProjectService:
     #     if project_serializer.is_valid():
     #         return project_serializer.save(), None
     #     return None, project_serializer.errors
-    # def create_project(data, request):
-    #     project_serializer = ProjectSerializer(data=data)
-    #     if project_serializer.is_valid():
-    #         return project_serializer.save(), None
-    #     return None, project_serializer.errors
     def create_project(data, request):
         project_serializer = ProjectSerializer(data=data)
         if project_serializer.is_valid():
-            project = project_serializer.save()
-            folders, folder_errors = FolderService.create_default_folders(
-                project, request)
-            if folder_errors:
-                project.delete()  # Roll back the project creation if folder creation fails
-                return None, folder_errors
-            return project, None
             project = project_serializer.save()
             folders, folder_errors = FolderService.create_default_folders(
                 project, request)
@@ -98,8 +87,6 @@ class CustomQueryService:
     def create_query(data, request):
         custom_query_serializer = CustomQuerySerializer(
             data=data, context={'request': request})
-        custom_query_serializer = CustomQuerySerializer(
-            data=data, context={'request': request})
         if custom_query_serializer.is_valid():
             return custom_query_serializer.save(), None
         return None, custom_query_serializer.errors
@@ -148,10 +135,9 @@ class FolderService:
 
         return created_folders, None
 
-#-------------------Custom query Services---------------------#
-from .models import CustomQuery
-from .serializers import CustomQuerySerializer
-from rest_framework.exceptions import ValidationError
+
+# -------------------Custom query Services---------------------#
+
 
 class CustomQueryService:
     @staticmethod
@@ -164,9 +150,9 @@ class CustomQueryService:
 
     @staticmethod
     def update_custom_query(instance, validated_data):
-        serializer = CustomQuerySerializer(instance, data=validated_data, partial=True)
+        serializer = CustomQuerySerializer(
+            instance, data=validated_data, partial=True)
         if serializer.is_valid():
             return serializer.save()
         else:
             raise ValidationError(serializer.errors)
-

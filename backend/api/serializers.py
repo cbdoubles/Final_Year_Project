@@ -1,7 +1,9 @@
+from .models import CustomQuery
 from logging import info
 from rest_framework import serializers
 from .models import *
 from rest_framework.exceptions import ValidationError
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,28 +36,6 @@ class FolderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         project_id = self.context['request'].data.get('project_id')
 
-    #     if not project_id:
-    #         raise ValidationError({"project_id": "This field is required."})
-
-    #     try:
-    #         project = Project.objects.get(id=project_id)
-    #         validated_data['project'] = project
-    #     except Project.DoesNotExist:
-    #         raise ValidationError({"project_id": f"Project with id {project_id} does not exist."})
-
-    #     # check if project name is unique
-    #     if CustomQuery.objects.filter(project = project, name = validated_data.get('name')).exists():
-    #         raise ValidationError({"name": "A query with this name already exists in the project."})
-
-    #     return super().create(validated_data)
-
-    # def validate(self, attrs):
-    #     if 'cypher_query' not in attrs:
-    #         raise ValidationError({"cypher_query": "Cypher query is required."})
-    #     if 'natural_language_query' not in attrs:
-    #         raise ValidationError({"natural_language_query": "Natural language query is required."})
-    #     return attrs
-
         if project_id:
             try:
                 project = Project.objects.get(id=project_id)
@@ -66,7 +46,7 @@ class FolderSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-#-------------------Custom query serializer---------------------#
+# -------------------Custom query serializer---------------------#
 # class CustomQuerySerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = CustomQuery
@@ -106,13 +86,11 @@ class FolderSerializer(serializers.ModelSerializer):
 #                     f"Project with id {project_id} does not exist.")
 #         return super().create(validated_data)
 
-from rest_framework import serializers
-from .models import CustomQuery
 
 class CustomQuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomQuery
-        fields = '__all__' 
+        fields = '__all__'
 
     def validate(self, data):
         project = data.get('project')
@@ -120,6 +98,7 @@ class CustomQuerySerializer(serializers.ModelSerializer):
         name = data.get('name')
 
         if CustomQuery.objects.filter(project=project, folder=folder, name=name).exists():
-            raise serializers.ValidationError("A query with this name already exists in the specified folder.")
+            raise serializers.ValidationError(
+                "A query with this name already exists in the specified folder.")
 
         return data
