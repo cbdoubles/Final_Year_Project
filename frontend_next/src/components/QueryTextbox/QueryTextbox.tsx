@@ -23,17 +23,6 @@ interface InputValues {
   [key: string]: string;
 }
 
-interface QueryTextboxProps {
-  readOnly?: boolean;
-  initialQuery?: string;
-  hideButtons?: boolean;
-}
-
-interface QueryTextboxProps {
-  readOnly?: boolean;
-  initialQuery?: string;
-  hideButtons?: boolean;
-}
 
 const QueryTextbox: React.FC<QueryTextboxProps> = ({
   readOnly = false,
@@ -42,12 +31,24 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 }) => {
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
-
   const [inputValues, setInputValues] = useState<InputValues>({});
+  const [error, setError] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
   };
+
+  const handleAddToFavourites = (onOpen: () => void) => {
+    for (const key in inputValues) {
+      if (inputValues[key] === "") {
+        setError("Please fill in all input fields before adding to favourites.");
+        return;
+      }
+    }
+    onOpen();
+  };
+
 
   const handleShowQuery = () => {
     // Add logic to show cypher query
@@ -85,7 +86,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
           </UIButton>
           <UIModal
             button={({ onOpen }) => (
-              <UIButton className="bg-gray-500" onClick={onOpen}>
+              <UIButton className="bg-gray-500" onClick={() => handleAddToFavourites(onOpen)}>
                 <FontAwesomeIcon icon={faStar} className="w-6" />
                 <p>Add to Favorites</p>
               </UIButton>
