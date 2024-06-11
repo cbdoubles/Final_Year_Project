@@ -7,6 +7,7 @@ import "../public/styles/style.css";
 import { PropsProvider } from "@/src/contexts/PropsContext";
 import { ProjectPropsProvider } from "@/src/contexts/ProjectContext";
 import { NextUIProvider } from "@nextui-org/react";
+import { QueryPropsProvider } from "@/src/contexts/QueryContext";
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
@@ -20,9 +21,11 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
       </Head>
       <NextUIProvider>
         <PropsProvider>
-          <ProjectPropsProvider>
-            <Component {...pageProps} />
-          </ProjectPropsProvider>
+          <QueryPropsProvider>
+            <ProjectPropsProvider>
+              <Component {...pageProps} />
+            </ProjectPropsProvider>
+          </QueryPropsProvider>
         </PropsProvider>
       </NextUIProvider>
     </>

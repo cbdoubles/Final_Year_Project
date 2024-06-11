@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
-import QueryTextbox from "../queryTextbox/QueryTextbox";
-import {Card, CardHeader, CardBody, CardFooter} from "@nextui-org/card";
+import QueryTextbox from "../QueryTextbox/QueryTextbox";
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 
 const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -22,11 +22,7 @@ const QueryTextboxAdvanced: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full w-full">
-        <iframe
-          src="http://localhost:3001"
-          width="90%"
-          height="300vh"
-        ></iframe>
+      <iframe src="http://localhost:3001" width="90%" height="300vh"></iframe>
       <div className="flex justify-end gap-2 mb-2 mt-5  ">
         <UIButton onClick={handleShowNaturalLang}>Show Natural Lang</UIButton>
         <UIButton className="bg-success-700" onClick={handleRunQuery}>
