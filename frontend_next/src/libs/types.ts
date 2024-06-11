@@ -37,16 +37,19 @@ export type QueryType = {
 };
 
 export type QueryFolderTypeFetch = {
-  folderId: number;
-  folderName: string;
+  id: number;
+  name: string;
+  project: number;
+  type: string;
 };
 
 export type QueryTypeFetch = {
-  queryId: number;
-  folderId: number;
-  queryName: string;
-  cypherQuery: string;
-  natLang: string;
+  id: number;
+  folder: number;
+  name: string;
+  cypher_query: string;
+  natural_language_query: string;
+  project: number;
 };
 
 //For putting queries and folders into needed structure

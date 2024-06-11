@@ -7,9 +7,11 @@ import {
   QueryFolderType,
   QueryType,
   QueryFolderListType,
+  FolderType,
 } from "@/src/libs/types";
-import { combineFoldersAndQueries } from "./FolderQueryListConverter";
-// import fetchFoldersQueries from "@/src/utils/sideBar/fetches/fetchFoldersQueries"
+// import { combineFoldersAndQueries } from "./FolderQueryListConverter";
+import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
 
 interface SelectProps {
   collapsed?: boolean;
@@ -50,20 +52,25 @@ const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
   const [items, setItems] = useState<QueryFolderListType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadItems = async (queryFolderList: QueryFolderListType[]) => {
+  const loadItems = async (queryFolderList: Promise<QueryFolderListType[]>) => {
     await new Promise((r) => setTimeout(r, 2000));
     return queryFolderList;
   };
 
+  const { projectId } = useProjectProps();
+
   const fetchItems = () => {
     setIsLoading(true);
     //fetchItems from database, then put in the queryFolderList
-    //const queryFolderList: QueryFolderListType[] = fetchFoldersQueries(type)
-
-    const queryFolderList: QueryFolderListType[] = combineFoldersAndQueries(
-      folders,
-      queries
+    const queryFolderList: Promise<QueryFolderListType[]> = fetchFoldersQueries(
+      type,
+      projectId
     );
+
+    // const queryFolderList: QueryFolderListType[] = combineFoldersAndQueries(
+    //   folders,
+    //   queries
+    // );
     loadItems(queryFolderList).then((newItems) => {
       setItems(newItems);
       setIsLoading(false);

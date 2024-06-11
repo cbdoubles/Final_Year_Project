@@ -33,6 +33,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from py2neo import DatabaseError
 from django.conf import settings
 from .serializers import *
@@ -410,9 +411,50 @@ class FolderViewSet(viewsets.ModelViewSet):
     serializer_class = FolderSerializer
 
     def create(self, request, *args, **kwargs):
-        # Use the FolderService to handle the creation logic
         folder, errors = FolderService.create_folder(request.data)
 
         if folder:
             return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
         return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(detail=False, methods=['get'])
+    # def favorite_folders_with_queries(self, request, *args, **kwargs):
+    #     project_id = request.query_params.get('project')
+    #     if not project_id:
+    #         return Response({'error': 'Project ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     favorite_folders = Folder.objects.filter(
+    #         project_id=project_id, type=Folder.FAVORITE).prefetch_related('favoritequery_set')
+    #     serializer = self.get_serializer(favorite_folders, many=True)
+    #     return Response(serializer.data)
+
+    # @action(detail=False, methods=['get'])
+    # def custom_folders_with_queries(self, request, *args, **kwargs):
+    #     project_id = request.query_params.get('project')
+    #     if not project_id:
+    #         return Response({'error': 'Project ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     custom_folders = Folder.objects.filter(
+    #         project_id=project_id, type=Folder.CUSTOM).prefetch_related('customquery_set')
+    #     serializer = self.get_serializer(custom_folders, many=True)
+    #     return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def folders_with_queries(self, request, *args, **kwargs):
+        project_id = request.query_params.get('project')
+        folder_type = request.query_params.get('type')
+
+        if not project_id or not folder_type:
+            return Response({'error': 'Project ID and type are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if folder_type not in [Folder.FAVORITE, Folder.CUSTOM]:
+            return Response({'error': 'Invalid type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        folders = Folder.objects.filter(
+            project_id=project_id, type=folder_type)
+        queries = FavoriteQuery.objects.filter(folder__in=folders)
+
+        folder_serializer = FolderSerializer(folders, many=True)
+        query_serializer = CustomQuerySerializer(queries, many=True)
+
+        return Response([folder_serializer.data, query_serializer.data])
