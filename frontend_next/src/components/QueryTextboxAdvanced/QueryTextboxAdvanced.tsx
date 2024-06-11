@@ -7,8 +7,14 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
 
-const QueryTextboxAdvanced: React.FC = () => {
-  const [query, setQuery] = useState("");
+interface QueryTextboxAdvancedProps {
+  setQuery: (query: string) => void;
+}
+
+const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
+  setQuery,
+}) => {
+  const [localQuery, setLocalQuery] = useState(""); // Renamed here
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
 
   const handleShowNaturalLang = () => {
@@ -16,15 +22,16 @@ const QueryTextboxAdvanced: React.FC = () => {
   };
 
   const handleRunQuery = () => {
-    console.log("Running query:", query);
+    console.log("Running query:", localQuery);
+    setQuery(localQuery); // Call the prop here
   };
 
   return (
     <div className="flex flex-col w-full">
       <textarea
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={localQuery}
+        onChange={(e) => setLocalQuery(e.target.value)}
         placeholder="Enter your query here"
       />
       <div className="flex justify-end gap-2 mb-2">
@@ -80,7 +87,11 @@ const QueryTextboxAdvanced: React.FC = () => {
         ></UIModal>
       </div>
       {showReadOnlyTextbox && (
-        <QueryTextbox readOnly={true} initialQuery={query} hideButtons={true} />
+        <QueryTextbox
+          readOnly={true}
+          initialQuery={localQuery}
+          hideButtons={true}
+        />
       )}
       <div>
         <iframe

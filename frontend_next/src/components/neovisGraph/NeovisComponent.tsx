@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 
-const NeovisComponent: React.FC = () => {
+const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const visRef = useRef<HTMLDivElement>(null);
+  const cypherRef = useRef<any>(null);
 
   useEffect(() => {
     const draw = async () => {
@@ -65,6 +66,7 @@ const NeovisComponent: React.FC = () => {
       const viz = new NeoVis(config as any);
       viz.render();
 
+      cypherRef.current = viz;
       // Disable physics after stabilization
       viz.network?.on("stabilized", () => {
         if (viz.network) {
@@ -77,6 +79,25 @@ const NeovisComponent: React.FC = () => {
 
     draw();
   }, []);
+
+  useEffect(() => {
+    console.log("useEffect ran");
+    console.log("Query is:", query);
+    console.log("cypherRef.current is:", cypherRef.current);
+
+    if (query && cypherRef.current) {
+      console.log("Calling cypherRef.current.clearNetwork()");
+      cypherRef.current.clearNetwork();
+      console.log("Calling cypherRef.current.updateWithCypher(query)");
+      //this fucker forgets the edges so for example if I run a query that results in 1-2 nodes then rerun it with a full query it would have forgotten the edges
+      //only solution I can think of rn is to add a button add edges, that runs MATCH (n1)-[r]->(n2) RETURN n1,r,n2 , so that it returns the full graph
+      cypherRef.current.renderWithFunction(query);
+    } else {
+      console.log(
+        "Did not call cypherRef.current.clearNetwork() or cypherRef.current.updateWithCypher(query)"
+      );
+    }
+  }, [query]);
 
   return (
     <div id="viz" ref={visRef} style={{ width: "100%", height: "600px" }} />
