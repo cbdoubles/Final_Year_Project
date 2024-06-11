@@ -11,9 +11,27 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       const config = {
         containerId: visRef.current?.id || "",
         neo4j: {
-          serverUrl: "bolt://localhost:7687",
-          serverUser: "neo4j",
-          serverPassword: "letmein",
+          serverUrl: "bolt://localhost:7687", // Replace with your Neo4j instance URL
+          serverUser: "neo4j", // Replace with your Neo4j credentials
+          serverPassword: "letmein", // Replace with your Neo4j credentials
+        },
+        labels: {
+          Person: {
+            label: "name",
+          },
+          Movie: {
+            label: "title",
+          },
+        },
+        relationships: {
+          ACTED_IN: {
+            thickness: "weight",
+            caption: true,
+          },
+          DIRECTED: {
+            thickness: "weight",
+            caption: true,
+          },
         },
         visConfig: {
           edges: {
@@ -25,6 +43,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               color: "#000000",
               strokeWidth: 3,
               strokeColor: "#ffffff",
+              align: "middle",
             },
             labelHighlightBold: true,
           },
@@ -57,21 +76,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             adaptiveTimestep: true,
           },
         },
-        labels: {
-          Person: {
-            label: "name",
-            size: "degree",
-            community: "community",
-          },
-        },
-        relationships: {
-          INTERACTS: {
-            thickness: "weight",
-            caption: "type",
-          },
-        },
-        initialCypher: "MATCH (n) RETURN n",
-        nonFlat: true,
+        initialCypher:
+          "MATCH (bacon:Person {name:'Kevin Bacon'})-[r*1..4]-(hollywood) RETURN DISTINCT hollywood, r",
+        // nonFlat: false,
       };
 
       const viz = new NeoVis(config as any);
