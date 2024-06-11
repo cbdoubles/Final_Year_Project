@@ -4,17 +4,14 @@ import QueryTextboxAdvanced from "../components/QueryTextboxAdvanced/QueryTextbo
 import SideBar from "../components/sideBar/SideBar";
 import { useProps } from "../contexts/PropsContext";
 import QueryTextbox from "../components/QueryTextbox/QueryTextbox";
-import { Card } from "@nextui-org/react";
-import GraphDisplayBoxContainer from "@/components/graphDisplay/GraphDisplayBoxContainer";
 import { GraphDataProvider } from "@/components/graphDisplay/GraphDataContext";
-import NeovisComponent from "../components/neovisGraph/NeovisComponent";
 
 interface ProjectPageViewProps {
   children: ReactNode;
 }
 
 const ProjectPageView = ({ children }: ProjectPageViewProps) => {
-  const { advancedMode, queryRunClicked } = useProps();
+  const { advancedMode } = useProps();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState(false);
 
@@ -36,13 +33,6 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             ) : (
               <QueryTextbox />
             )}
-            <div>
-              {queryRunClicked && (
-                <Card className="flex-grow bg-capgemini-gray mt-4 p-2">
-                  <NeovisComponent query={query} />
-                </Card>
-              )}
-            </div>
             <div className="flex-grow overflow-auto">{children}</div>
           </div>
         </GraphDataProvider>

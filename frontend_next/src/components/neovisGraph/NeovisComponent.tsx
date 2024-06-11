@@ -20,17 +20,29 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             arrows: {
               to: { enabled: true },
             },
+            font: {
+              size: 12,
+              color: "#000000",
+              strokeWidth: 3,
+              strokeColor: "#ffffff",
+            },
+            labelHighlightBold: true,
           },
           nodes: {
             shape: "dot",
             size: 15,
+            font: {
+              size: 16,
+              color: "#000000",
+            },
+            labelHighlightBold: true,
           },
           physics: {
             enabled: true,
             solver: "forceAtlas2Based",
             stabilization: {
               enabled: true,
-              iterations: 10000, // We can increase the number of iterations to ensure a stable layout
+              iterations: 10,
               fit: true,
             },
             forceAtlas2Based: {
@@ -46,8 +58,8 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           },
         },
         labels: {
-          Character: {
-            caption: "name",
+          Person: {
+            label: "name",
             size: "degree",
             community: "community",
           },
@@ -55,12 +67,12 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         relationships: {
           INTERACTS: {
             thickness: "weight",
-            caption: true,
+            caption: "type",
           },
         },
         initialCypher:
-          "MATCH (bacon:Person {name:'Kevin Bacon'})-[r*1..4]-(hollywood) RETURN DISTINCT hollywood, r",
-        nonFlat: true, // Ensure the nonFlat property is explicitly set to true
+          "MATCH (p:Person)-[r:INTERACTS]->(q:Person) RETURN p, r, q LIMIT 25",
+        nonFlat: true,
       };
 
       const viz = new NeoVis(config as any);
@@ -89,9 +101,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       console.log("Calling cypherRef.current.clearNetwork()");
       cypherRef.current.clearNetwork();
       console.log("Calling cypherRef.current.updateWithCypher(query)");
-      //this fucker forgets the edges so for example if I run a query that results in 1-2 nodes then rerun it with a full query it would have forgotten the edges
-      //only solution I can think of rn is to add a button add edges, that runs MATCH (n1)-[r]->(n2) RETURN n1,r,n2 , so that it returns the full graph
-      cypherRef.current.renderWithFunction(query);
+      cypherRef.current.renderWithCypher(query);
     } else {
       console.log(
         "Did not call cypherRef.current.clearNetwork() or cypherRef.current.updateWithCypher(query)"
