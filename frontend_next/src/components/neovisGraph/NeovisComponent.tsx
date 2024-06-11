@@ -70,8 +70,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             caption: "type",
           },
         },
-        initialCypher:
-          "MATCH (p:Person)-[r:INTERACTS]->(q:Person) RETURN p, r, q LIMIT 25",
+        initialCypher: "MATCH (n) RETURN n",
         nonFlat: true,
       };
 
