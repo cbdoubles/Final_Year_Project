@@ -1,43 +1,38 @@
-import React, { useState } from "react"
-import FolderTest from "@/src/components/favouriteFolder/FolderTest"
-import QueryIconButton from "./QueryIconButton"
-import UIModal from "@/src/components/ui/UIModal"
-import UIButton from "@/src/components/ui/UIButton"
-
-// Detail for icon (assuming this was meant to be here based on previous context)
-interface Item {
-  employee: string
-  favorites: string[]
-}
+import React, { useState } from "react";
+import FolderTest from "@/src/components/favouriteFolder/FolderTest";
+import QueryIconButton from "./QueryIconButton";
+import UIModal from "@/src/components/ui/UIModal";
+import UIButton from "@/src/components/ui/UIButton";
+import { QueryFolderListType } from "@/src/libs/types";
 
 interface SelectProps {
-  loadItems: () => Promise<Item[]>
-  collapsed?: boolean
-  type: "Default" | "Custom" | "Favorite" | "Collapse"
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  loadItems: () => Promise<QueryFolderListType[]>;
+  collapsed?: boolean;
+  type: "Default" | "Custom" | "Favorite";
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
 const QueryIcon: React.FC<SelectProps> = ({
   loadItems,
   collapsed,
   type,
-  icon: Icon
+  icon: Icon,
 }) => {
-  const [items, setItems] = useState<Item[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [items, setItems] = useState<QueryFolderListType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchItems = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     loadItems().then((newItems) => {
-      setItems(newItems)
-      setIsLoading(false)
-    })
-  }
+      setItems(newItems);
+      setIsLoading(false);
+    });
+  };
 
   // Button click handler
   const handleButtonClick = () => {
-    console.log("Select Query button clicked")
-  }
+    console.log("Select Query button clicked");
+  };
 
   return (
     <>
@@ -45,8 +40,8 @@ const QueryIcon: React.FC<SelectProps> = ({
         button={({ onOpen }) => (
           <QueryIconButton
             handleClick={() => {
-              fetchItems()
-              onOpen()
+              fetchItems();
+              onOpen();
             }}
             collapsed={collapsed}
             type={type}
@@ -79,7 +74,7 @@ const QueryIcon: React.FC<SelectProps> = ({
         bodyNoPadding
       ></UIModal>
     </>
-  )
-}
+  );
+};
 
-export default QueryIcon
+export default QueryIcon;

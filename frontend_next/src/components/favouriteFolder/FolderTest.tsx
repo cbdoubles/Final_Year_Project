@@ -1,36 +1,28 @@
-import React, { MouseEvent } from "react"
-import SelectGroup from "@/src/components/favouriteFolder/SelectGroup"
-
-interface Item {
-  employee: string
-  favorites: string[]
-}
+import React, { MouseEvent } from "react";
+import SelectGroup from "@/src/components/favouriteFolder/SelectGroup";
+import { QueryFolderListType } from "@/src/libs/types";
 
 interface SelectProps {
-  title: string
-  items: Item[]
-  type: "Default" | "Custom" | "Favorite"
-  canBeShared: boolean
+  title: string;
+  items: QueryFolderListType[];
+  type: "Default" | "Custom" | "Favorite";
+  canBeShared: boolean;
 }
 
-const FolderTest: React.FC<SelectProps> = ({
-  title,
-  items,
-  type,
-  canBeShared
-}) => {
+const FolderTest: React.FC<SelectProps> = ({ items, type, canBeShared }) => {
   // Event handler
-  const handleClick = (event: MouseEvent) => console.log(event)
+  const handleClick = (event: MouseEvent) =>
+    console.log("clicked newitem type");
 
   // Button click handler
   const handleButtonClick = () => {
-    console.log("Select Query button clicked")
-  }
+    console.log("Select Query button clicked");
+  };
 
   // Trash bin click handler
   const handleTrashClick = (favorite: string) => {
-    console.log(`Trash bin clicked for ${favorite}`)
-  }
+    console.log(`Trash bin clicked for ${favorite}`);
+  };
 
   return (
     <div>
@@ -40,7 +32,7 @@ const FolderTest: React.FC<SelectProps> = ({
         <div>
           {items.map((item) => (
             <SelectGroup
-              key={`select_group_${item.employee}`}
+              key={`select_group_${item.folder.folderId}`}
               item={item}
               type={type}
               canBeShared={canBeShared}
@@ -51,7 +43,7 @@ const FolderTest: React.FC<SelectProps> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default FolderTest
+export default FolderTest;
