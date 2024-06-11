@@ -20,25 +20,24 @@ This module also initializes a connection to the Neo4j database at the start.
 """
 import os
 import json
-import requests
+import aiohttp
 import networkx as nx
 from django.http import FileResponse, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from networkx.readwrite import json_graph
 from py2neo import DatabaseError
+from asgiref.sync import sync_to_async
 from .models import Query
 from .upload_file import process_file
 from .neo4j_services import Neo4jService
+import aiofiles
 
 # Initialize Neo4j connection
 neo4j_service = Neo4jService(
     "neo4j://localhost:7687", "neo4j", "cobra-paprika-nylon-conan-tobacco-2599")
 
-# replace the password inside the upload_file
-
-
 @csrf_exempt
-def upload_file(request):
+async def upload_file(request):
     """
     Handle file upload requests.
 
@@ -60,28 +59,23 @@ def upload_file(request):
     """
     if request.method == "POST" and request.FILES.get("json_file"):
         uploaded_file = request.FILES["json_file"]
+        project_label = request.POST.get("project_label", "DefaultProject")
         file_name = uploaded_file.name
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        file_path = os.path.join(
-            current_dir, "..", "api", "downloads", file_name)
-        # Normalize the path, resolve any ".."
+        file_path = os.path.join(current_dir, "..", "api", "downloads", file_name)
         file_path = os.path.normpath(file_path)
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "wb") as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
+        async with aiofiles.open(file_path, "wb") as destination:
+            async for chunk in uploaded_file.chunks():
+                await destination.write(chunk)
 
-        # writes the data into api/graphData
-        process_file(file_name)
-
+        await process_file(file_name, project_label)
         return FileResponse(open(file_path, "rb"))
     return JsonResponse({"status": "error", "error": "Invalid request"}, status=400)
 
-# used for testing
-
-
-def save_graph(request):
+@csrf_exempt
+async def save_graph(request):
     """
     Save a graph to the database.
 
@@ -110,12 +104,11 @@ def save_graph(request):
 
     query = Query(cypher_query="MATCH (n) RETURN n",
                   natural_query="Return all nodes", graph=graph_json)
-    query.save()
+    await sync_to_async(query.save)()
 
     return JsonResponse({"message": "Graph saved successfully"}, status=201)
 
-
-def view_graph(request, query_id):
+async def view_graph(request, query_id):
     """
     Retrieve a graph from the database.
 
@@ -135,7 +128,7 @@ def view_graph(request, query_id):
     if request.method != "GET":
         return JsonResponse({"error": "Method not allowed"}, status=405)
     try:
-        query = Query.objects.get(id=query_id)
+        query = await sync_to_async(Query.objects.get)(id=query_id)
     except Query.DoesNotExist as exc:
         raise Http404("Graph not found") from exc
 
@@ -148,9 +141,8 @@ def view_graph(request, query_id):
         "graph": graph_json
     })
 
-
 @csrf_exempt
-def graph_data(request):
+async def graph_data(request):
     """
     Retrieve graph data from a Neo4j database.
 
@@ -166,10 +158,9 @@ def graph_data(request):
     Returns:
     django.http.JsonResponse: A JSON response with the graph data or an error message.
     """
-    if request.method != "GET":  # or POST
+    if request.method != "GET":
         return JsonResponse({"error": "Method not allowed"}, status=405)
     try:
-        # Define the Cypher queries
         query_nodes = (
             "MATCH (n) "
             "RETURN id(n) AS id, elementId(n) AS elementId, properties(n) AS properties"
@@ -179,15 +170,12 @@ def graph_data(request):
             "RETURN id(r) AS id, type(r) AS type, elementId(n) AS startId, "
             "elementId(m) AS endId, properties(r) AS properties"
         )
-
-        # Run the Cypher queries using the run_query method
-        result_nodes = neo4j_service.run_query(query_nodes)
-        result_edges = neo4j_service.run_query(query_edges)
+        result_nodes = await sync_to_async(neo4j_service.run_query)(query_nodes)
+        result_edges = await sync_to_async(neo4j_service.run_query)(query_edges)
     except DatabaseError as e:
         return JsonResponse({"error": "Neo4j query error", "message": str(e)}, status=500)
 
     try:
-        # Process the results
         nodes = [{"id": record["id"], "elementId": record["elementId"],
                   **record["properties"]} for record in result_nodes]
         edges = [{"id": record["id"], "source": record["startId"], "target": record["endId"],
@@ -195,12 +183,10 @@ def graph_data(request):
     except KeyError as e:
         return JsonResponse({"error": "Missing value in results", "message": str(e)}, status=500)
 
-    # Return the data as JSON
     return JsonResponse({"nodes": nodes, "edges": edges})
 
-
 @csrf_exempt
-def cypher_query(request):
+async def cypher_query(request):
     """
     Run a Cypher query and optionally save it to the database.
 
@@ -217,40 +203,30 @@ def cypher_query(request):
     django.http.JsonResponse: A JSON response with the query results or an error message.
     """
     try:
-        # Get the Cypher query and save parameter from the request
         data = json.loads(request.body)
         cypher_query_run = data.get("cypher_query")
-        natural_query_run = data.get("natural_query")
-        if not natural_query:
-            natural_query = "mt"
+        natural_query_run = data.get("natural_query", "mt")
         save = data.get("save")
-
-        # Run the Cypher query
-        results = neo4j_service.run_query(cypher_query_run)
+        results = await sync_to_async(neo4j_service.run_query)(cypher_query_run)
     except DatabaseError as e:
         return JsonResponse({"error": str(e)}, status=500)
     except json.JSONDecodeError as e:
         return JsonResponse({"error": f"Invalid JSON: {str(e)}"}, status=400)
 
-    try:
-        # If save is True, save the query to the database
-        if save:
+    if save:
+        try:
             for record in results:
-                # Convert the record to a string and save it to the database
-                # convert the first field of the record to a string
                 graph = str(record[0])
                 query = Query(cypher_query=cypher_query_run,
                               natural_query=natural_query_run, graph=graph)
-                query.save()
-    except DatabaseError as e:
-        return JsonResponse({"error": f"Error saving to database: {str(e)}"}, status=500)
+                await sync_to_async(query.save)()
+        except DatabaseError as e:
+            return JsonResponse({"error": f"Error saving to database: {str(e)}"}, status=500)
 
-    # Return the results as JSON
     return JsonResponse([str(record[0]) for record in results], safe=False)
 
-
 @csrf_exempt
-def run_query(request):
+async def run_query(request):
     """
     Run a Cypher query on graph data and return the results.
 
@@ -272,19 +248,15 @@ def run_query(request):
         data = json.loads(request.body)
         query = data.get("query")
 
-        # Send a POST request to the graph_data URL
-        response = requests.post("http://127.0.0.1:8000/api/graphData")
-        original_graph_data = response.json()
-        nodes = original_graph_data["nodes"]
-        edges = original_graph_data["edges"]
+        async with aiohttp.ClientSession() as session:
+            async with session.post("http://127.0.0.1:8000/api/graphData") as response:
+                original_graph_data = await response.json()
+                nodes = original_graph_data["nodes"]
+                edges = original_graph_data["edges"]
 
-        # Run the Cypher query on the graph data
-        # This is a placeholder, replace with your actual logic
-        new_graph_data = neo4j_service.query_graph(query)
+                new_graph_data = await sync_to_async(neo4j_service.query_graph)(query)
+                nodes = new_graph_data[0]
+                edges = new_graph_data[1]
 
-        # Process the results
-        nodes = new_graph_data[0]
-        edges = new_graph_data[1]
-        # Return the new graph data
-        return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
+                return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
     return JsonResponse({"error": "Only POST requests are allowed."}, status=500)

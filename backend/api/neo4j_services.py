@@ -18,7 +18,7 @@ Classes:
 """
 
 import re
-from neo4j import GraphDatabase
+from neo4j import AsyncGraphDatabase
 
 URI = "bolt://localhost:7687"
 USER = "admin"
@@ -60,17 +60,17 @@ class Neo4jService:
         user (str): The username to authenticate with the Neo4j database.
         password (str): The password to authenticate with the Neo4j database.
         """
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+        self.driver = AsyncGraphDatabase.driver(uri, auth=(user, password))
 
-    def close(self):
+    async def close(self):
         """
         Close the connection to the Neo4j database.
         This method closes the driver for the Neo4j database,
         effectively closing the connection.
         """
-        self.driver.close()
+        await self.driver.close()
 
-    def run_query(self, query):
+    async def run_query(self, query):
         """
         Run a Cypher query against the Neo4j database.
         This method opens a new session with the Neo4j database,
@@ -81,9 +81,9 @@ class Neo4jService:
         Returns:
         list: The results of the query as a list of records.
         """
-        with self.driver.session() as session:
-            result = session.run(query)
-            return list(result)
+        async with self.driver.session() as session:
+            result = await session.run(query)
+            return [record async for record in result]
 
     def modify_query(self, query):
         """
@@ -189,7 +189,7 @@ class Neo4jService:
         matches = re.findall(pattern, text)
         return matches
 
-    def query_graph(self, query):
+    async def query_graph(self, query):
         """
         Query the graph and return nodes and relationships.
 
@@ -222,9 +222,9 @@ class Neo4jService:
         relation = self.extract_relations(query)[0]
         node = self.extract_nodes(relation)[0]
 
-        with self.driver.session() as session:
-            result = session.run(query)
-            for record in result:
+        async with self.driver.session() as session:
+            result = await session.run(query)
+            async for record in result:
                 for key in record.keys():
                     name = record[key].element_id
                     if key.startswith(node) and name not in nodes:
