@@ -28,21 +28,25 @@ class GraphFileSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class FolderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Folder
-        fields = '__all__'
+# class FolderSerializer(serializers.ModelSerializer):
+#     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+#    # custom_queries = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#    # favorite_queries = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#     custom_queries = CustomQuerySerializer(many=True, read_only=True)
+#     class Meta:
+#         model = Folder
+#         fields = '__all__'
 
-    def create(self, validated_data):
-        project_id = self.context['request'].data.get('project_id')
-        if project_id:
-            try:
-                project = Project.objects.get(id=project_id)
-                validated_data['project'] = project
-            except Project.DoesNotExist:
-                raise ValidationError(
-                    f"Project with id {project_id} does not exist.")
-        return super().create(validated_data)
+#     def create(self, validated_data):
+#         project_id = self.context['request'].data.get('project_id')
+#         if project_id:
+#             try:
+#                 project = Project.objects.get(id=project_id)
+#                 validated_data['project'] = project
+#             except Project.DoesNotExist:
+#                 raise ValidationError(
+#                     f"Project with id {project_id} does not exist.")
+#         return super().create(validated_data)
 
 
 # -------------------Custom query serializer---------------------#
@@ -86,17 +90,58 @@ class FolderSerializer(serializers.ModelSerializer):
 #         return super().create(validated_data)
 
 
+# class CustomQuerySerializer(serializers.ModelSerializer):
+#     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+#     folder = serializers.PrimaryKeyRelatedField(queryset=Folder.objects.all())
+
+#     class Meta:
+#         model = CustomQuery
+#         fields = '__all__'
+
+#     def validate(self, data):
+#         project = data.get('project')
+#         folder = data.get('folder')
+#         name = data.get('name')
+
+#         if CustomQuery.objects.filter(project=project, folder=folder, name=name).exists():
+#             raise serializers.ValidationError(
+#                 "A query with this name already exists in the specified folder.")
+#         return data
+
+
+
+
+#--------------------------- Here we go again -------------------------------------------#
+
+class FavoriteQuerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoriteQuery
+        # Expected fields in the request
+        fields = ['id', 'project', 'folder', 'name', 'cypher_query', 'natural_language_query']
+
+
 class CustomQuerySerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomQuery
-        fields = '__all__'
+        model = FavoriteQuery
+        # Expected fields in the request
+        fields = ['id', 'project', 'folder', 'name', 'cypher_query', 'natural_language_query']
 
-    def validate(self, data):
-        project = data.get('project')
-        folder = data.get('folder')
-        name = data.get('name')
+class FolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        # Expected fields in the request
+        fields = ['id', 'name']
 
-        if CustomQuery.objects.filter(project=project, folder=folder, name=name).exists():
-            raise serializers.ValidationError(
-                "A query with this name already exists in the specified folder.")
-        return data
+
+# serializer class used to fetch only id and name of queries in a folder
+class QueryLiteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Query
+        fields = ['id', 'name']
+
+class FolderWithQueriesSerializer(serializers.ModelSerializer):
+    queries = QueryLiteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Folder
+        fields = ['id']

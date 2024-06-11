@@ -42,8 +42,8 @@ class Folder(models.Model):
     """
     Represents a folder belonging to a project.
     """
-    CUSTOM = "custom"
-    FAVORITE = "favorite"
+    CUSTOM = "Custom"
+    FAVORITE = "Favorite"
     QUERY_TYPE_CHOICES = [
         (CUSTOM, "Custom"),
         (FAVORITE, "Favorite")
