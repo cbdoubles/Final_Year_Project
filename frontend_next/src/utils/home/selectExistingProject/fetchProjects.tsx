@@ -1,14 +1,14 @@
-import { Element, ProjectType } from "@/src/libs/types";
+import { ProjectType, ProjectTypeFetch } from "@/src/libs/types";
 
 export const fetchElements = async (
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>
 ) => {
   try {
     const response = await fetch("http://localhost:8000/api/projects/"); // Adjust the API endpoint accordingly
-    const data: ProjectType[] = await response.json();
+    const data: ProjectTypeFetch[] = await response.json();
 
     // Transform data from ProjectType[] to Element[]
-    const transformedData: Element[] = data.map((project) => ({
+    const transformedData: ProjectType[] = data.map((project) => ({
       projectId: project.id,
       projectName: project.name,
     }));

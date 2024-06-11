@@ -1,14 +1,28 @@
 // types.ts
+
+export type FolderType = {
+  type: "Default" | "Custom" | "Favorite";
+};
+
+//element (to be replaced by ProjectType at some point)
+
 export type Element = {
   projectId: string;
   projectName: string;
 };
 
-export type ProjectType = {
-  projectId: string;
-  ProjectName: string;
+//Project type for fetch from be and fe
+export type ProjectTypeFetch = {
+  id: string;
+  name: string;
 };
 
+export type ProjectType = {
+  projectId: string;
+  projectName: string;
+};
+
+//QueryFolderType and QueryType for fetch from be and fe
 export type QueryFolderType = {
   folderId: number;
   folderName: string;
@@ -22,6 +36,20 @@ export type QueryType = {
   natLang: string;
 };
 
+export type QueryFolderTypeFetch = {
+  folderId: number;
+  folderName: string;
+};
+
+export type QueryTypeFetch = {
+  queryId: number;
+  folderId: number;
+  queryName: string;
+  cypherQuery: string;
+  natLang: string;
+};
+
+//For putting queries and folders into needed structure
 export type QueryFolderListType = {
   folder: QueryFolderType;
   queries: QueryType[];
