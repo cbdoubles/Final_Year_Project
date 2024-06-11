@@ -74,6 +74,12 @@ class CustomQuery(models.Model):
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'folder'], name='unique_custom_query_name_constraint')
+        ]
+
     def __str__(self):
         return f"Custom Query: {self.name} (Project: {self.project.name})"
 
@@ -88,6 +94,12 @@ class FavoriteQuery(models.Model):
     name = models.CharField(max_length=255)
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'folder'], name='unique_favorite_query_name_constraint')
+        ]
 
     def __str__(self):
         return f"Favorite Query: {self.name} (Project: {self.project.name})"
