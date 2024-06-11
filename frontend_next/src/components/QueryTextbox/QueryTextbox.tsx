@@ -6,6 +6,11 @@ import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
+import FileOpenButt from "../ui/FileOpenButt";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -34,6 +39,8 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [inputValues, setInputValues] = useState<InputValues>({});
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const notify = () => toast("Fill n empty spaces!");
+
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
@@ -42,7 +49,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const handleAddToFavourites = (onOpen: () => void) => {
     for (const key in inputValues) {
       if (inputValues[key] === "") {
-        setError("Please fill in all input fields before adding to favourites.");
+        toast.error("Please fill in the query text before adding to favourites.");
         return;
       }
     }
@@ -62,6 +69,8 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   };
 
   return (
+    <div>
+      <ToastContainer />
     <div className="flex flex-col">
       <NatLangBox
         dataArray={dataArray}
@@ -101,17 +110,18 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
                 >
                   Cancel
                 </UIButton>
-                <UIButton
+                <FileOpenButt
                   className="bg-success-700 w-full text-lg"
                   onClick={onClose}
                 >
                   Save
-                </UIButton>
+                </FileOpenButt>
               </>
             )}
           ></UIModal>
         </div>
       )}
+    </div>
     </div>
   );
 };

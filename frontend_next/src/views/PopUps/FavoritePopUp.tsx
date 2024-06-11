@@ -1,9 +1,16 @@
-import React from "react"
+import React, { useRef } from "react"
 import InputField from "@/src/components/popUps/InputField"
+import UIButton from "@/src/components/ui/UIButton";
 
-type FavouritePopUpProps = {}
 
-const FavouritePopUp: React.FC<FavouritePopUpProps> = ({}) => {
+type FavouritePopUpProps = {
+  onClose?: () => void;
+  onOpen?:() => void;
+};
+
+const FavouritePopUp: React.FC<FavouritePopUpProps> = ({ onClose }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  
   return (
     <div className="grid grid-col-1 bg-white">
       <InputField
@@ -12,6 +19,11 @@ const FavouritePopUp: React.FC<FavouritePopUpProps> = ({}) => {
         placeholder="Type here"
       />
     </div>
-  )
-}
+  );
+};
+
+
 export default FavouritePopUp
+
+
+
