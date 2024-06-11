@@ -43,7 +43,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 }) => {
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
-  const { naturalLanguageQuery } = useQueryProps();
+  const { naturalLanguageQuery, cypherQuery } = useQueryProps();
 
   const [inputValues, setInputValues] = useState<InputValues>({});
 
@@ -72,6 +72,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
     const jsonOutput = {
       Parameter: parameters,
+      Query: cypherQuery,
     };
 
     console.log("Generated JSON Output:", jsonOutput);
