@@ -7,9 +7,8 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
 import FileOpenButt from "../ui/FileOpenButt";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 
 interface QueryTextboxProps {
@@ -28,7 +27,6 @@ interface InputValues {
   [key: string]: string;
 }
 
-
 const QueryTextbox: React.FC<QueryTextboxProps> = ({
   readOnly = false,
   initialQuery = "",
@@ -37,25 +35,27 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
-  const [error, setError] = useState<string | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const notify = () => toast("Fill n empty spaces!");
+
 
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
   };
 
-  const handleAddToFavourites = (onOpen: () => void) => {
-    for (const key in inputValues) {
-      if (inputValues[key] === "") {
+  const handleError = (onOpen: () => void) => {
+    console.log("----", inputValues)
+      if (Object.keys(inputValues).length === 0) {
         toast.error("Please fill in the query text before adding to favourites.");
         return;
       }
-    }
+      for (const key in inputValues) {
+        if (inputValues[key] === "" ) {
+          toast.error("Please fill in the query text before adding to favourites.");
+          return;
+        }
+      }
     onOpen();
   };
-
 
   const handleShowQuery = () => {
     // Add logic to show cypher query
@@ -70,7 +70,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
   return (
     <div>
-      <ToastContainer />
+      <ToastContainer transition={Slide} />
     <div className="flex flex-col">
       <NatLangBox
         dataArray={dataArray}
@@ -95,7 +95,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
           </UIButton>
           <UIModal
             button={({ onOpen }) => (
-              <UIButton className="bg-gray-500" onClick={() => handleAddToFavourites(onOpen)}>
+              <UIButton className="bg-gray-500" onClick={() => handleError(onOpen)}>
                 <FontAwesomeIcon icon={faStar} className="w-6" />
                 <p>Add to Favorites</p>
               </UIButton>

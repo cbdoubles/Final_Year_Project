@@ -1,7 +1,7 @@
 import React from "react";
 import SwitchMode from "@/src/utils/sideBar/SwitchModeIcon";
 import CustomButton from "@/src/utils/sideBar/CustomIcon";
-import Favourite from "@/src/utils/sideBar/FavouriteIcon";
+import FavouriteIcon from "@/src/utils/sideBar/FavouriteIcon";
 import Default from "@/src/utils/sideBar/DefaultIcon";
 import Reupload from "@/src/utils/sideBar/ReuploadIcon";
 // import Import from "@/src/utils/sideBar/ImportIcon";
@@ -36,7 +36,7 @@ export default function SideBar({
           type={"Collapse"}
           icon={LuAlignJustify}
         />
-        <Favourite collapsed={collapsed} />
+        <FavouriteIcon collapsed={collapsed} />
         <CustomButton collapsed={collapsed} />
         <Default collapsed={collapsed} />
         <Reupload collapsed={collapsed} />
@@ -44,14 +44,14 @@ export default function SideBar({
 
         <UIModal
           button={({ onOpen }) => (
-            <UIButton
-              name="Import"
+              <QueryIconButton
+              handleClick={() => {
+                onOpen();
+              }}
               collapsed={collapsed}
-              className="flex h-[48px] grow items-center justify-center relative gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-              onClick={onOpen}
-            >
-              <ArrowDownTrayIcon className="mr-2 h-6 w-6" />
-            </UIButton>
+              type={"Import"}
+              icon={ArrowDownTrayIcon}
+            />
           )}
           header={<span className="text-primary">Select source</span>}
           body={<ChooseProject></ChooseProject>}
