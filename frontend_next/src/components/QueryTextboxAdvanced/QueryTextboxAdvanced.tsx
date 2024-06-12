@@ -4,9 +4,8 @@ import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
-import QueryTextbox from "../queryTextbox/QueryTextbox";
-import FileOpenButt from "../ui/FileOpenButt";
-
+import QueryTextbox from "../QueryTextbox/QueryTextbox";
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 
 const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -29,12 +28,13 @@ const QueryTextboxAdvanced: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full w-full">
-        <iframe
-          src="http://localhost:3001"
-          width="90%"
-          height="300vh"
-        ></iframe>
-      <div className="flex justify-end gap-2 mb-2 mt-5  ">
+      <textarea
+        className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Enter your query here"
+      />
+      <div className="flex justify-end gap-2 mb-2">
         <UIButton onClick={handleShowNaturalLang}>Show Natural Lang</UIButton>
         <UIButton className="bg-success-700" onClick={handleRunQuery}>
           Run

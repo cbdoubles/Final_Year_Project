@@ -19,18 +19,17 @@ type QueryContextType = {
 };
 
 export const QueryContext = createContext<QueryContextType>({
-  cypherQuery: "MATCH (n) RETURN n LIMIT 25",
+  cypherQuery: "",
   setCypherQuery: () => {},
-  queryId: "23",
+  queryId: "",
   setQueryId: () => {},
-  projectId: "2",
+  projectId: "",
   setProjectId: () => {},
-  queryName: "matching good people",
+  queryName: "",
   setQueryName: () => {},
-  naturalLanguageQuery:
-    "Show me $howmany:int$ people in the database and limit it to 25.",
+  naturalLanguageQuery: "",
   setNaturalLanguageQuery: () => {},
-  folderType: "favorite",
+  folderType: "",
   setFolderType: () => {},
   resetQueryContext: () => {},
 });
@@ -40,12 +39,16 @@ export const QueryPropsProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [cypherQuery, setCypherQuery] = useState<string>("");
-  const [queryId, setQueryId] = useState<string>("");
-  const [projectId, setProjectId] = useState<string>("");
-  const [queryName, setQueryName] = useState<string>("");
-  const [naturalLanguageQuery, setNaturalLanguageQuery] = useState<string>("");
-  const [folderType, setFolderType] = useState<FolderType>("");
+  const [cypherQuery, setCypherQuery] = useState<string>(
+    `MATCH (b:Book)-[:WRITTEN_BY]->(a:Author) WHERE a.name = $authorName AND b.year > $year RETURN b`
+  );
+  const [queryId, setQueryId] = useState<string>("23");
+  const [projectId, setProjectId] = useState<string>("2");
+  const [queryName, setQueryName] = useState<string>("matching good people");
+  const [naturalLanguageQuery, setNaturalLanguageQuery] = useState<string>(
+    `Find books by author $authorName{author name} published after $year{year}.`
+  );
+  const [folderType, setFolderType] = useState<FolderType>("favorite");
 
   const resetQueryContext = () => {
     setCypherQuery("");

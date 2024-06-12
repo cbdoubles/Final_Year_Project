@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,7 @@ import { useProps } from "@/src/contexts/PropsContext";
 import FileOpenButt from "../ui/FileOpenButt";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useQueryProps } from "@/src/contexts/QueryContext";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -35,6 +35,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
+  const {naturalLanguageQuery, cypherQuery} = useQueryProps();
 
 
 
@@ -69,8 +70,25 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   };
 
   const handleRunQuery = () => {
-    // Add logic to run the query
-    console.log("Run query - input values:", inputValues);
+    // Generate the JSON output
+    const parameters: Record<string, string> = {};
+
+    // Iterate through the input values and populate the parameters object
+    for (const key in inputValues) {
+      // Extract the part between $ and {
+      const match = key.match(/\$(\w+)\{/);
+      if (match) {
+        const parameterKey = match[1];
+        parameters[parameterKey] = inputValues[key];
+      }
+    }
+
+    const jsonOutput = {
+      Parameter: parameters,
+      Query: cypherQuery,
+    };
+
+    console.log("Generated JSON Output:", jsonOutput);
     setQueryRunTrue();
   };
 
@@ -78,8 +96,9 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     <div>
       <ToastContainer transition={Slide} />
     <div className="flex flex-col">
+      {naturalLanguageQuery}
       <NatLangBox
-        dataArray={dataArray}
+        dataArray={naturalLanguageQuery}
         inputValues={inputValues}
         onInputChange={handleInputChange}
       />
