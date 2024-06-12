@@ -4,8 +4,9 @@ import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
-import QueryTextbox from "../QueryTextbox/QueryTextbox";
+import QueryTextbox from "../queryTextbox/QueryTextbox";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
+import FileOpenButt from "../ui/FileOpenButt";
 
 const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("");
