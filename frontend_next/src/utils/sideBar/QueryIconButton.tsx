@@ -1,17 +1,18 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
+import { FolderType } from "@/src/libs/types";
 
 interface SelectProps {
-  handleClick: () => void
-  collapsed?: boolean
-  type: "Default" | "Custom" | "Favorite" | "Collapse"
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>> // Updated icon prop type
+  handleClick: () => void;
+  collapsed?: boolean;
+  type: "Default" | "Custom" | "Favorite" | "Import" | "Collapsed";
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; // Updated icon prop type
 }
 
 const QueryIconButton: React.FC<SelectProps> = ({
   handleClick,
   collapsed,
   type,
-  icon: Icon
+  icon: Icon,
 }) => {
   return (
     <>
@@ -27,7 +28,7 @@ const QueryIconButton: React.FC<SelectProps> = ({
         )}
       </button>
     </>
-  )
-}
+  );
+};
 
-export default QueryIconButton
+export default QueryIconButton;

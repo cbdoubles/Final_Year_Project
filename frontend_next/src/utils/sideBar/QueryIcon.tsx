@@ -1,43 +1,86 @@
-import React, { useState } from "react"
-import FolderTest from "@/src/components/favouriteFolder/FolderTest"
-import QueryIconButton from "./QueryIconButton"
-import UIModal from "@/src/components/ui/UIModal"
-import UIButton from "@/src/components/ui/UIButton"
-
-// Detail for icon (assuming this was meant to be here based on previous context)
-interface Item {
-  employee: string
-  favorites: string[]
-}
+import React, { useState } from "react";
+import FolderTest from "@/src/components/favouriteFolder/FolderTest";
+import QueryIconButton from "./QueryIconButton";
+import UIModal from "@/src/components/ui/UIModal";
+import UIButton from "@/src/components/ui/UIButton";
+import {
+  QueryFolderType,
+  QueryType,
+  QueryFolderListType,
+  FolderType,
+} from "@/src/libs/types";
+// import { combineFoldersAndQueries } from "./FolderQueryListConverter";
+import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
 
 interface SelectProps {
-  loadItems: () => Promise<Item[]>
-  collapsed?: boolean
-  type: "Default" | "Custom" | "Favorite" | "Collapse"
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  collapsed?: boolean;
+  type: "Default" | "Custom" | "Favorite";
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
-const QueryIcon: React.FC<SelectProps> = ({
-  loadItems,
-  collapsed,
-  type,
-  icon: Icon
-}) => {
-  const [items, setItems] = useState<Item[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+const folders: QueryFolderType[] = [
+  { folderId: 1, folderName: "Folder 1" },
+  { folderId: 2, folderName: "Folder 2" },
+];
+
+const queries: QueryType[] = [
+  {
+    queryId: 1,
+    folderId: 1,
+    queryName: "Query 1",
+    cypherQuery: "MATCH (n) RETURN n",
+    natLang: "Find all nodes",
+  },
+  {
+    queryId: 2,
+    folderId: 1,
+    queryName: "Query 2",
+    cypherQuery: "MATCH (n)-[r]->(m) RETURN r",
+    natLang: "Find all relationships",
+  },
+  {
+    queryId: 3,
+    folderId: 2,
+    queryName: "Query 3",
+    cypherQuery: "MATCH (n:Person) RETURN n",
+    natLang: "Find all persons",
+  },
+];
+
+const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
+  const [items, setItems] = useState<QueryFolderListType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadItems = async (queryFolderList: Promise<QueryFolderListType[]>) => {
+    await new Promise((r) => setTimeout(r, 2000));
+    return queryFolderList;
+  };
+
+  const { projectId } = useProjectProps();
 
   const fetchItems = () => {
-    setIsLoading(true)
-    loadItems().then((newItems) => {
-      setItems(newItems)
-      setIsLoading(false)
-    })
-  }
+    setIsLoading(true);
+    //fetchItems from database, then put in the queryFolderList
+    const queryFolderList: Promise<QueryFolderListType[]> = fetchFoldersQueries(
+      type,
+      projectId
+    );
+
+    // const queryFolderList: QueryFolderListType[] = combineFoldersAndQueries(
+    //   folders,
+    //   queries
+    // );
+    loadItems(queryFolderList).then((newItems) => {
+      setItems(newItems);
+      setIsLoading(false);
+    });
+  };
 
   // Button click handler
   const handleButtonClick = () => {
-    console.log("Select Query button clicked")
-  }
+    console.log("Select Query button clicked");
+  };
 
   return (
     <>
@@ -45,8 +88,8 @@ const QueryIcon: React.FC<SelectProps> = ({
         button={({ onOpen }) => (
           <QueryIconButton
             handleClick={() => {
-              fetchItems()
-              onOpen()
+              fetchItems();
+              onOpen();
             }}
             collapsed={collapsed}
             type={type}
@@ -79,7 +122,7 @@ const QueryIcon: React.FC<SelectProps> = ({
         bodyNoPadding
       ></UIModal>
     </>
-  )
-}
+  );
+};
 
-export default QueryIcon
+export default QueryIcon;

@@ -1,4 +1,3 @@
-import { SelectGroupInterface } from "@/src/libs/interfaces";
 import { useState, MouseEvent } from "react";
 import {
   LuTrash2,
@@ -10,6 +9,7 @@ import {
 import CustomPopUp from "@/views/PopUps/CustomPopUp";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
+import { QueryFolderListType } from "@/src/libs/types";
 
 const SelectGroup = ({
   item,
@@ -17,7 +17,7 @@ const SelectGroup = ({
   handlerClick,
   handlerTrashClick,
 }: {
-  item: SelectGroupInterface;
+  item: QueryFolderListType;
   type: string;
   canBeShared: boolean;
   handlerClick: (event: MouseEvent) => void;
@@ -38,22 +38,22 @@ const SelectGroup = ({
         className="cursor-pointer text-white flex items-center gap-1"
       >
         <LuFolder className="ml-2 text-white" />
-        {item.employee}
+        {item.folder.folderName}
       </button>
-      {item.favorites.length > 0 && open && (
+      {item.queries.length > 0 && open && (
         <div className="w-full">
-          {item.favorites.map((favorite, key) => (
+          {item.queries.map((queries, key) => (
             <div
               className={`w-full flex items-center px-8 justify-between ${
                 key % 2 === 0 ? "bg-sky-100" : "bg-white"
               }`}
-              key={favorite}
+              key={queries.queryId}
               onClick={handlerClick}
             >
               <button className="flex gap-1 items-center">
                 <LuCornerDownRight className="text-gray-600" />
                 <p className="cursor-pointer text-black capitalize">
-                  {favorite}
+                  {queries.queryName}
                 </p>
               </button>
               <div className="flex gap-2 ">

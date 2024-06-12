@@ -3,15 +3,18 @@ import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
-import QueryTextbox from "../QueryTextbox/QueryTextbox";
+import QueryTextbox from "../queryTextbox/QueryTextbox";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
+import FileOpenButt from "../ui/FileOpenButt";
 
 const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("");
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
-
+  const [inputValues, setInputValues] = useState<InputValues>({});
+  const [error, setError] = useState<string | null>(null);
+  
+  
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
   };
@@ -19,6 +22,10 @@ const QueryTextboxAdvanced: React.FC = () => {
   const handleRunQuery = () => {
     console.log("Running query:", query);
   };
+
+  interface InputValues {
+    [key: string]: string;
+  }
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -41,20 +48,7 @@ const QueryTextboxAdvanced: React.FC = () => {
             </UIButton>
           )}
           header={<span className="text-primary">Save favorite query</span>}
-          body={<FavouritePopUp></FavouritePopUp>}
-          footer={({ onClose }) => (
-            <>
-              <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
-                Cancel
-              </UIButton>
-              <UIButton
-                className="bg-success-700 w-full text-lg"
-                onClick={onClose}
-              >
-                Save
-              </UIButton>
-            </>
-          )}
+          body={<CustomPopUp fav={true}></CustomPopUp>}
         ></UIModal>
         <UIModal
           button={({ onOpen }) => (
@@ -70,12 +64,12 @@ const QueryTextboxAdvanced: React.FC = () => {
               <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
                 Cancel
               </UIButton>
-              <UIButton
+              <FileOpenButt
                 className="bg-success-700 w-full text-lg"
                 onClick={onClose}
               >
                 Save
-              </UIButton>
+              </FileOpenButt>
             </>
           )}
         ></UIModal>

@@ -18,6 +18,9 @@ Functions:
 
 This module also initializes a connection to the Neo4j database at the start.
 """
+from .services import CustomQueryService
+from .serializers import CustomQuerySerializer
+from .models import CustomQuery
 import os
 import json
 import requests
@@ -27,13 +30,16 @@ from networkx.readwrite import json_graph
 from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from py2neo import DatabaseError
 from django.conf import settings
 from .serializers import *
 from .models import CustomQuery, Project, GraphFile, Folder, Query
 from .neo4j_services import Neo4jService
+from django.db import IntegrityError
 from .upload_file import process_file
 from .services import *
 import logging
@@ -339,44 +345,116 @@ class ProjectViewSet(viewsets.ModelViewSet):
         ProjectService.delete_project(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# -------------------Custom query Views---------------------#
+# class CustomQueryViewSet(viewsets.ModelViewSet):
+#     queryset = CustomQuery.objects.all()
+#     serializer_class = CustomQuerySerializer
 
-class GraphFileViewSet(viewsets.ModelViewSet):
-    queryset = GraphFile.objects.all()
-    serializer_class = GraphFileSerializer
+#     # def create(self, request, *args, **kwargs):
+#     #     custom_query, errors = CustomQueryService.create_query(request.data, request)
+#     #     if custom_query:
+#     #         return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
+#     #     return Response(errors, status = status.HTTP_400_BAD_REQUEST)
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         try:
+#             if serializer.is_valid(raise_exception=True):
+#                 self.perform_create(serializer)
+#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         except IntegrityError as e:
+#             raise ValidationError({"detail": str(e)})
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomQueryViewSet(viewsets.ModelViewSet):
+    queryset = CustomQuery.objects.all()
+    serializer_class = CustomQuerySerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            custom_query = CustomQueryService.create_custom_query(request.data)
+            serializer = self.get_serializer(custom_query)
+            return Response({
+                'message': 'Custom query created successfully.',
+                'data': serializer.data
+            }, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(
-            instance, data=request.data, partial=partial)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            custom_query = CustomQueryService.update_custom_query(
+                instance, request.data)
+            serializer = self.get_serializer(custom_query)
+            return Response({
+                'message': 'Custom query updated successfully.',
+                'data': serializer.data
+            })
+        except ValidationError as e:
+            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({
+            'message': 'Custom query deleted successfully.'
+        }, status=status.HTTP_204_NO_CONTENT)
 
 
+# -------------------Folder related views---------------------#
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
 
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        # data[Project] = Project.objects.get(id=data[Project])
+        folder, errors = FolderService.create_folder(request.data)
 
-class CustomQueryViewSet(viewsets.ModelViewSet):
-    cust_query_set = CustomQuery.objects.all()
-    serializer_class = CustomQuerySerializer
-    
-    def create(self, request, *args, **kwargs):
-        custom_query, errors = CustomQueryService.create_query(request.data, request)
-        if custom_query:
-            return Response (CustomQuerySerializer(custom_query).data, status = status.HTTP_201_CREATED)
-        return Response(errors, status = status.HTTP_400_BAD_REQUEST)
-    
-    
+        if folder:
+            return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
+    # @action(detail=False, methods=['get'])
+    # def favorite_folders_with_queries(self, request, *args, **kwargs):
+    #     project_id = request.query_params.get('project')
+    #     if not project_id:
+    #         return Response({'error': 'Project ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     favorite_folders = Folder.objects.filter(
+    #         project_id=project_id, type=Folder.FAVORITE).prefetch_related('favoritequery_set')
+    #     serializer = self.get_serializer(favorite_folders, many=True)
+    #     return Response(serializer.data)
+
+    # @action(detail=False, methods=['get'])
+    # def custom_folders_with_queries(self, request, *args, **kwargs):
+    #     project_id = request.query_params.get('project')
+    #     if not project_id:
+    #         return Response({'error': 'Project ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     custom_folders = Folder.objects.filter(
+    #         project_id=project_id, type=Folder.CUSTOM).prefetch_related('customquery_set')
+    #     serializer = self.get_serializer(custom_folders, many=True)
+    #     return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def folders_with_queries(self, request, *args, **kwargs):
+        project_id = request.query_params.get('project')
+        folder_type = request.query_params.get('type')
+
+        if not project_id or not folder_type:
+            return Response({'error': 'Project ID and type are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if folder_type not in [Folder.FAVORITE, Folder.CUSTOM]:
+            return Response({'error': 'Invalid type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        folders = Folder.objects.filter(
+            project_id=project_id, type=folder_type)
+        queries = FavoriteQuery.objects.filter(folder__in=folders)
+
+        folder_serializer = FolderSerializer(folders, many=True)
+        query_serializer = CustomQuerySerializer(queries, many=True)
+
+        return Response([folder_serializer.data, query_serializer.data])

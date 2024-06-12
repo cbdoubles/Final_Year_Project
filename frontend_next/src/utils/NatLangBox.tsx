@@ -39,13 +39,13 @@ const NatLangBox: React.FC<NatLangBoxProps> = ({
             const placeholder = item; //.slice(1, -1) // remove the $ characters
             return (
               <span
+              key={index}
                 style={{
                   width: 30 + placeholder.length * 8 + "px",
                 }}
                 className="inline-flex"
               >
                 <Input
-                  key={index}
                   placeholder={placeholder}
                   value={inputValues[placeholder] || ""}
                   onChange={(e) => onInputChange(placeholder, e.target.value)}
