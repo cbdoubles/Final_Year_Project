@@ -6,7 +6,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
   useEffect(() => {
     const draw = async () => {
-      const { default: NeoVis } = await import("neovis.js/dist/neovis.js");
+      const NeoVis = await import("neovis.js");
 
       const config = {
         containerId: visRef.current?.id || "",
@@ -25,12 +25,37 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         },
         relationships: {
           ACTED_IN: {
-            thickness: "weight",
+            label: "roles",
             caption: true,
+            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+              function: {
+                title: (edge: any) => {
+                  return `Roles: ${edge.properties.roles.join(", ")}`;
+                },
+              },
+            },
           },
           DIRECTED: {
-            thickness: "weight",
+            label: "DIRECTED",
             caption: true,
+            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+              function: {
+                title: (edge: any) => {
+                  return "Directed";
+                },
+              },
+            },
+          },
+          PRODUCED: {
+            label: "PRODUCED",
+            caption: true,
+            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+              function: {
+                title: (edge: any) => {
+                  return "Produced";
+                },
+              },
+            },
           },
         },
         visConfig: {
@@ -38,6 +63,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             arrows: {
               to: { enabled: true },
             },
+            width: 2, // Adjust this value to increase the thickness of the edges
             font: {
               size: 12,
               color: "#000000",
@@ -76,42 +102,30 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             adaptiveTimestep: true,
           },
         },
-        initialCypher:
-          "MATCH (bacon:Person {name:'Kevin Bacon'})-[r*1..4]-(hollywood) RETURN DISTINCT hollywood, r",
-        // nonFlat: false,
+        initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m",
+        nonFlat: false, // Set nonFlat to false
       };
 
-      const viz = new NeoVis(config as any);
+      const viz = new NeoVis.default(config as any);
       viz.render();
 
       cypherRef.current = viz;
+
       // Disable physics after stabilization
       viz.network?.on("stabilized", () => {
         if (viz.network) {
           viz.network.setOptions({ physics: { enabled: false } });
         }
       });
-
-      console.log(viz);
     };
 
     draw();
   }, []);
 
   useEffect(() => {
-    console.log("useEffect ran");
-    console.log("Query is:", query);
-    console.log("cypherRef.current is:", cypherRef.current);
-
     if (query && cypherRef.current) {
-      console.log("Calling cypherRef.current.clearNetwork()");
       cypherRef.current.clearNetwork();
-      console.log("Calling cypherRef.current.updateWithCypher(query)");
       cypherRef.current.renderWithCypher(query);
-    } else {
-      console.log(
-        "Did not call cypherRef.current.clearNetwork() or cypherRef.current.updateWithCypher(query)"
-      );
     }
   }, [query]);
 
