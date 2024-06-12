@@ -45,12 +45,18 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const handleError = (onOpen: () => void) => {
     console.log("----", inputValues)
       if (Object.keys(inputValues).length === 0) {
-        toast.error("Please fill in the query text before adding to favourites.");
+        toast.error("Fill in the query text before adding to favourites.",{
+          position: "bottom-right",
+          theme: "colored",
+        })
         return;
       }
       for (const key in inputValues) {
         if (inputValues[key] === "" ) {
-          toast.error("Please fill in the query text before adding to favourites.");
+          toast.error("Fill in the query text before adding to favourites.",{
+            position: "bottom-right",
+            theme: "colored",
+          });
           return;
         }
       }
