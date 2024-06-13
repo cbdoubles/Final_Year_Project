@@ -71,6 +71,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               strokeColor: "#ffffff",
               align: "middle",
             },
+            label: "roles",
             labelHighlightBold: true,
           },
           nodes: {
@@ -102,7 +103,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             adaptiveTimestep: true,
           },
         },
-        initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m",
+        initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 500",
         nonFlat: false, // Set nonFlat to false
       };
 
