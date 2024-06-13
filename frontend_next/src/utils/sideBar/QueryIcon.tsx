@@ -9,7 +9,6 @@ import {
   QueryFolderListType,
   FolderType,
 } from "@/src/libs/types";
-// import { combineFoldersAndQueries } from "./FolderQueryListConverter";
 import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 
