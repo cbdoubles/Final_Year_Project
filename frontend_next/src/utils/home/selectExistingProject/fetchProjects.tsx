@@ -4,7 +4,7 @@ export const fetchElements = async (
   setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>
 ) => {
   try {
-    const response = await fetch("http://localhost:8000/api/projects/"); // Adjust the API endpoint accordingly
+    const response = await fetch("http://localhost:8000/api/projects/");
     const data: ProjectTypeFetch[] = await response.json();
 
     // Transform data from ProjectType[] to Element[]

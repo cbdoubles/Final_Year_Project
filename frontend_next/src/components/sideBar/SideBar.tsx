@@ -4,7 +4,6 @@ import CustomButton from "@/src/utils/sideBar/CustomIcon";
 import FavouriteIcon from "@/src/utils/sideBar/FavouriteIcon";
 import Default from "@/src/utils/sideBar/DefaultIcon";
 import Reupload from "@/src/utils/sideBar/ReuploadIcon";
-// import Import from "@/src/utils/sideBar/ImportIcon";
 import { LuAlignJustify } from "react-icons/lu";
 import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
 import GraphToolBoxContainer from "@/components/graphDisplay/GraphToolBoxContainer";
@@ -12,10 +11,7 @@ import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import UIModal from "../ui/UIModal";
 import UIButton from "../ui/UIButton";
-// import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-// import SelectExistingProject from "../home/selectExistingProject/SelectExistingProject";
-// import ChooseProjectProps from "../importChain/ChooseProject";
 import ChooseProject from "../importChain/ChooseProject";
 
 export default function SideBar({
@@ -33,7 +29,7 @@ export default function SideBar({
         <QueryIconButton
           handleClick={() => handlerCollapsed(!collapsed)}
           collapsed={collapsed}
-          type={"Collapse"}
+          type={"Import"}
           icon={LuAlignJustify}
         />
         <FavouriteIcon collapsed={collapsed} />
@@ -44,7 +40,7 @@ export default function SideBar({
 
         <UIModal
           button={({ onOpen }) => (
-              <QueryIconButton
+            <QueryIconButton
               handleClick={() => {
                 onOpen();
               }}
