@@ -1,63 +1,105 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+const NEO4J_URL = "bolt://localhost:7687";
+const NEO4J_USER = "neo4j";
+const NEO4J_PASSWORD = "letmein";
+
+// TODO - Modify the queries to check for projectid
+const getLabels = async () => {
+  const neo4j = await import("neo4j-driver");
+  const driver = neo4j.driver(
+    NEO4J_URL,
+    neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
+  );
+  const session = driver.session();
+  let result = await session.run(
+    "MATCH (n) UNWIND labels(n) AS label RETURN DISTINCT label"
+  );
+
+  if (result.records.length === 0) {
+    result = await session.run(
+      "MATCH (n) UNWIND properties(n).labels AS label RETURN DISTINCT label"
+    );
+  }
+  session.close();
+  driver.close();
+  return result.records.map((record) => record.get("label"));
+};
+
+// TODO - Modify the queries to check for projectid
+const getRelationshipTypes = async () => {
+  const neo4j = await import("neo4j-driver");
+  const driver = neo4j.driver(
+    NEO4J_URL,
+    neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
+  );
+  const session = driver.session();
+  const result = await session.run("CALL db.relationshipTypes()");
+  session.close();
+  driver.close();
+  return result.records.map((record) => record.get("relationshipType"));
+};
+
+const generateRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
 
 const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const visRef = useRef<HTMLDivElement>(null);
   const cypherRef = useRef<any>(null);
 
+  const [labelsConfig, setLabelsConfig] = useState([]);
+  const [relationshipTypes, setRelationshipTypes] = useState([]);
+
   useEffect(() => {
+    Promise.all([getLabels(), getRelationshipTypes()]).then(
+      ([labels, types]) => {
+        const labelsConfig = labels.reduce((acc, label) => {
+          return {
+            ...acc,
+            [label]: {
+              label: label,
+              color: generateRandomColor(),
+            },
+          };
+        }, {});
+
+        const relationshipsConfig = types.reduce((acc, type) => {
+          return {
+            ...acc,
+            [type]: {
+              label: type,
+              caption: true,
+              color: generateRandomColor(),
+            },
+          };
+        }, {});
+        console.log("labels", labels);
+        console.log("types", types);
+        setLabelsConfig(labelsConfig);
+        setRelationshipTypes(relationshipsConfig);
+        console.log("labelsConfig", labelsConfig);
+        console.log("relationshipsConfig", relationshipsConfig);
+      }
+    );
+
     const draw = async () => {
       const NeoVis = await import("neovis.js");
 
       const config = {
         containerId: visRef.current?.id || "",
         neo4j: {
-          serverUrl: "bolt://localhost:7687", // Replace with your Neo4j instance URL
-          serverUser: "neo4j", // Replace with your Neo4j credentials
-          serverPassword: "letmein", // Replace with your Neo4j credentials
+          serverUrl: NEO4J_URL, // Replace with your Neo4j instance URL
+          serverUser: NEO4J_USER, // Replace with your Neo4j credentials
+          serverPassword: NEO4J_PASSWORD, // Replace with your Neo4j credentials
         },
-        labels: {
-          Person: {
-            label: "name",
-          },
-          Movie: {
-            label: "title",
-          },
-        },
-        relationships: {
-          ACTED_IN: {
-            label: "roles",
-            caption: true,
-            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-              function: {
-                title: (edge: any) => {
-                  return `Roles: ${edge.properties.roles.join(", ")}`;
-                },
-              },
-            },
-          },
-          DIRECTED: {
-            label: "DIRECTED",
-            caption: true,
-            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-              function: {
-                title: (edge: any) => {
-                  return "Directed";
-                },
-              },
-            },
-          },
-          PRODUCED: {
-            label: "PRODUCED",
-            caption: true,
-            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-              function: {
-                title: (edge: any) => {
-                  return "Produced";
-                },
-              },
-            },
-          },
-        },
+        labels: labelsConfig,
+        relationships: relationshipTypes,
         visConfig: {
           edges: {
             arrows: {
