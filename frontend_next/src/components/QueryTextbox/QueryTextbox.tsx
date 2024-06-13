@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,11 +17,11 @@ interface QueryTextboxProps {
   hideButtons?: boolean;
 }
 
-const dataArray: string[] = [
-  "Match the actor",
-  "$actorname:str$",
-  "to all the movies they did.",
-];
+// const dataArray: string[] = [
+//   "Match the actor",
+//   "$actorname:str$",
+//   "to all the movies they did.",
+// ];
 
 interface InputValues {
   [key: string]: string;
@@ -36,14 +36,16 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
   const { naturalLanguageQuery, cypherQuery } = useQueryProps();
+  const [boxes, setBoxes] = useState(2);
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
   };
 
   const handleError = (onOpen: () => void) => {
+    console.log("There is this many boxes:", boxes);
     console.log("----", inputValues);
-    if (Object.keys(inputValues).length === 0) {
+    if (Object.keys(inputValues).length < boxes) {
       toast.error("Fill in the query text before adding to favourites.", {
         position: "bottom-right",
         theme: "colored",
@@ -99,6 +101,9 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
           dataArray={naturalLanguageQuery}
           inputValues={inputValues}
           onInputChange={handleInputChange}
+          onCheckValueChange={(checkValue) => {
+            setBoxes(checkValue);
+          }}
         />
         {!hideButtons && (
           <div className="flex justify-end gap-2 mb-2">
