@@ -37,11 +37,11 @@ schema_view = get_schema_view(
 )
 
 router = DefaultRouter()
-router.register(r'projects', ProjectViewSet)
+router.register(r'projects', ProjectViewSet, basename='projects')
 router.register(r"custom-queries", CustomQueryViewSet, basename='customquery')
 router.register(r"folders", FolderViewSet, basename='folders')
 router.register(r'favorite-queries', FavoriteQueryViewSet, basename='favoritequery')
-router.register(r'folder-and-queries', FolderAndQueriesViewSet, basename='folder-and-queries')
+# router.register(r'folder-and-queries', FolderAndQueriesViewSet, basename='folder-and-queries')
 
 # TODO: if the existing views that are not part of a viewset
 # (e.g., custom actions or non-RESTful views), then we can leave them as it is.
@@ -52,10 +52,6 @@ urlpatterns = [
     path('api/', include(router.urls)),  # testing data fetching
     path('api/graphData', graph_data),
     path('upload_file/', upload_file),
-    path('save_graph/', save_graph),  # used for testing
-    path('view_graph/<int:query_id>/', view_graph),
-    path('cypher_query/', cypher_query),  # save queries
-    path('run_query/', run_query),  # queries that result in a subgraph
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path('.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404)),
 ]
