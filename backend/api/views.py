@@ -18,7 +18,7 @@ Functions:
 
 This module also initializes a connection to the Neo4j database at the start.
 """
-from .services import CustomQueryService
+# from .services import CustomQueryService
 from .serializers import CustomQuerySerializer
 from .models import CustomQuery
 import os
