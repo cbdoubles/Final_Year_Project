@@ -26,19 +26,6 @@ class Project(models.Model):
         return f"Project: {self.name}, ID: {self.id}, File Name: {self.file_name}"
 
 
-# class GraphFile(models.Model):
-#     """
-#     Represents a graph file associated with a project.
-#     """
-#     project = models.OneToOneField(Project, on_delete=models.CASCADE)
-#     file_type = models.CharField(max_length=255)
-#     file_path = models.FileField(upload_to='projects_files/')
-#     last_uploaded = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return f"Graph File: {self.file_type} (Project: {self.project.name})"
-
-
 class Folder(models.Model):
     """
     Represents a folder belonging to a project.
@@ -70,7 +57,7 @@ class CustomQuery(models.Model):
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     folder = models.ForeignKey(
-        Folder, on_delete=models.CASCADE, null=True, blank=True)
+        Folder, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
@@ -91,7 +78,7 @@ class FavoriteQuery(models.Model):
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     folder = models.ForeignKey(
-        Folder, on_delete=models.CASCADE, null=True, blank=True)
+        Folder, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
@@ -104,19 +91,6 @@ class FavoriteQuery(models.Model):
 
     def __str__(self):
         return f"Favorite Query: {self.name} (Project: {self.project.name})"
-
-
-class Result(models.Model):
-    """
-    Represents a result of a favorite query.
-    """
-    query = models.OneToOneField(FavoriteQuery, on_delete=models.CASCADE)
-    result_type = models.CharField(max_length=255)
-    file_path = models.FileField(upload_to='favorite_queries_results/')
-    last_generated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Result: {self.result_type} (Query: {self.query.favorite_query_name})"
 
 
 class DefaultQuery(models.Model):

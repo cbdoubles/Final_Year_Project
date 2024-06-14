@@ -2,21 +2,24 @@ from .models import CustomQuery
 from logging import info
 from rest_framework import serializers
 from .models import *
-from rest_framework.exceptions import ValidationError    
+from rest_framework.exceptions import ValidationError
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'name', 'file_name']  # Only the fields needed for the database
+        # Only the fields needed for the database
+        fields = ['id', 'name', 'file_name']
 
     def create(self, validated_data):
         # Create the Project instance
         project = Project.objects.create(**validated_data)
-        
+
         # Create default folders
-        Folder.objects.create(project=project, name='default custom folder', type='Custom')
-        Folder.objects.create(project=project, name='default favorite folder', type='Favorite')
+        Folder.objects.create(
+            project=project, name='default custom folder', type='Custom')
+        Folder.objects.create(
+            project=project, name='default favorite folder', type='Favorite')
 
         return project
 
@@ -25,7 +28,8 @@ class FavoriteQuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoriteQuery
         # Expected fields in the request
-        fields = ['id', 'project', 'folder', 'name', 'cypher_query', 'natural_language_query']
+        fields = ['id', 'project', 'folder', 'name',
+                  'cypher_query', 'natural_language_query']
 
 
 class CustomQuerySerializer(serializers.ModelSerializer):
@@ -36,14 +40,16 @@ class CustomQuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoriteQuery
         # Expected fields in the request
-        fields = ['id', 'project', 'folder', 'name', 'cypher_query', 'natural_language_query']
+        fields = ['id', 'project', 'folder', 'name',
+                  'cypher_query', 'natural_language_query']
+
 
 class FolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Folder
         # Expected fields in the request
         fields = "__all__"
-        
+
     def create(self, validated_data):
         project_id = self.context['request'].data.get('project_id')
         if project_id:
@@ -61,7 +67,6 @@ class QueryLiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Query
         fields = ['id', 'name']
-
 
 
 class FoldersWithQueriesSerializer(serializers.ModelSerializer):
