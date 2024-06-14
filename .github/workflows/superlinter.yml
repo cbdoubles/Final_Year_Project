@@ -50,6 +50,9 @@ jobs:
     name: Lint
     runs-on: self-hosted
 
+    container:
+      image:  ubuntu:22.04
+
     permissions:
       contents: read
       packages: read
@@ -61,10 +64,6 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Change file ownership
-        run: sudo chown -R $USER:$USER /home/tue/actions-runner/_work/Querify/Querify/github_conf
-
-
       - name: Set Node.js memory limit
         run: |
           echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
