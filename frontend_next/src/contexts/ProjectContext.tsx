@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 
 type ProjectContextType = {
-  projectId: string;
-  setProjectId: (projectId: string) => void;
+  projectId: number;
+  setProjectId: (projectId: number) => void;
   projectName: string;
   setProjectName: (projectName: string) => void;
 };
 
 export const ProjectContext = createContext<ProjectContextType>({
-  projectId: "", // Default value for projectId
+  projectId: -1, // Default value for projectId
   setProjectId: () => {},
   projectName: "", // Default value for projectName
   setProjectName: () => {},
@@ -19,7 +19,7 @@ export const ProjectPropsProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [projectId, setProjectId] = useState<string>("");
+  const [projectId, setProjectId] = useState<number>(-1);
   const [projectName, setProjectName] = useState<string>("");
 
   const value = useMemo(

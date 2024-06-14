@@ -1,10 +1,10 @@
-import { Element } from "@/src/libs/types";
+import { ProjectType } from "@/src/libs/types";
 
-export const handleDeleteConfirm = async (
-  deletingElement: Element | null,
-  setDeletingElement: React.Dispatch<React.SetStateAction<Element | null>>,
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>,
-  elements: Element[]
+export const handleDeleteProject = async (
+  deletingElement: ProjectType | null,
+  setDeletingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>,
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>,
+  elements: ProjectType[]
 ): Promise<void> => {
   if (deletingElement) {
     try {

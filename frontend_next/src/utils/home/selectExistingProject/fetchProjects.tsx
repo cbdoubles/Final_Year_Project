@@ -1,6 +1,6 @@
 import { ProjectType, ProjectTypeFetch } from "@/src/libs/types";
 
-export const fetchElements = async (
+export const fetchProjects = async (
   setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>
 ) => {
   try {

@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import FolderTest from "@/src/components/favouriteFolder/FolderTest";
 import QueryIconButton from "./QueryIconButton";
 import UIModal from "@/src/components/ui/UIModal";
 import UIButton from "@/src/components/ui/UIButton";
-import {
-  QueryFolderType,
-  QueryType,
-  QueryFolderListType,
-  FolderType,
-} from "@/src/libs/types";
-import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
+import SelectQueryFolder from "@/components/favouriteFolder/SelectQueryFolder";
 
 interface SelectProps {
   collapsed?: boolean;
@@ -18,67 +11,23 @@ interface SelectProps {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
-const folders: QueryFolderType[] = [
-  { folderId: 1, folderName: "Folder 1" },
-  { folderId: 2, folderName: "Folder 2" },
-];
-
-const queries: QueryType[] = [
-  {
-    queryId: 1,
-    folderId: 1,
-    queryName: "Query 1",
-    cypherQuery: "MATCH (n) RETURN n",
-    natLang: "Find all nodes",
-  },
-  {
-    queryId: 2,
-    folderId: 1,
-    queryName: "Query 2",
-    cypherQuery: "MATCH (n)-[r]->(m) RETURN r",
-    natLang: "Find all relationships",
-  },
-  {
-    queryId: 3,
-    folderId: 2,
-    queryName: "Query 3",
-    cypherQuery: "MATCH (n:Person) RETURN n",
-    natLang: "Find all persons",
-  },
-];
-
 const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
-  const [items, setItems] = useState<QueryFolderListType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const loadItems = async (queryFolderList: Promise<QueryFolderListType[]>) => {
-    await new Promise((r) => setTimeout(r, 2000));
-    return queryFolderList;
-  };
-
+  const [secondModalOpen, setSecondModalOpen] = useState(false);
   const { projectId } = useProjectProps();
 
-  const fetchItems = () => {
-    setIsLoading(true);
-    //fetchItems from database, then put in the queryFolderList
-    const queryFolderList: Promise<QueryFolderListType[]> = fetchFoldersQueries(
-      type,
-      projectId
-    );
+  const handleFolderSelect = () => {
+    setSecondModalOpen(true);
+  };
 
-    // const queryFolderList: QueryFolderListType[] = combineFoldersAndQueries(
-    //   folders,
-    //   queries
-    // );
-    loadItems(queryFolderList).then((newItems) => {
-      setItems(newItems);
-      setIsLoading(false);
-    });
+  const handleCloseSecondModal = () => {
+    setSecondModalOpen(false);
   };
 
   // Button click handler
-  const handleButtonClick = () => {
-    console.log("Select Query button clicked");
+  const handleButtonClick = (onCloseFirstModal: () => void) => {
+    console.log("Select folder button clicked");
+    handleFolderSelect();
+    onCloseFirstModal(); // Close the first modal
   };
 
   return (
@@ -87,7 +36,6 @@ const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
         button={({ onOpen }) => (
           <QueryIconButton
             handleClick={() => {
-              fetchItems();
               onOpen();
             }}
             collapsed={collapsed}
@@ -97,29 +45,43 @@ const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
         )}
         header={
           <>
-            <span className="text-primary">Select a query</span>
+            <span className="text-primary">Select a folder</span>
             <span className="text-sm text-gray-400 font-light leading-none">
               {type}
             </span>
           </>
         }
-        body={
-          isLoading ? (
-            <p className="text-black">Loading</p>
-          ) : (
-            <FolderTest
-              title={`Select a ${type} query`}
-              items={items}
-              canBeShared={false}
-              type="Default"
-            />
-          )
-        }
+        body={<SelectQueryFolder projectId={projectId} type={type} />}
         footer={({ onClose }) => (
-          <UIButton onClick={handleButtonClick}>Select query</UIButton>
+          <UIButton onClick={() => handleButtonClick(onClose)}>
+            Select folder
+          </UIButton>
         )}
         bodyNoPadding
-      ></UIModal>
+      />
+
+      {secondModalOpen && (
+        <UIModal
+          button={() => <></>}
+          header={
+            <>
+              <span className="text-primary">Select a query</span>
+            </>
+          }
+          body={<SelectQueryFolder projectId={projectId} type={"Custom"} />}
+          footer={({ onClose }) => (
+            <UIButton
+              onClick={() => {
+                onClose();
+                handleCloseSecondModal();
+              }}
+            >
+              Close
+            </UIButton>
+          )}
+          bodyNoPadding
+        />
+      )}
     </>
   );
 };

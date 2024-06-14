@@ -1,13 +1,14 @@
-import { Element } from "@/src/libs/types";
+import { ProjectType } from "@/src/libs/types";
+// import { useProjectProps } from "@/src/contexts/ProjectContext";
 
-export const handleEditSubmit = async (
-  event: React.FormEvent<HTMLFormElement>,
-  element: Element,
-  setEditingElement: React.Dispatch<React.SetStateAction<Element | null>>,
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>,
-  elements: Element[],
-  prevElementState: Element,
-  setProjectName: (name: string) => void
+export const handleEditProject = async (
+  event: React.FormEvent,
+  element: ProjectType,
+  setEditingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>,
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>,
+  elements: ProjectType[],
+  prevElementState: ProjectType,
+  setProjectName: React.Dispatch<string>
 ): Promise<void> => {
   event.preventDefault();
   setEditingElement(null);
@@ -15,6 +16,7 @@ export const handleEditSubmit = async (
   try {
     const formData = new FormData();
     formData.append("name", element.projectName);
+    console.log("starting to handle");
 
     const response = await fetch(
       `http://localhost:8000/api/projects/${element.projectId}/`,
@@ -36,7 +38,10 @@ export const handleEditSubmit = async (
     const updatedElements = elements.map((el) =>
       el.projectId === prevElementState.projectId ? prevElementState : el
     );
+    console.log("prevElementState");
+    console.log(prevElementState);
     setElements(updatedElements);
+    console.log(updatedElements);
     setProjectName(prevElementState.projectName); // Set project name to the previous name
   }
 };

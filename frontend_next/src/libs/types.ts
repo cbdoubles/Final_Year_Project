@@ -13,12 +13,12 @@ export type Element = {
 
 //Project type for fetch from be and fe
 export type ProjectTypeFetch = {
-  id: string;
+  id: number;
   name: string;
 };
 
 export type ProjectType = {
-  projectId: string;
+  projectId: number;
   projectName: string;
 };
 
