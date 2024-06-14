@@ -38,7 +38,7 @@ class CustomQuerySerializer(serializers.ModelSerializer):
     folder = serializers.PrimaryKeyRelatedField(queryset=Folder.objects.all())
 
     class Meta:
-        model = FavoriteQuery
+        model = CustomQuery
         # Expected fields in the request
         fields = ['id', 'project', 'folder', 'name',
                   'cypher_query', 'natural_language_query']

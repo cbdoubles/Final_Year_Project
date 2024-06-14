@@ -1,184 +1,194 @@
+from .models import Project, FavoriteQuery, CustomQuery, Folder
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+import pytest
 import os
 import django
 from django.conf import settings
 
 # api/test_views.py
 
-from django.test import TestCase
-from rest_framework.test import APIClient
-from rest_framework import status
-from django.urls import reverse
-from api.models import FavoriteQuery, Folder
-
-class FavoriteQueryViewSetTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.folder = Folder.objects.create(name="Test Folder")
-        self.favorite_query = FavoriteQuery.objects.create(
-            project="Test Project",
-            folder=self.folder,
-            name="Test Query",
-            cypher_query="MATCH (n) RETURN n",
-            natural_language_query="Return all nodes"
-        )
-
-    def test_get_favorite_queries_by_folder(self):
-        response = self.client.get(
-            reverse('favoritequery-by-folder'),
-            {'folder_id': self.folder.id},
-            format='json'
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['name'], self.favorite_query.name)
-
-    def test_get_favorite_queries_by_folder_invalid_folder(self):
-        response = self.client.get(
-            reverse('favoritequery-by-folder'),
-            {'folder_id': 999},  # assuming this folder ID does not exist
-            format='json'
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_get_favorite_queries_by_folder_invalid_folder_id(self):
-        response = self.client.get(
-            reverse('favoritequery-by-folder'),
-            {'folder_id': 'invalid_id'},
-            format='json'
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-
-
-##############################################################################################################
-##############################################################################################################
-
-
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
-# django.setup()
-
-# import pytest
+# from django.test import TestCase
 # from rest_framework.test import APIClient
 # from rest_framework import status
 # from django.urls import reverse
-# from django.core.files.uploadedfile import SimpleUploadedFile
-# from .models import Project, FavoriteQuery, CustomQuery, Folder
+# from api.models import FavoriteQuery, Folder
+
+# class FavoriteQueryViewSetTest(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.folder = Folder.objects.create(name="Test Folder")
+#         self.favorite_query = FavoriteQuery.objects.create(
+#             project="Test Project",
+#             folder=self.folder,
+#             name="Test Query",
+#             cypher_query="MATCH (n) RETURN n",
+#             natural_language_query="Return all nodes"
+#         )
+
+#     def test_get_favorite_queries_by_folder(self):
+#         response = self.client.get(
+#             reverse('favoritequery-by-folder'),
+#             {'folder_id': self.folder.id},
+#             format='json'
+#         )
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(len(response.data), 1)
+#         self.assertEqual(response.data[0]['name'], self.favorite_query.name)
+
+#     def test_get_favorite_queries_by_folder_invalid_folder(self):
+#         response = self.client.get(
+#             reverse('favoritequery-by-folder'),
+#             {'folder_id': 999},  # assuming this folder ID does not exist
+#             format='json'
+#         )
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+#     def test_get_favorite_queries_by_folder_invalid_folder_id(self):
+#         response = self.client.get(
+#             reverse('favoritequery-by-folder'),
+#             {'folder_id': 'invalid_id'},
+#             format='json'
+#         )
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-# @pytest.fixture
-# def api_client():
-#     return APIClient()
+##############################################################################################################
+##############################################################################################################
 
-# @pytest.fixture
-# def folder(db):  # Ensure the fixture uses the database
-#     return Folder.objects.create(name="Test Folder")
 
-# @pytest.fixture
-# def favorite_query(db, folder):  # Ensure the fixture uses the database
-#     return FavoriteQuery.objects.create(
-#         project="Test Project",
-#         folder=folder,
-#         name="Test Query",
-#         cypher_query="MATCH (n) RETURN n",
-#         natural_language_query="Return all nodes"
-#     )
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+django.setup()
 
-# @pytest.fixture
-# def valid_payload(folder):
-#     return {
-#         'project': 'New Project',
-#         'folder': folder.id,
-#         'name': 'New Query',
-#         'cypher_query': 'MATCH (m) RETURN m',
-#         'natural_language_query': 'Return all matches'
-#     }
 
-# @pytest.fixture
-# def invalid_payload(folder):
-#     return {
-#         'project': '',
-#         'folder': folder.id,
-#         'name': '',
-#         'cypher_query': 'MATCH (m) RETURN m',
-#         'natural_language_query': 'Return all matches'
-#     }
+@pytest.fixture
+def api_client():
+    return APIClient()
 
-# @pytest.mark.django_db
-# def test_create_valid_favorite_query(api_client, valid_payload):
-#     response = api_client.post(
-#         reverse('favoritequery-list'),
-#         data=valid_payload,
-#         format='json'
-#     )
-#     assert response.status_code == status.HTTP_201_CREATED
 
-# @pytest.mark.django_db
-# def test_create_invalid_favorite_query(api_client, invalid_payload):
-#     response = api_client.post(
-#         reverse('favoritequery-list'),
-#         data=invalid_payload,
-#         format='json'
-#     )
-#     assert response.status_code == status.HTTP_400_BAD_REQUEST
+@pytest.fixture
+def folder(db):  # Ensure the fixture uses the database
+    return Folder.objects.create(name="Test Folder")
 
-# @pytest.mark.django_db
-# def test_get_all_favorite_queries(api_client, favorite_query):
-#     response = api_client.get(reverse('favoritequery-list'))
-#     assert response.status_code == status.HTTP_200_OK
-#     assert len(response.data) == 1
 
-# @pytest.mark.django_db
-# def test_get_single_favorite_query(api_client, favorite_query):
-#     response = api_client.get(
-#         reverse('favoritequery-detail', kwargs={'pk': favorite_query.pk})
-#     )
-#     assert response.status_code == status.HTTP_200_OK
-#     assert favorite_query.name in response.content.decode()
+@pytest.fixture
+def favorite_query(db, folder):  # Ensure the fixture uses the database
+    return FavoriteQuery.objects.create(
+        project="Test Project",
+        folder=folder,
+        name="Test Query",
+        cypher_query="MATCH (n) RETURN n",
+        natural_language_query="Return all nodes"
+    )
 
-# @pytest.mark.django_db
-# def test_update_favorite_query(api_client, favorite_query, valid_payload):
-#     response = api_client.put(
-#         reverse('favoritequery-detail', kwargs={'pk': favorite_query.pk}),
-#         data=valid_payload,
-#         format='json'
-#     )
-#     assert response.status_code == status.HTTP_200_OK
 
-# @pytest.mark.django_db
-# def test_delete_favorite_query(api_client, favorite_query):
-#     response = api_client.delete(
-#         reverse('favoritequery-detail', kwargs={'pk': favorite_query.pk})
-#     )
-#     assert response.status_code == status.HTTP_204_NO_CONTENT
+@pytest.fixture
+def valid_payload(folder):
+    return {
+        'project': 'New Project',
+        'folder': folder.id,
+        'name': 'New Query',
+        'cypher_query': 'MATCH (m) RETURN m',
+        'natural_language_query': 'Return all matches'
+    }
 
-# @pytest.mark.django_db
-# def test_get_favorite_queries_by_folder(api_client, folder, favorite_query):
-#     response = api_client.get(
-#         reverse('favoritequery-by-folder'),
-#         {'folder_id': folder.id},
-#         format='json'
-#     )
-#     assert response.status_code == status.HTTP_200_OK
-#     assert len(response.data) == 1
 
-# @pytest.mark.django_db
-# def test_get_favorite_queries_by_folder_invalid_folder(api_client):
-#     response = api_client.get(
-#         reverse('favoritequery-by-folder'),
-#         {'folder_id': 999},  # assuming this folder ID does not exist
-#         format='json'
-#     )
-#     assert response.status_code == status.HTTP_400_BAD_REQUEST
+@pytest.fixture
+def invalid_payload(folder):
+    return {
+        'project': '',
+        'folder': folder.id,
+        'name': '',
+        'cypher_query': 'MATCH (m) RETURN m',
+        'natural_language_query': 'Return all matches'
+    }
 
-# @pytest.mark.django_db
-# def test_get_favorite_queries_by_folder_invalid_folder_id(api_client):
-#     response = api_client.get(
-#         reverse('favoritequery-by-folder'),
-#         {'folder_id': 'invalid_id'},
-#         format='json'
-#     )
-#     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+@pytest.mark.django_db
+def test_create_valid_favorite_query(api_client, valid_payload):
+    response = api_client.post(
+        reverse('favoritequery-list'),
+        data=valid_payload,
+        format='json'
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_create_invalid_favorite_query(api_client, invalid_payload):
+    response = api_client.post(
+        reverse('favoritequery-list'),
+        data=invalid_payload,
+        format='json'
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_get_all_favorite_queries(api_client, favorite_query):
+    response = api_client.get(reverse('favoritequery-list'))
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 1
+
+
+@pytest.mark.django_db
+def test_get_single_favorite_query(api_client, favorite_query):
+    response = api_client.get(
+        reverse('favoritequery-detail', kwargs={'pk': favorite_query.pk})
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert favorite_query.name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_update_favorite_query(api_client, favorite_query, valid_payload):
+    response = api_client.put(
+        reverse('favoritequery-detail', kwargs={'pk': favorite_query.pk}),
+        data=valid_payload,
+        format='json'
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_delete_favorite_query(api_client, favorite_query):
+    response = api_client.delete(
+        reverse('favoritequery-detail', kwargs={'pk': favorite_query.pk})
+    )
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+@pytest.mark.django_db
+def test_get_favorite_queries_by_folder(api_client, folder, favorite_query):
+    response = api_client.get(
+        reverse('favoritequery-by-folder'),
+        {'folder_id': folder.id},
+        format='json'
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 1
+
+
+@pytest.mark.django_db
+def test_get_favorite_queries_by_folder_invalid_folder(api_client):
+    response = api_client.get(
+        reverse('favoritequery-by-folder'),
+        {'folder_id': 999},  # assuming this folder ID does not exist
+        format='json'
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_get_favorite_queries_by_folder_invalid_folder_id(api_client):
+    response = api_client.get(
+        reverse('favoritequery-by-folder'),
+        {'folder_id': 'invalid_id'},
+        format='json'
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 ##############################################################################################################
 ##############################################################################################################

@@ -190,7 +190,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             project = serializer.save()
 
             # Send the project ID and file path to the method "modify_input_file"
-            modify_input_file(project.id, file_path)
+            # modify_input_file(project.id, file_path)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -268,6 +268,10 @@ class FavoriteQueryViewSet(viewsets.ModelViewSet):
             raise ValidationError(
                 "Error: A Folder with this ID does not exist.")
 
+        favorite_queries = FavoriteQuery.objects.filter(folder_id=folder_id)
+        serializer = self.get_serializer(favorite_queries, many=True)
+        return Response(serializer.data)
+
 # -------------------Custom query Views---------------------#
 # class CustomQueryViewSet(viewsets.ModelViewSet):
 #     queryset = CustomQuery.objects.all()
@@ -289,10 +293,6 @@ class FavoriteQueryViewSet(viewsets.ModelViewSet):
 #             raise ValidationError({"detail": str(e)})
 
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        favorite_queries = FavoriteQuery.objects.filter(folder_id=folder_id)
-        serializer = self.get_serializer(favorite_queries, many=True)
-        return Response(serializer.data)
 
 
 # --------------------------- Custom Query Views -------------------------------------------#
@@ -334,10 +334,12 @@ class FolderViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'by_project':
+            print("folder by project")
             return FolderSerializer
         elif self.action == 'folders_with_queries':
+            print("folder with queries")
             return FoldersWithQueriesSerializer
-        return super().get_serializer_class()
+        return FolderSerializer
 
     @action(detail=False, methods=['get'], url_path='by-project')
     # Example usage: http://127.0.0.1:8000/api/folders/by-project/?project=42&type=Custom
