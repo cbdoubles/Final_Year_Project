@@ -68,6 +68,14 @@ jobs:
         run: |
           echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
 
+      - name: List directory contents
+        run: ls -la
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
       - name: Super-linter
         uses: super-linter/super-linter@v6.5.0
         env:
@@ -77,11 +85,6 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
           REPORT_ERRORS: true
-          
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
 
       - name: Install Radon and other dependencies
         run: |
