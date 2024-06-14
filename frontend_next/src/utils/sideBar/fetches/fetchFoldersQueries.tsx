@@ -1,9 +1,4 @@
 import {
-  ProjectType,
-  QueryFolderType,
-  QueryFolderTypeFetch,
-  QueryType,
-  QueryTypeFetch,
   QueryFolderListType,
 } from "@/src/libs/types";
 import { combineFoldersAndQueries } from "@/utils/sideBar/FolderQueryListConverter";
@@ -11,18 +6,34 @@ import { useProjectProps } from "@/src/contexts/ProjectContext";
 
 export const fetchFoldersQueries = async (
   folderType: "Default" | "Custom" | "Favorite",
-  projectId: string
+  projectId: number
 ): Promise<QueryFolderListType[]> => {
-  // const { projectId } = useProjectProps();
+  const transformData = (data: any[]): QueryFolderListType[] => {
+    return data.map((folder) => ({
+      folder: {
+        folderId: folder.id,
+        folderName: folder.name,
+      },
+      queries: folder.queries.map((query: any) => ({
+        queryId: query.id,
+        folderId: query.folder,
+        queryName: query.name,
+        cypherQuery: query.cypher_query,
+        natLang: query.natural_language_query,
+      })),
+    }));
+  };
+
+  console.log("just about to url call");
 
   try {
     // const formData = new FormData();
     // formData.append("projectId", projectId);
     // formData.append("type", folder);
-    console.log(projectId);
+    // console.log(projectId);
 
     const response = await fetch(
-      `http://localhost:8000/api/folders/folders_with_queries/?project=${projectId}&type=${folderType}`,
+      `http://localhost:8000/api/folders/folders-with-queries/?project=42&type=Custom`,
       {
         ///need to change this
         method: "GET",
@@ -34,30 +45,9 @@ export const fetchFoldersQueries = async (
       throw new Error("Failed to fetch elements");
     }
 
-    const data: [QueryFolderTypeFetch[], QueryTypeFetch[]] =
-      await response.json();
+    const data: [any] = await response.json();
 
-    console.log("printing data");
-    console.log(data);
-
-    const folders: QueryFolderType[] = data[0].map((folder) => ({
-      folderId: folder.id,
-      folderName: folder.name,
-    }));
-
-    const queries: QueryType[] = data[1].map((query) => ({
-      queryId: query.id,
-      folderId: query.folder,
-      queryName: query.name,
-      cypherQuery: query.cypher_query,
-      natLang: query.natural_language_query,
-      projectId: query.project,
-    }));
-
-    const queryFolderList: QueryFolderListType[] = combineFoldersAndQueries(
-      folders,
-      queries
-    );
+    const queryFolderList: QueryFolderListType[] = transformData(data);
 
     return queryFolderList;
   } catch (error) {

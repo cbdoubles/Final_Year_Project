@@ -151,6 +151,7 @@ def graph_data(request):
 
 # ------------------------------------ALL CRUD VIEW SETS----------------------------------------------------#
 
+
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -165,7 +166,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             # check if the file is provided
             if not file:
                 return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
-            
+
             # Check if the uploaded file format is valid
             valid_formats = ['graphml', 'json', 'csv']
             file_extension = file.name.split('.')[-1].lower()
@@ -178,11 +179,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
             # Save the file on the server
             file_path = os.path.join(settings.MEDIA_ROOT, file.name)
-            #file_path = f'C:/webapp/project_files/{file.name}'
+            # file_path = f'C:/webapp/project_files/{file.name}'
             with open(file_path, 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)
-            
+
             # Validate the data using the serializer
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -198,7 +199,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         except Exception as e:
             # Log the exception here as needed
             return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
     def partial_update(self, request, *args, **kwargs):
         try:
             project = self.get_object()
@@ -206,7 +207,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
             if 'name' in data:
                 project.name = data['name']
-            
+
             if 'file_name' in data:
                 project.file_name = data['file_name']
 
@@ -231,7 +232,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(project, data=data, partial=True)
             serializer.is_valid(raise_exception=True)
             project.save()
-            
+
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except ValidationError as e:
@@ -239,9 +240,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            
 
-#--------------------------- Here we go again -------------------------------------------#
+# --------------------------- Here we go again -------------------------------------------#
 class FavoriteQueryViewSet(viewsets.ModelViewSet):
     queryset = FavoriteQuery.objects.all()
     serializer_class = FavoriteQuerySerializer
@@ -250,7 +250,6 @@ class FavoriteQueryViewSet(viewsets.ModelViewSet):
     # Example usage: http://127.0.0.1:8000/api/favorite-queries/by-folder/?folder_id=6
     @action(detail=False, methods=['get'], url_path='by-folder')
     def by_folder(self, request):
-
         ''' 
         This does not check if the id of the folder provided is one of a folder for 
         favorite queries. So if the folder_id provided is one of a Custom folder,
@@ -263,10 +262,11 @@ class FavoriteQueryViewSet(viewsets.ModelViewSet):
             folder_id = int(folder_id)
         except ValueError:
             raise ValidationError("Error: Folder ID must be an integer.")
-        
+
         # check if a folder with this id exists
-        if not Folder.objects.filter(id = folder_id).exists():
-            raise ValidationError("Error: A Folder with this ID does not exist.")
+        if not Folder.objects.filter(id=folder_id).exists():
+            raise ValidationError(
+                "Error: A Folder with this ID does not exist.")
 
 # -------------------Custom query Views---------------------#
 # class CustomQueryViewSet(viewsets.ModelViewSet):
@@ -290,45 +290,44 @@ class FavoriteQueryViewSet(viewsets.ModelViewSet):
 
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-        favorite_queries = FavoriteQuery.objects.filter(folder_id = folder_id)
+        favorite_queries = FavoriteQuery.objects.filter(folder_id=folder_id)
         serializer = self.get_serializer(favorite_queries, many=True)
         return Response(serializer.data)
 
 
-#--------------------------- Custom Query Views -------------------------------------------#
+# --------------------------- Custom Query Views -------------------------------------------#
 class CustomQueryViewSet(viewsets.ModelViewSet):
     queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
 
     # An action that allows you to get all custom queries in a specific folder.
     # Example usage: http://127.0.0.1:8000/api/custom-queries/by-folder/?folder_id=6
-    @action(detail=False, methods = ['get'], url_path='by-folder')
+    @action(detail=False, methods=['get'], url_path='by-folder')
     def by_folder(self, request):
-
         ''' 
         This does not check if the id of the folder provided is one of a folder that
         belongs to Custom folder. So if the folder_id provided is one of a Favorite folder,
         the response will be an empty list.
         '''
 
-        folder_id = request.query_params.get('folder_id')    
+        folder_id = request.query_params.get('folder_id')
 
         try:
             folder_id = int(folder_id)
         except ValueError:
             raise ValidationError("Error: Folder ID must be an integer.")
-        
-        # check if a folder with this id exists
-        if not Folder.objects.filter(id = folder_id).exists():
-            raise ValidationError("Error: A Folder with this ID does not exist.")
 
-        custom_queries = CustomQuery.objects.filter(folder_id = folder_id)
+        # check if a folder with this id exists
+        if not Folder.objects.filter(id=folder_id).exists():
+            raise ValidationError(
+                "Error: A Folder with this ID does not exist.")
+
+        custom_queries = CustomQuery.objects.filter(folder_id=folder_id)
         serializer = self.get_serializer(custom_queries, many=True)
         return Response(serializer.data)
 
 
-#---------------------------------- Folder Views -------------------------------------------#
+# ---------------------------------- Folder Views -------------------------------------------#
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
@@ -337,10 +336,9 @@ class FolderViewSet(viewsets.ModelViewSet):
         if self.action == 'by_project':
             return FolderSerializer
         elif self.action == 'folders_with_queries':
-            return FoldersWithQueriesSerializer  
+            return FoldersWithQueriesSerializer
         return super().get_serializer_class()
 
-    
     @action(detail=False, methods=['get'], url_path='by-project')
     # Example usage: http://127.0.0.1:8000/api/folders/by-project/?project=42&type=Custom
     def by_project(self, request, *args, **kwargs):
@@ -352,18 +350,20 @@ class FolderViewSet(viewsets.ModelViewSet):
             project_id = int(project_id)
         except ValueError:
             raise ValidationError("Error: Project ID must be an integer.")
-        
+
         # check if a project with this id exists
         if not Project.objects.filter(id=project_id).exists():
-            raise ValidationError("Error: A Project with this ID does not exist.")
-        
+            raise ValidationError(
+                "Error: A Project with this ID does not exist.")
+
         # filter folders by project_id
-        folders = Folder.objects.filter(project_id=project_id, type = folder_type)
+        folders = Folder.objects.filter(
+            project_id=project_id, type=folder_type)
         serializer = self.get_serializer(folders, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], serializer_class=FolderSerializer, url_path='folders-with-queries')
-    # Example usage: http://127.0.0.1:8000/api/folders/by-project/?project=42&type=Custom
+    # Example usage: http://127.0.0.1:8000/api/folders/folders-with-queries/?project=42&type=Custom
     def folders_with_queries(self, request, *args, **kwargs):
         project_id = request.query_params.get('project')
         folder_type = request.query_params.get('type')
@@ -376,7 +376,7 @@ class FolderViewSet(viewsets.ModelViewSet):
 
         related_name = 'favoritequery_set' if folder_type == Folder.FAVORITE else 'customquery_set'
         folders = Folder.objects.filter(
-               project_id=project_id, type=folder_type).prefetch_related(related_name)
+            project_id=project_id, type=folder_type).prefetch_related(related_name)
 
         serializer = self.get_serializer(folders, many=True)
         return Response(serializer.data)
