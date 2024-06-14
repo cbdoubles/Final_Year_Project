@@ -56,13 +56,17 @@ jobs:
       statuses: write
 
     steps:
+      - name: Clean workspace
+        run: sudo rm -rf /home/tue/actions-runner/_work/Querify/Querify/*
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
-      - name: Change file permissions
-        run: sudo chmod -R 777 /home/tue/actions-runner/_work/Querify/Querify/github_conf
+      - name: Change file ownership
+        run: sudo chown -R $USER:$USER /home/tue/actions-runner/_work/Querify/Querify/github_conf
+
 
       - name: Set Node.js memory limit
         run: |
