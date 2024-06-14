@@ -80,16 +80,16 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME':   'querify_db',
-#         'USER': 'querify_remote',
-#         'PASSWORD': 'querifyrocks',
-#         'HOST': '145.220.75.94',
-#         'PORT': '3306',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME':   'querify_db',
+        'USER': 'querify_remote',
+        'PASSWORD': 'querifyrocks',
+        'HOST': '145.220.75.94',
+        'PORT': '3306',
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -102,27 +102,26 @@ WSGI_APPLICATION = "backend.wsgi.application"
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'querify_db_test',
-        'USER': 'mir',
-        'PASSWORD': 'mirisgreat',
-        'HOST': '131.155.199.143',
-        'PORT': '3306',
-        'TEST': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-        },
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'querify_db_test',
+#         'USER': 'mir',
+#         'PASSWORD': 'mirisgreat',
+#         'HOST': '131.155.199.143',
+#         'PORT': '3306',
+#         'TEST': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': ':memory:',
+#         },
+#     }
+# }
 
 if 'test' in sys.argv or 'test_coverage' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
     }
-
 
 
 # Password validation

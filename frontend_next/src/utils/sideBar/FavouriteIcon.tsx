@@ -4,7 +4,5 @@ import QueryIcon from "./QueryIcon";
 import FolderQueries from "./FolderQueries";
 
 export default function FavoriteIcon({ collapsed }: { collapsed: boolean }) {
-  return (
-    <FolderQueries type="Favorite" icon={StarIcon} collapsed={collapsed} />
-  );
+  return <QueryIcon type="Favorite" icon={StarIcon} collapsed={collapsed} />;
 }
