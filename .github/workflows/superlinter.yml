@@ -67,11 +67,11 @@ jobs:
           submodules: false
           
       - name: Set Node.js memory limit
-        run: |
-          echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
+        run: echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
 
-      - name: List directory contents
-        run: ls -la
+      - name: Verify .git directory
+        run: |
+          ls -la .git || echo ".git directory not found"
 
       - name: Set up Python
         uses: actions/setup-python@v4
