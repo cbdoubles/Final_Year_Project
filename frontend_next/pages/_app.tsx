@@ -8,6 +8,7 @@ import { PropsProvider } from "@/src/contexts/PropsContext";
 import { ProjectPropsProvider } from "@/src/contexts/ProjectContext";
 import { NextUIProvider } from "@nextui-org/react";
 import { QueryPropsProvider } from "@/src/contexts/QueryContext";
+import { Slide, ToastContainer } from "react-toastify";
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
@@ -24,6 +25,7 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
           <QueryPropsProvider>
             <ProjectPropsProvider>
               <Component {...pageProps} />
+              <ToastContainer transition={Slide} />
             </ProjectPropsProvider>
           </QueryPropsProvider>
         </PropsProvider>

@@ -7,7 +7,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
 import FileOpenButt from "../ui/FileOpenButt";
-import { ToastContainer, toast, Slide } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 
@@ -94,7 +94,6 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
   return (
     <div>
-      <ToastContainer transition={Slide} />
       <div className="flex flex-col">
         {naturalLanguageQuery}
         <NatLangBox

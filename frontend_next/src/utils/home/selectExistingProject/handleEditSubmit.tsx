@@ -1,4 +1,5 @@
 import { Element } from "@/src/libs/types";
+import { toast } from "react-toastify";
 
 export const handleEditSubmit = async (
   event: React.FormEvent<HTMLFormElement>,
@@ -38,5 +39,6 @@ export const handleEditSubmit = async (
     );
     setElements(updatedElements);
     setProjectName(prevElementState.projectName); // Set project name to the previous name
+    toast.error("Using old name");
   }
 };

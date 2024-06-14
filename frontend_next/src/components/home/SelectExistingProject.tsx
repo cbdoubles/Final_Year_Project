@@ -12,8 +12,16 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
   const [deletingElement, setDeletingElement] = useState<Element | null>(null);
 
   useEffect(() => {
-    fetchElements(setElements);
+    onLoad();
   }, []);
+
+  const onLoad = async () => {
+    const result = await fetchElements();
+
+    if (result) {
+      setElements(result);
+    }
+  };
 
   return (
     <div>
