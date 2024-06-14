@@ -20,22 +20,23 @@ class Project(models.Model):
     Represents a project. Each project has a unique name.
     """
     name = models.CharField(max_length=255, unique=True)
+    file_name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Project: {self.name}, ID: {self.id}"
+        return f"Project: {self.name}, ID: {self.id}, File Name: {self.file_name}"
 
 
-class GraphFile(models.Model):
-    """
-    Represents a graph file associated with a project.
-    """
-    project = models.OneToOneField(Project, on_delete=models.CASCADE)
-    file_type = models.CharField(max_length=255)
-    file_path = models.FileField(upload_to='projects_files/')
-    last_uploaded = models.DateTimeField(auto_now=True)
+# class GraphFile(models.Model):
+#     """
+#     Represents a graph file associated with a project.
+#     """
+#     project = models.OneToOneField(Project, on_delete=models.CASCADE)
+#     file_type = models.CharField(max_length=255)
+#     file_path = models.FileField(upload_to='projects_files/')
+#     last_uploaded = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"Graph File: {self.file_type} (Project: {self.project.name})"
+#     def __str__(self):
+#         return f"Graph File: {self.file_type} (Project: {self.project.name})"
 
 
 class Folder(models.Model):
@@ -74,6 +75,12 @@ class CustomQuery(models.Model):
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'folder'], name='unique_custom_query_name_constraint')
+        ]
+
     def __str__(self):
         return f"Custom Query: {self.name} (Project: {self.project.name})"
 
@@ -88,6 +95,12 @@ class FavoriteQuery(models.Model):
     name = models.CharField(max_length=255)
     cypher_query = models.TextField()
     natural_language_query = models.TextField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'folder'], name='unique_favorite_query_name_constraint')
+        ]
 
     def __str__(self):
         return f"Favorite Query: {self.name} (Project: {self.project.name})"

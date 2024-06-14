@@ -37,12 +37,19 @@ from rest_framework.decorators import action
 from py2neo import DatabaseError
 from django.conf import settings
 from .serializers import *
-from .models import CustomQuery, Project, GraphFile, Folder, Query
+from .models import *
 from .neo4j_services import Neo4jService
 from django.db import IntegrityError
 from .upload_file import process_file
 from .services import *
 import logging
+from rest_framework.exceptions import ValidationError
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from .models import CustomQuery
+from .serializers import CustomQuerySerializer
+from rest_framework.decorators import action
+
 
 # Initialize Neo4j connection
 neo4j_service = Neo4jService(
@@ -91,76 +98,6 @@ def upload_file(request):
 
         return FileResponse(open(file_path, "rb"))
     return JsonResponse({"status": "error", "error": "Invalid request"}, status=400)
-
-# used for testing
-
-
-def save_graph(request):
-    """
-    Save a graph to the database.
-
-    This function creates a simple graph with nodes 'A' and 'B' connected by an edge,
-    converts the graph to JSON format, and saves it to the database with a Cypher query
-    and a natural language query.
-
-    It only accepts POST requests. If the request method is not POST, it returns a JSON response
-    with an error message.
-
-    Parameters:
-    request (django.http.HttpRequest): The request object.
-
-    Returns:
-    django.http.JsonResponse: A JSON response with a success message
-    if the graph is saved successfully,
-    or an error message if the request method is not POST.
-    """
-    if request.method != "POST":
-        return JsonResponse({"error": "Method not allowed"}, status=405)
-
-    g = nx.Graph()
-    g.add_edge("A", "B")
-    data = json_graph.node_link_data(g)
-    graph_json = json.dumps(data)
-
-    query = Query(cypher_query="MATCH (n) RETURN n",
-                  natural_query="Return all nodes", graph=graph_json)
-    query.save()
-
-    return JsonResponse({"message": "Graph saved successfully"}, status=201)
-
-
-def view_graph(request, query_id):
-    """
-    Retrieve a graph from the database.
-
-    This function retrieves a graph from the database using the provided query ID.
-    It returns a JSON response with the graph data and the associated
-    Cypher and natural language queries.
-
-    If the graph does not exist, it raises a 404 error.
-
-    Parameters:
-    request (django.http.HttpRequest): The request object.
-    query_id (int): The ID of the query associated with the graph.
-
-    Returns:
-    django.http.JsonResponse: A JSON response with the graph data and the associated queries.
-    """
-    if request.method != "GET":
-        return JsonResponse({"error": "Method not allowed"}, status=405)
-    try:
-        query = Query.objects.get(id=query_id)
-    except Query.DoesNotExist as exc:
-        raise Http404("Graph not found") from exc
-
-    graph_json = query.graph
-
-    return JsonResponse({
-        "message": "Graph retrieved successfully",
-        "cypher_query": query.cypher_query,
-        "natural_query": query.natural_query,
-        "graph": graph_json
-    })
 
 
 @csrf_exempt
@@ -212,99 +149,7 @@ def graph_data(request):
     # Return the data as JSON
     return JsonResponse({"nodes": nodes, "edges": edges})
 
-
-@csrf_exempt
-def cypher_query(request):
-    """
-    Run a Cypher query and optionally save it to the database.
-
-    This function retrieves a Cypher query and a 'save' parameter from the request body.
-    It runs the Cypher query and returns the results as JSON.
-    If the 'save' parameter is True, it also saves the query and its results to the database.
-
-    If a database error occurs, it returns a JSON response with an error message.
-
-    Parameters:
-    request (django.http.HttpRequest): The request object.
-
-    Returns:
-    django.http.JsonResponse: A JSON response with the query results or an error message.
-    """
-    try:
-        # Get the Cypher query and save parameter from the request
-        data = json.loads(request.body)
-        cypher_query_run = data.get("cypher_query")
-        natural_query_run = data.get("natural_query")
-        if not natural_query:
-            natural_query = "mt"
-        save = data.get("save")
-
-        # Run the Cypher query
-        results = neo4j_service.run_query(cypher_query_run)
-    except DatabaseError as e:
-        return JsonResponse({"error": str(e)}, status=500)
-    except json.JSONDecodeError as e:
-        return JsonResponse({"error": f"Invalid JSON: {str(e)}"}, status=400)
-
-    try:
-        # If save is True, save the query to the database
-        if save:
-            for record in results:
-                # Convert the record to a string and save it to the database
-                # convert the first field of the record to a string
-                graph = str(record[0])
-                query = Query(cypher_query=cypher_query_run,
-                              natural_query=natural_query_run, graph=graph)
-                query.save()
-    except DatabaseError as e:
-        return JsonResponse({"error": f"Error saving to database: {str(e)}"}, status=500)
-
-    # Return the results as JSON
-    return JsonResponse([str(record[0]) for record in results], safe=False)
-
-
-@csrf_exempt
-def run_query(request):
-    """
-    Run a Cypher query on graph data and return the results.
-
-    This function retrieves a Cypher query from the request body,
-    sends a POST request to the graph_data URL
-    to get the original graph data, runs the Cypher query on the graph data,
-    and returns the new graph data as JSON.
-
-    It only accepts POST requests. If the request method is not POST,
-    it returns a JSON response with an error message.
-
-    Parameters:
-    request (django.http.HttpRequest): The request object.
-
-    Returns:
-    django.http.JsonResponse: A JSON response with the new graph data or an error message.
-    """
-    if request.method == "POST":
-        data = json.loads(request.body)
-        query = data.get("query")
-
-        # Send a POST request to the graph_data URL
-        response = requests.post("http://127.0.0.1:8000/api/graphData")
-        original_graph_data = response.json()
-        nodes = original_graph_data["nodes"]
-        edges = original_graph_data["edges"]
-
-        # Run the Cypher query on the graph data
-        # This is a placeholder, replace with your actual logic
-        new_graph_data = neo4j_service.query_graph(query)
-
-        # Process the results
-        nodes = new_graph_data[0]
-        edges = new_graph_data[1]
-        # Return the new graph data
-        return JsonResponse({"nodes": nodes, "edges": edges}, safe=False)
-    return JsonResponse({"error": "Only POST requests are allowed."}, status=500)
-
-
-# -----------------------------------------------------------------------------------------------------
+# ------------------------------------ALL CRUD VIEW SETS----------------------------------------------------#
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
@@ -312,38 +157,116 @@ class ProjectViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
-        project, errors = ProjectService.create_project(request.data, request)
-        if project:
-            if 'file_path' in request.FILES:
-                file, file_errors = FileService.upload_file(project, request)
-                if file:
-                    return Response(ProjectSerializer(project).data, status=status.HTTP_201_CREATED)
-                ProjectService.delete_project(project)
-                return Response(file_errors, status=status.HTTP_400_BAD_REQUEST)
-            ProjectService.delete_project(project)
-            return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        project, errors = ProjectService.update_project(
-            instance, request.data, partial)
-        if project:
-            if 'file_path' in request.FILES:
-                logging.warning('We have a file here')
-                file, file_errors = FileService.reupload_file(project, request)
-                if file:
-                    return Response(ProjectSerializer(project).data)
-                return Response(file_errors, status=status.HTTP_400_BAD_REQUEST)
-            return Response(ProjectSerializer(project).data)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            # retreive the file from the request
+            file = request.FILES.get('file')
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        FileService.delete_file(instance)
-        ProjectService.delete_project(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            # check if the file is provided
+            if not file:
+                return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Check if the uploaded file format is valid
+            valid_formats = ['graphml', 'json', 'csv']
+            file_extension = file.name.split('.')[-1].lower()
+            if file_extension not in valid_formats:
+                print("bad response bad file format")
+                return Response(
+                    {"error": "Invalid file format. Only graphML, JSON, and CSV files are allowed."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Save the file on the server
+            file_path = os.path.join(settings.MEDIA_ROOT, file.name)
+            #file_path = f'C:/webapp/project_files/{file.name}'
+            with open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            
+            # Validate the data using the serializer
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            project = serializer.save()
+
+            # Send the project ID and file path to the method "modify_input_file"
+            modify_input_file(project.id, file_path)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            # Log the exception here as needed
+            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    def partial_update(self, request, *args, **kwargs):
+        try:
+            project = self.get_object()
+            data = request.data
+
+            if 'name' in data:
+                project.name = data['name']
+            
+            if 'file_name' in data:
+                project.file_name = data['file_name']
+
+            if 'file' in request.FILES:
+                file = request.FILES.get('file')
+
+                # Check if the uploaded file format is valid
+                valid_formats = ['graphml', 'json', 'csv']
+                file_extension = file.name.split('.')[-1].lower()
+                if file_extension not in valid_formats:
+                    print("bad response bad file format")
+                    return Response(
+                        {"error": "Invalid file format. Only graphML, JSON, and CSV files are allowed."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                file_path = os.path.join(settings.MEDIA_ROOT, file.name)
+                with open(file_path, 'wb+') as destination:
+                    for chunk in file.chunks():
+                        destination.write(chunk)
+
+            serializer = self.get_serializer(project, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            project.save()
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            
+
+#--------------------------- Here we go again -------------------------------------------#
+class FavoriteQueryViewSet(viewsets.ModelViewSet):
+    queryset = FavoriteQuery.objects.all()
+    serializer_class = FavoriteQuerySerializer
+
+    # An action that allows you to get all favorite queries in a specific folder.
+    # Example usage: http://127.0.0.1:8000/api/favorite-queries/by-folder/?folder_id=6
+    @action(detail=False, methods=['get'], url_path='by-folder')
+    def by_folder(self, request):
+
+        ''' 
+        This does not check if the id of the folder provided is one of a folder for 
+        favorite queries. So if the folder_id provided is one of a Custom folder,
+        the response will be an empty list.
+        '''
+
+        folder_id = request.query_params.get('folder_id')
+
+        try:
+            folder_id = int(folder_id)
+        except ValueError:
+            raise ValidationError("Error: Folder ID must be an integer.")
+        
+        # check if a folder with this id exists
+        if not Folder.objects.filter(id = folder_id).exists():
+            raise ValidationError("Error: A Folder with this ID does not exist.")
 
 # -------------------Custom query Views---------------------#
 # class CustomQueryViewSet(viewsets.ModelViewSet):
@@ -368,78 +291,79 @@ class ProjectViewSet(viewsets.ModelViewSet):
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+        favorite_queries = FavoriteQuery.objects.filter(folder_id = folder_id)
+        serializer = self.get_serializer(favorite_queries, many=True)
+        return Response(serializer.data)
+
+
+#--------------------------- Custom Query Views -------------------------------------------#
 class CustomQueryViewSet(viewsets.ModelViewSet):
     queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
 
-    def create(self, request, *args, **kwargs):
+    # An action that allows you to get all custom queries in a specific folder.
+    # Example usage: http://127.0.0.1:8000/api/custom-queries/by-folder/?folder_id=6
+    @action(detail=False, methods = ['get'], url_path='by-folder')
+    def by_folder(self, request):
+
+        ''' 
+        This does not check if the id of the folder provided is one of a folder that
+        belongs to Custom folder. So if the folder_id provided is one of a Favorite folder,
+        the response will be an empty list.
+        '''
+
+        folder_id = request.query_params.get('folder_id')    
+
         try:
-            custom_query = CustomQueryService.create_custom_query(request.data)
-            serializer = self.get_serializer(custom_query)
-            return Response({
-                'message': 'Custom query created successfully.',
-                'data': serializer.data
-            }, status=status.HTTP_201_CREATED)
-        except ValidationError as e:
-            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            folder_id = int(folder_id)
+        except ValueError:
+            raise ValidationError("Error: Folder ID must be an integer.")
+        
+        # check if a folder with this id exists
+        if not Folder.objects.filter(id = folder_id).exists():
+            raise ValidationError("Error: A Folder with this ID does not exist.")
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        try:
-            custom_query = CustomQueryService.update_custom_query(
-                instance, request.data)
-            serializer = self.get_serializer(custom_query)
-            return Response({
-                'message': 'Custom query updated successfully.',
-                'data': serializer.data
-            })
-        except ValidationError as e:
-            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({
-            'message': 'Custom query deleted successfully.'
-        }, status=status.HTTP_204_NO_CONTENT)
+        custom_queries = CustomQuery.objects.filter(folder_id = folder_id)
+        serializer = self.get_serializer(custom_queries, many=True)
+        return Response(serializer.data)
 
 
-# -------------------Folder related views---------------------#
+#---------------------------------- Folder Views -------------------------------------------#
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
 
-    def create(self, request, *args, **kwargs):
-        folder, errors = FolderService.create_folder(request.data)
+    def get_serializer_class(self):
+        if self.action == 'by_project':
+            return FolderSerializer
+        elif self.action == 'folders_with_queries':
+            return FoldersWithQueriesSerializer  
+        return super().get_serializer_class()
 
-        if folder:
-            return Response(FolderSerializer(folder).data, status=status.HTTP_201_CREATED)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['get'], url_path='by-project')
+    # Example usage: http://127.0.0.1:8000/api/folders/by-project/?project=42&type=Custom
+    def by_project(self, request, *args, **kwargs):
 
-    # @action(detail=False, methods=['get'])
-    # def favorite_folders_with_queries(self, request, *args, **kwargs):
-    #     project_id = request.query_params.get('project')
-    #     if not project_id:
-    #         return Response({'error': 'Project ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+        project_id = request.query_params.get('project')
+        folder_type = request.query_params.get('type')
 
-    #     favorite_folders = Folder.objects.filter(
-    #         project_id=project_id, type=Folder.FAVORITE).prefetch_related('favoritequery_set')
-    #     serializer = self.get_serializer(favorite_folders, many=True)
-    #     return Response(serializer.data)
+        try:
+            project_id = int(project_id)
+        except ValueError:
+            raise ValidationError("Error: Project ID must be an integer.")
+        
+        # check if a project with this id exists
+        if not Project.objects.filter(id=project_id).exists():
+            raise ValidationError("Error: A Project with this ID does not exist.")
+        
+        # filter folders by project_id
+        folders = Folder.objects.filter(project_id=project_id, type = folder_type)
+        serializer = self.get_serializer(folders, many=True)
+        return Response(serializer.data)
 
-    # @action(detail=False, methods=['get'])
-    # def custom_folders_with_queries(self, request, *args, **kwargs):
-    #     project_id = request.query_params.get('project')
-    #     if not project_id:
-    #         return Response({'error': 'Project ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-
-    #     custom_folders = Folder.objects.filter(
-    #         project_id=project_id, type=Folder.CUSTOM).prefetch_related('customquery_set')
-    #     serializer = self.get_serializer(custom_folders, many=True)
-    #     return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], serializer_class=FolderSerializer, url_path='folders-with-queries')
+    # Example usage: http://127.0.0.1:8000/api/folders/by-project/?project=42&type=Custom
     def folders_with_queries(self, request, *args, **kwargs):
         project_id = request.query_params.get('project')
         folder_type = request.query_params.get('type')
@@ -450,11 +374,9 @@ class FolderViewSet(viewsets.ModelViewSet):
         if folder_type not in [Folder.FAVORITE, Folder.CUSTOM]:
             return Response({'error': 'Invalid type'}, status=status.HTTP_400_BAD_REQUEST)
 
+        related_name = 'favoritequery_set' if folder_type == Folder.FAVORITE else 'customquery_set'
         folders = Folder.objects.filter(
-            project_id=project_id, type=folder_type)
-        queries = FavoriteQuery.objects.filter(folder__in=folders)
+               project_id=project_id, type=folder_type).prefetch_related(related_name)
 
-        folder_serializer = FolderSerializer(folders, many=True)
-        query_serializer = CustomQuerySerializer(queries, many=True)
-
-        return Response([folder_serializer.data, query_serializer.data])
+        serializer = self.get_serializer(folders, many=True)
+        return Response(serializer.data)

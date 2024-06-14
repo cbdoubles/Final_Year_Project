@@ -35,3 +35,17 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
 };
 
 export default MyApp;
+
+// import React from "react";
+// import CustomQueryForm from "@/src/components/CustomQueryForm"; // Adjust the path based on your directory structure
+
+// function MyApp({ Component, pageProps }) {
+//   return (
+//     <div>
+//       <CustomQueryForm />
+//       <Component {...pageProps} />
+//     </div>
+//   );
+// }
+
+// export default MyApp;
