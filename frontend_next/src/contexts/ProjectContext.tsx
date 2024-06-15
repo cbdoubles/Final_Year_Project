@@ -8,9 +8,9 @@ type ProjectContextType = {
 };
 
 export const ProjectContext = createContext<ProjectContextType>({
-  projectId: -1, // Default value for projectId
+  projectId: 1, // Default value for projectId
   setProjectId: () => {},
-  projectName: "", // Default value for projectName
+  projectName: "test", // Default value for projectName
   setProjectName: () => {},
 });
 
@@ -19,8 +19,8 @@ export const ProjectPropsProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [projectId, setProjectId] = useState<number>(-1);
-  const [projectName, setProjectName] = useState<string>("");
+  const [projectId, setProjectId] = useState<number>(1);
+  const [projectName, setProjectName] = useState<string>("test");
 
   const value = useMemo(
     () => ({
