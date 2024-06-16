@@ -1,15 +1,15 @@
-import { QueryFolderListType, QueryType } from "@/src/libs/types";
+import { FolderType, QueryFolderListType, QueryType } from "@/src/libs/types";
 
 export const fetchFoldersQueries = async (
-  folderType: "Default" | "Custom" | "Favorite",
+  selectedFolderType: FolderType,
   projectId: number
 ): Promise<QueryFolderListType[]> => {
   try {
     // Fetch the list of folders
     console.log(projectId);
-    console.log(folderType);
+    console.log(selectedFolderType);
     const folderResponse = await fetch(
-      `http://localhost:8000/api/folders/by-project/?project=${projectId}&type=${folderType}`,
+      `http://localhost:8000/api/folders/by-project/?project=${projectId}&type=${selectedFolderType}`,
       {
         method: "GET",
       }
@@ -25,7 +25,7 @@ export const fetchFoldersQueries = async (
     const queryFolderList: QueryFolderListType[] = [];
 
     const getQueriesUrl = (folderId: number): string => {
-      return folderType === "Favorite"
+      return selectedFolderType === "Favorite"
         ? `http://localhost:8000/api/favorite-queries/by-folder/?folder_id=${folderId}`
         : `http://localhost:8000/api/custom-queries/by-folder/?folder_id=${folderId}`;
     };
@@ -34,6 +34,7 @@ export const fetchFoldersQueries = async (
     for (const folder of folders) {
       const folderId = folder.id;
       const folderName = folder.name;
+      const folderType = folder.type;
 
       // Fetch the queries for the current folder
       const queriesResponse = await fetch(getQueriesUrl(folderId), {
@@ -60,6 +61,7 @@ export const fetchFoldersQueries = async (
         folder: {
           folderId: folderId,
           folderName: folderName,
+          folderType: folderType,
         },
         queries: queries,
       });

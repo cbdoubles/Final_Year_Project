@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 import QueryIcon from "./QueryIcon";
-// import FolderQueries from "./FolderQueries";
 
 export default function CustomIcon({ collapsed }: { collapsed: boolean }) {
   return (

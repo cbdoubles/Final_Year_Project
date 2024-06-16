@@ -3,60 +3,29 @@ import FolderTest from "@/src/components/favouriteFolder/FolderTest";
 import QueryIconButton from "./QueryIconButton";
 import UIModal from "@/src/components/ui/UIModal";
 import UIButton from "@/src/components/ui/UIButton";
-import {
-  QueryFolderType,
-  QueryType,
-  QueryFolderListType,
-  FolderType,
-} from "@/src/libs/types";
+import { FolderType, QueryType, QueryFolderListType } from "@/src/libs/types";
 import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { useQueryProps } from "@/src/contexts/QueryContext";
+import { toast } from "react-toastify";
 
 interface SelectProps {
   collapsed?: boolean;
-  type: "Default" | "Custom" | "Favorite";
+  type: FolderType;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
-
-const folders: QueryFolderType[] = [
-  { folderId: 1, folderName: "Folder 1" },
-  { folderId: 2, folderName: "Folder 2" },
-];
-
-const queries: QueryType[] = [
-  {
-    queryId: 1,
-    folderId: 1,
-    queryName: "Query 1",
-    cypherQuery: "MATCH (n) RETURN n",
-    natLang: "Find all nodes",
-  },
-  {
-    queryId: 2,
-    folderId: 1,
-    queryName: "Query 2",
-    cypherQuery: "MATCH (n)-[r]->(m) RETURN r",
-    natLang: "Find all relationships",
-  },
-  {
-    queryId: 3,
-    folderId: 2,
-    queryName: "Query 3",
-    cypherQuery: "MATCH (n:Person) RETURN n",
-    natLang: "Find all persons",
-  },
-];
 
 const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
   const [items, setItems] = useState<QueryFolderListType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState<QueryType | null>(null);
+  const { projectId } = useProjectProps();
+  const { setQueryFromQuery } = useQueryProps();
 
   const loadItems = async (queryFolderList: Promise<QueryFolderListType[]>) => {
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 200));
     return queryFolderList;
   };
-
-  const { projectId } = useProjectProps();
 
   const fetchItems = () => {
     setIsLoading(true);
@@ -66,19 +35,25 @@ const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
       projectId
     );
 
-    // const queryFolderList: QueryFolderListType[] = combineFoldersAndQueries(
-    //   folders,
-    //   queries
-    // );
     loadItems(queryFolderList).then((newItems) => {
       setItems(newItems);
       setIsLoading(false);
     });
   };
 
+  const handleSelectQuery = (query: QueryType) => {
+    setSelectedQuery(query);
+  };
+
   // Button click handler
-  const handleButtonClick = () => {
+  const handleSelectQueryButtonClick = (onClose: () => void) => {
     console.log("Select Query button clicked");
+    if (selectedQuery) {
+      onClose();
+      setQueryFromQuery(selectedQuery);
+    } else {
+      toast.error("No query selected");
+    }
   };
 
   return (
@@ -111,12 +86,15 @@ const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
               title={`Select a ${type} query`}
               items={items}
               canBeShared={false}
+              handleSelectQuery={handleSelectQuery}
               type="Default"
             />
           )
         }
         footer={({ onClose }) => (
-          <UIButton onClick={handleButtonClick}>Select query</UIButton>
+          <UIButton onClick={() => handleSelectQueryButtonClick(onClose)}>
+            Select query
+          </UIButton>
         )}
         bodyNoPadding
       ></UIModal>

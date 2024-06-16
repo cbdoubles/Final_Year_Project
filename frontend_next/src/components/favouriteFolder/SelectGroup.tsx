@@ -1,5 +1,13 @@
-import { MouseEvent } from "react";
-import { QueryFolderListType, QueryFolderType } from "@/src/libs/types";
+//////////////
+//////////////
+//////////////
+//Don't use anymore
+
+import {
+  QueryType,
+  QueryFolderListType,
+  QueryFolderType,
+} from "@/src/libs/types";
 import FolderDisplay from "./folderQueryStructure/FolderDisplay";
 
 const SelectGroup = ({
@@ -10,7 +18,7 @@ const SelectGroup = ({
 }: {
   item: QueryFolderListType;
   canBeShared: boolean;
-  handlerClick: (event: MouseEvent) => void;
+  handlerClick: (query: QueryType) => void;
   deleteFolder: (deleteFolder: boolean, folder: QueryFolderType) => void;
 }) => {
   return (

@@ -16,11 +16,11 @@ export const handleDeleteFolder = async (
         const errorData = await response.json();
         throw new Error(errorData.error || "Unknown error");
       }
-      console.log("deleted in backend");
+      console.log("deleted folder and associated in backend");
 
       return true; // Return true if deletion was successful
     } catch (error) {
-      console.error("Error deleting element:", error);
+      console.error("Error deleting folder:", error);
       return false; // Return false if any error occurs during deletion
     }
   }

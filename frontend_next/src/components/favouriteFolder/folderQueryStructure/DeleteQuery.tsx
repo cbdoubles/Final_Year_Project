@@ -1,12 +1,31 @@
-import { useState } from "react";
 import UIModal from "@/components/ui/UIModal";
 import UIButton from "@/components/ui/UIButton";
+import { FolderType, QueryType } from "@/src/libs/types";
 import { LuTrash2 } from "react-icons/lu";
+import { handleDeleteQuery } from "@/src/utils/sideBar/fetches/handleDeleteQuery";
 
-const DeleteQuery = ({ queryId }: { queryId: number }) => {
+const DeleteQuery = ({
+  query,
+  deleteQuery,
+  type,
+}: {
+  query: QueryType;
+  deleteQuery: (deletingQuery: boolean, deleteQuery: QueryType) => void;
+  type: FolderType;
+}) => {
+  const loadItems = async (deleted: Promise<boolean>) => {
+    await new Promise((r) => setTimeout(r, 200));
+    return deleted;
+  };
+
   const handleConfirmDeleteQuery = () => {
-    console.log("Deleting query with ID:", queryId);
-    // Implement the delete functionality here
+    const returnedFolder: Promise<boolean> = handleDeleteQuery(query, type);
+
+    loadItems(returnedFolder).then((newItem) => {
+      deleteQuery(newItem, query);
+    });
+    deleteQuery(true, query);
+    console.log("in handling delete query");
   };
 
   return (

@@ -4,7 +4,7 @@ import { FolderType } from "@/src/libs/types";
 interface SelectProps {
   handleClick: () => void;
   collapsed?: boolean;
-  type: "Default" | "Custom" | "Favorite" | "Import" | "Collapsed";
+  type: FolderType;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; // Updated icon prop type
 }
 

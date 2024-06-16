@@ -1,6 +1,5 @@
-import { MouseEvent } from "react";
 import { LuCornerDownRight, LuShare } from "react-icons/lu";
-import { QueryType } from "@/src/libs/types";
+import { FolderType, QueryType } from "@/src/libs/types";
 import EditQuery from "./EditQuery";
 import DeleteQuery from "./DeleteQuery";
 
@@ -8,10 +7,14 @@ const QueryDisplay = ({
   queries,
   canBeShared,
   handlerClick,
+  deleteQuery,
+  type,
 }: {
   queries: QueryType[];
   canBeShared: boolean;
-  handlerClick: (event: MouseEvent) => void;
+  handlerClick: (query: QueryType) => void;
+  deleteQuery: (deletingQuery: boolean, deleteQuery: QueryType) => void;
+  type: FolderType;
 }) => {
   return (
     <>
@@ -21,7 +24,7 @@ const QueryDisplay = ({
             key % 2 === 0 ? "bg-sky-100" : "bg-white"
           }`}
           key={query.queryId}
-          onClick={handlerClick}
+          onClick={() => handlerClick(query)}
         >
           <button className="flex gap-1 items-center">
             <LuCornerDownRight className="text-gray-600" />
@@ -36,7 +39,7 @@ const QueryDisplay = ({
               </button>
             )}
             <EditQuery />
-            <DeleteQuery queryId={query.queryId} />
+            <DeleteQuery query={query} deleteQuery={deleteQuery} type={type} />
           </div>
         </div>
       ))}

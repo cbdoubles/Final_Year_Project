@@ -1,8 +1,6 @@
 // types.ts
 
-export type FolderType = {
-  type: "Default" | "Custom" | "Favorite";
-};
+export type FolderType = "Default" | "Custom" | "Favorite" | null;
 
 //element (to be replaced by ProjectType at some point)
 
@@ -26,6 +24,7 @@ export type ProjectType = {
 export type QueryFolderType = {
   folderId: number;
   folderName: string;
+  folderType: FolderType;
 };
 
 export type QueryType = {

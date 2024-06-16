@@ -3,7 +3,11 @@ import { LuFolder } from "react-icons/lu";
 import QueryDisplay from "./QueryDisplay";
 import EditFolder from "./EditFolder";
 import DeleteFolder from "./DeleteFolder";
-import { QueryFolderType, QueryFolderListType } from "@/src/libs/types";
+import {
+  QueryType,
+  QueryFolderType,
+  QueryFolderListType,
+} from "@/src/libs/types";
 
 const FolderDisplay = ({
   item,
@@ -13,11 +17,12 @@ const FolderDisplay = ({
 }: {
   item: QueryFolderListType;
   canBeShared: boolean;
-  handlerClick: (event: React.MouseEvent<Element, MouseEvent>) => void;
+  handlerClick: (query: QueryType) => void;
   deleteFolder: (deleteFolder: boolean, folder: QueryFolderType) => void;
 }) => {
   const [open, setOpen] = useState(true);
   const [folder, setFolder] = useState<QueryFolderType>(item.folder);
+  const [queries, setQueries] = useState(item.queries);
 
   const handleFolderClick = () => {
     setOpen(!open);
@@ -27,6 +32,15 @@ const FolderDisplay = ({
     const updatedFolder = { ...folder, folderName: newFolderName };
     setFolder(updatedFolder);
     item.folder = updatedFolder; // Avoid mutating props directly
+  };
+
+  const deleteQuery = (deletingQuery: boolean, deleteQuery: QueryType) => {
+    if (deletingQuery) {
+      const updatedQueries = item.queries.filter(
+        (query) => query.queryId !== deleteQuery.queryId
+      );
+      setQueries(updatedQueries);
+    }
   };
 
   return (
@@ -44,12 +58,14 @@ const FolderDisplay = ({
           <DeleteFolder folder={folder} deleteFolder={deleteFolder} />
         </div>
       </div>
-      {item.queries.length > 0 && open && (
+      {queries.length > 0 && open && (
         <div className="w-full">
           <QueryDisplay
-            queries={item.queries}
+            queries={queries}
             canBeShared={canBeShared}
             handlerClick={handlerClick} // Ensure handlerClick matches the type here
+            deleteQuery={deleteQuery}
+            type={item.folder.folderType}
           />
         </div>
       )}
