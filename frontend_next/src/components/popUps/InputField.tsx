@@ -1,20 +1,29 @@
-
-import { Textarea } from "@nextui-org/react"
-import React from "react"
+import { Textarea } from "@nextui-org/react";
+import React, { ChangeEventHandler } from "react";
 
 type QueryInputProps = {
-  label?: string
-  placeholder: string
-  rows: number
-  readOnly?: boolean
-}
+  label?: string;
+  placeholder?: string;
+  rows: number;
+  readOnly?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 const InputField: React.FC<QueryInputProps> = ({
   placeholder,
   label,
   rows,
   readOnly,
+  value,
+  onChange,
 }) => {
+  // const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  //   if (onChange) {
+  //     onChange(e);
+  //   }
+  // };
+
   return (
     <Textarea
       {...(label ? { label } : {})}
@@ -23,8 +32,10 @@ const InputField: React.FC<QueryInputProps> = ({
       placeholder={placeholder}
       minRows={rows}
       isDisabled={readOnly}
+      value={value}
+      onChange={onChange}
     />
-  )
-}
+  );
+};
 
-export default InputField
+export default InputField;

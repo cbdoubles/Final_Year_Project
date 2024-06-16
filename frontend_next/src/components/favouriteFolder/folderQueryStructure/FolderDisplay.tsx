@@ -43,6 +43,15 @@ const FolderDisplay = ({
     }
   };
 
+  const editQuery = (editingQuery: boolean, editQuery: QueryType) => {
+    if (editingQuery) {
+      const updatedQueries = item.queries.map((query) =>
+        query.queryId === editQuery.queryId ? { ...query, ...editQuery } : query
+      );
+      setQueries(updatedQueries);
+    }
+  };
+
   return (
     <div className={"bg-sky-600"}>
       <div className="flex items-center justify-between">
@@ -65,6 +74,7 @@ const FolderDisplay = ({
             canBeShared={canBeShared}
             handlerClick={handlerClick} // Ensure handlerClick matches the type here
             deleteQuery={deleteQuery}
+            editQuery={editQuery}
             type={item.folder.folderType}
           />
         </div>

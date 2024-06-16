@@ -8,14 +8,18 @@ const QueryDisplay = ({
   canBeShared,
   handlerClick,
   deleteQuery,
+  editQuery,
   type,
 }: {
   queries: QueryType[];
   canBeShared: boolean;
   handlerClick: (query: QueryType) => void;
   deleteQuery: (deletingQuery: boolean, deleteQuery: QueryType) => void;
+  editQuery: (editingQuery: boolean, editQuery: QueryType) => void;
   type: FolderType;
 }) => {
+
+
   return (
     <>
       {queries.map((query, key) => (
@@ -38,7 +42,7 @@ const QueryDisplay = ({
                 <LuShare className="text-black" />
               </button>
             )}
-            <EditQuery />
+            <EditQuery query={query} editQuery={editQuery} type={type} />
             <DeleteQuery query={query} deleteQuery={deleteQuery} type={type} />
           </div>
         </div>

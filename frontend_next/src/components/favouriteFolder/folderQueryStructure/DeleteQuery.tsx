@@ -19,9 +19,9 @@ const DeleteQuery = ({
   };
 
   const handleConfirmDeleteQuery = () => {
-    const returnedFolder: Promise<boolean> = handleDeleteQuery(query, type);
+    const returnedQuery: Promise<boolean> = handleDeleteQuery(query, type);
 
-    loadItems(returnedFolder).then((newItem) => {
+    loadItems(returnedQuery).then((newItem) => {
       deleteQuery(newItem, query);
     });
     deleteQuery(true, query);
