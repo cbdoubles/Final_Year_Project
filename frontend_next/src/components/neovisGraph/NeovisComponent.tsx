@@ -1,4 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { Network, IdType } from "vis-network";
+import { VisNetwork } from "./NeovisFunctionalities";
+
+//TODO break down the code into smaller files
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -13,7 +17,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     const draw = async () => {
       const NeoVis = await import("neovis.js");
 
-      //TODO add map for labels and colors
       const transformLabels = (labels: string[]) => {
         const transformedNodesLabels: Record<string, any> = {};
 
@@ -82,7 +85,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         return color;
       };
 
-      //TODO add map for labels and colors
       const transformRelationshipTypes = (relationshipTypes: string[]) => {
         const transformedRelationshipTypes: Record<string, any> = {};
 
@@ -210,6 +212,15 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       cypherRef.current.renderWithCypher(query);
     }
   }, [query]);
+
+  //   const handleExpandNode = () => {
+  //     var cypher = `MATCH (p1: Page)-[l: LINKS_TO]-(p2: Page) WHERE ID(p1) IN [${visNetwork
+  //         ?.getSelectedNodes()
+  //         .toString()}] RETURN p1, l, p2`;
+  //     vis?.updateWithCypher(cypher);
+  //     // close context menu
+  //     setState({ ...state, open: false });
+  // };
 
   return (
     <div id="viz" ref={visRef} style={{ width: "100%", height: "600px" }} />
