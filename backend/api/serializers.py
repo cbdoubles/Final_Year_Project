@@ -62,13 +62,6 @@ class FolderSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-# serializer class used to fetch only id and name of queries in a folder
-class QueryLiteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Query
-        fields = ['id', 'name']
-
-
 class FoldersWithQueriesSerializer(serializers.ModelSerializer):
     queries = serializers.SerializerMethodField()
 
