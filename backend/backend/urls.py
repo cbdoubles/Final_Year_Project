@@ -28,7 +28,7 @@ from api.views.project_viewset import ProjectViewSet
 from api.views.custom_query_viewset import CustomQueryViewSet
 from api.views.folder_viewset import FolderViewSet
 from api.views.favorite_query_viewset import FavoriteQueryViewSet
-from backend.api.views.table_view import json_view
+from api.views.table_view import json_view
 
 # Define the schema view for Swagger
 schema_view = get_schema_view(
