@@ -1,14 +1,17 @@
 import { QueryFolderType } from "@/src/libs/types";
 
 export const handleDeleteFolder = async (
-  deletingfolder: QueryFolderType | null
+  deletingFolder: QueryFolderType | null
 ): Promise<boolean> => {
-  if (deletingfolder) {
+  if (deletingFolder) {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/folders/${deletingfolder.folderId}/`,
+        `http://localhost:8000/api/folders/${deletingFolder.folderId}/`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -16,7 +19,7 @@ export const handleDeleteFolder = async (
         const errorData = await response.json();
         throw new Error(errorData.error || "Unknown error");
       }
-      console.log("deleted folder and associated in backend");
+      console.log("Deleted folder and associated objects in backend");
 
       return true; // Return true if deletion was successful
     } catch (error) {
@@ -25,5 +28,5 @@ export const handleDeleteFolder = async (
     }
   }
 
-  return false; // Return false if deletingElement is null
+  return false; // Return false if deletingFolder is null
 };
