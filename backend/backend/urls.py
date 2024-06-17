@@ -17,13 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.http import JsonResponse
-from backend.api.Views.views import *
+# from backend.api.Views.views import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 from backend import settings
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from backend.api.Views.project_viewset import ProjectViewSet
+from backend.api.Views.custom_query_viewset import CustomQueryViewSet
+from backend.api.Views.folder_viewset import FolderViewSet
+from backend.api.Views.favorite_query_viewset import FavoriteQueryViewSet, FolderAndQueriesViewSet
+
 
 # Define the schema view for Swagger
 schema_view = get_schema_view(

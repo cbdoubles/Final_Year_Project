@@ -3,14 +3,16 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import Project, Folder, CustomQuery
 from django.urls import reverse
-from api.serializers import CustomQuerySerializer
+from backend.api.Serializers.serializers import CustomQuerySerializer
+
 
 class CustomQueryViewSetTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
         self.project = Project.objects.create(name="Test Project New IMp")
-        self.folder = Folder.objects.create(project=self.project, name="Test Folder", type=Folder.CUSTOM)
+        self.folder = Folder.objects.create(
+            project=self.project, name="Test Folder", type=Folder.CUSTOM)
         self.valid_payload = {
             'project': self.project.id,
             'folder': self.folder.id,
@@ -68,7 +70,8 @@ class CustomQueryViewSetTest(TestCase):
             natural_language_query='Return all nodes'
         )
         # query = CustomQuery.objects.create(**self.valid_payload)
-        response = self.client.get(reverse('customquery-detail', kwargs={'pk': query.pk}))
+        response = self.client.get(
+            reverse('customquery-detail', kwargs={'pk': query.pk}))
         serializer = CustomQuerySerializer(query)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
@@ -106,6 +109,7 @@ class CustomQueryViewSetTest(TestCase):
             natural_language_query='Return all nodes'
         )
         # query = CustomQuery.objects.create(**self.valid_payload)
-        response = self.client.delete(reverse('customquery-detail', kwargs={'pk': query.pk}))
+        response = self.client.delete(
+            reverse('customquery-detail', kwargs={'pk': query.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(CustomQuery.objects.count(), 0)

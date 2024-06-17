@@ -1,7 +1,5 @@
-from .models import CustomQuery
-from logging import info
 from rest_framework import serializers
-from .models import *
+from ..models import *
 from rest_framework.exceptions import ValidationError
 
 
