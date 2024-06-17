@@ -24,11 +24,10 @@ from backend import settings
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from backend.api.Views.project_viewset import ProjectViewSet
-from backend.api.Views.custom_query_viewset import CustomQueryViewSet
-from backend.api.Views.folder_viewset import FolderViewSet
-from backend.api.Views.favorite_query_viewset import FavoriteQueryViewSet, FolderAndQueriesViewSet
-
+from api.views.project_viewset import ProjectViewSet
+from api.views.custom_query_viewset import CustomQueryViewSet
+from api.views.folder_viewset import FolderViewSet
+from api.views.favorite_query_viewset import FavoriteQueryViewSet
 
 # Define the schema view for Swagger
 schema_view = get_schema_view(
@@ -56,8 +55,6 @@ router.register(r'favorite-queries', FavoriteQueryViewSet,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),  # testing data fetching
-    path('api/graphData', graph_data),
-    path('upload_file/', upload_file),
     path('swagger/', schema_view.with_ui('swagger',
          cache_timeout=0), name='schema-swagger-ui'),
     re_path(

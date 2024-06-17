@@ -1,4 +1,4 @@
-from ..Serializers.serializers import FolderSerializer, FoldersWithQueriesSerializer
+from ..serializers.folder_serializer import FolderSerializer, FoldersWithQueriesSerializer
 from ..models import Folder, Project
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response

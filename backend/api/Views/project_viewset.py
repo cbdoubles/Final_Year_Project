@@ -2,9 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from .models import Project
-from .serializers import ProjectSerializer
-from .file_services import modify_file
+from ..models import Project
+from ..serializers.project_serializer import ProjectSerializer
+from ..file_services import modify_file
 
 
 class ProjectViewSet(viewsets.ModelViewSet):

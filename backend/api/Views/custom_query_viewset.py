@@ -1,5 +1,5 @@
-from ..Serializers.serializers import CustomQuerySerializer
-from ..models import CustomQuery
+from ..serializers.custom_query_serializer import CustomQuerySerializer
+from ..models import CustomQuery, Folder
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets

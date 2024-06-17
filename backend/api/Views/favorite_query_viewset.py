@@ -1,5 +1,5 @@
-from ..Serializers.serializers import FavoriteQuerySerializer
-from ..models import FavoriteQuery
+from ..serializers.favorite_query_serializer import FavoriteQuerySerializer
+from ..models import FavoriteQuery, Folder
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets
