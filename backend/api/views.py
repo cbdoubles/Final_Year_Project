@@ -49,7 +49,7 @@ from rest_framework.response import Response
 from .models import CustomQuery
 from .serializers import CustomQuerySerializer
 from rest_framework.decorators import action
-from file_services import *
+from .file_services import *
 
 
 # Initialize Neo4j connection
