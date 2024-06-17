@@ -28,6 +28,7 @@ from api.views.project_viewset import ProjectViewSet
 from api.views.custom_query_viewset import CustomQueryViewSet
 from api.views.folder_viewset import FolderViewSet
 from api.views.favorite_query_viewset import FavoriteQueryViewSet
+from backend.api.views.table_view import json_view
 
 # Define the schema view for Swagger
 schema_view = get_schema_view(
@@ -54,11 +55,13 @@ router.register(r'favorite-queries', FavoriteQueryViewSet,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),  # testing data fetching
+    path('api/', include(router.urls)),  # register the router urls
     path('swagger/', schema_view.with_ui('swagger',
          cache_timeout=0), name='schema-swagger-ui'),
     re_path(
         '.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404)),
+    # testing json data fetching for table vizualization
+    path('json-endpoint/', json_view, name='my_json_view'),
 ]
 
 if settings.DEBUG:
