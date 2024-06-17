@@ -50,7 +50,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
             if 'file' in request.FILES:
                 file = request.FILES.get('file')
-                modify_file(project.id, file)
+                modify_file(project.id, file, reupload=True)
 
             serializer = self.get_serializer(project, data=data, partial=True)
             serializer.is_valid(raise_exception=True)

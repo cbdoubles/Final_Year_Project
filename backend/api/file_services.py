@@ -2,7 +2,7 @@ import os
 from django.conf import settings
 
 
-def modify_file(project_id, file_data):
+def modify_file(project_id, file_data, reupload=False):
     # Save the file on the server
     file_path = os.path.join(settings.MEDIA_ROOT, file_data.name)
     with open(file_path, 'wb+') as destination:
@@ -10,3 +10,5 @@ def modify_file(project_id, file_data):
             destination.write(chunk)
 
     # You can add any additional file modification logic here @Nikola
+    if reupload:
+        # cal method to clea DB for the project id
