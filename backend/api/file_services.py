@@ -11,4 +11,5 @@ def modify_file(project_id, file_data, reupload=False):
 
     # You can add any additional file modification logic here @Nikola
     if reupload:
+        print("Don't leave if empty -.-")
         # cal method to clea DB for the project id
