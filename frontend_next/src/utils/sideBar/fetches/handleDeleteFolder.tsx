@@ -9,9 +9,6 @@ export const handleDeleteFolder = async (
         `http://localhost:8000/api/folders/${deletingFolder.folderId}/`,
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 

@@ -42,7 +42,7 @@ const EditQuery = ({
   };
 
   const handleSaveEditQuery = () => {
-    const returnedQuery: Promise<boolean> = handleEditQuery(query, type);
+    const returnedQuery: Promise<boolean> = handleEditQuery(editedQuery, type);
 
     loadItems(returnedQuery).then((edited) => {
       if (edited) {

@@ -8,43 +8,37 @@ export const handleEditQuery = async (
   if (editingQuery && folderType) {
     const getQueriesUrl = (folderType: FolderType): string => {
       return folderType === "Favorite"
-        ? `http://localhost:8000/api/favorite-queries/?id=${editingQuery.queryId}`
-        : `http://localhost:8000/api/custom-queries/?id=${editingQuery.queryId}`;
+        ? `http://localhost:8000/api/favorite-queries/${editingQuery.queryId}/`
+        : `http://localhost:8000/api/custom-queries/${editingQuery.queryId}/`;
     };
 
     try {
-      const formData = new FormData();
-      formData.append("id", String(editingQuery.queryId));
-      formData.append("name", editingQuery.queryName);
-      formData.append("cypher_query", editingQuery.cypherQuery);
-      formData.append("natural_language_query", editingQuery.natLang);
-
-      // const response = await fetch(
-      //   `http://localhost:8000/api/folders/${folder.folderId}/`,
-      //   {
-      //     method: "PATCH",
-      //     body: formData,
-      //   }
-      // );
-
       const response = await fetch(getQueriesUrl(folderType), {
         method: "PATCH",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: editingQuery.queryId,
+          name: editingQuery.queryName,
+          cypher_query: editingQuery.cypherQuery,
+          natural_language_query: editingQuery.natLang,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Unknown error");
       }
-      console.log("edited query in backend");
+      console.log("Edited query in backend");
 
-      return true; // Return true if deletion was successful
+      return true; // Return true if update was successful
     } catch (error) {
       console.error("Error editing query:", error);
       toast.error("Name already in use");
-      return false; // Return false if any error occurs during deletion
+      return false; // Return false if any error occurs during update
     }
   }
 
-  return false; // Return false if editingElement is null
+  return false; // Return false if editingQuery or folderType is null
 };
