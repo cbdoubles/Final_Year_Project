@@ -7,11 +7,13 @@ const NEO4J_PASSWORD = "letmein";
 const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const visRef = useRef<HTMLDivElement>(null);
   const cypherRef = useRef<any>(null);
+  const colorMap: Record<string, string> = {};
 
   useEffect(() => {
     const draw = async () => {
       const NeoVis = await import("neovis.js");
 
+      //TODO add map for labels and colors
       const transformLabels = (labels: string[]) => {
         const transformedNodesLabels: Record<string, any> = {};
 
@@ -25,7 +27,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 label: (node: any) => {
                   return label;
                 },
-                color: (node: any) => generateRandomColor(),
+                color: (node: any) => {
+                  // Use the generateColor function to get the color for this label
+                  return generateColorMap(label);
+                },
               },
             },
           };
@@ -55,8 +60,17 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         session.close();
         driver.close();
         const labels = result.records.map((record) => record.get("label"));
-        console.log(labels);
         return transformLabels(labels);
+      };
+
+      const generateColorMap = (label: string) => {
+        // If the color for this label is not in the map, generate a new one
+        if (!colorMap[label]) {
+          colorMap[label] = generateRandomColor();
+        }
+
+        // Return the color for this label
+        return colorMap[label];
       };
 
       const generateRandomColor = () => {
@@ -68,6 +82,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         return color;
       };
 
+      //TODO add map for labels and colors
       const transformRelationshipTypes = (relationshipTypes: string[]) => {
         const transformedRelationshipTypes: Record<string, any> = {};
 
@@ -75,14 +90,17 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           console.log(relationshipTypes[i]);
           const relationshipType = relationshipTypes[i];
           transformedRelationshipTypes[relationshipType] = {
-            label: "roles",
+            label: relationshipType,
             caption: true,
             [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
               function: {
                 label: (edge: any) => {
                   return relationshipType;
                 },
-                color: (edge: any) => generateRandomColor(),
+                color: (edge: any) => {
+                  // Use the generateColor function to get the color for this relationship type
+                  return generateColorMap(relationshipType);
+                },
               },
             },
           };
