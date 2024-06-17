@@ -1,19 +1,5 @@
 from django.db import models
 
-# OLD MODEL
-
-
-class Query(models.Model):
-    cypher_query = models.TextField()
-    natural_query = models.TextField()
-    # if you want to store the graph as a text file, we can do binary as well
-    graph = models.TextField()
-
-    def __str__(self):
-        return self.cypher_query
-
-# NEW MODEL
-
 
 class Project(models.Model):
     """
