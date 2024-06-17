@@ -49,6 +49,7 @@ from rest_framework.response import Response
 from .models import CustomQuery
 from .serializers import CustomQuerySerializer
 from rest_framework.decorators import action
+from file_services import *
 
 
 # Initialize Neo4j connection
@@ -167,30 +168,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
             if not file:
                 return Response({'error': 'File not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the uploaded file format is valid
-            valid_formats = ['graphml', 'json', 'csv']
-            file_extension = file.name.split('.')[-1].lower()
-            if file_extension not in valid_formats:
-                print("bad response bad file format")
-                return Response(
-                    {"error": "Invalid file format. Only graphML, JSON, and CSV files are allowed."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Save the file on the server
-            file_path = os.path.join(settings.MEDIA_ROOT, file.name)
-            # file_path = f'C:/webapp/project_files/{file.name}'
-            with open(file_path, 'wb+') as destination:
-                for chunk in file.chunks():
-                    destination.write(chunk)
-
             # Validate the data using the serializer
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             project = serializer.save()
 
             # Send the project ID and file path to the method "modify_input_file"
-            # modify_input_file(project.id, file_path)
+            modify_file(project.id, file)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -214,20 +198,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             if 'file' in request.FILES:
                 file = request.FILES.get('file')
 
-                # Check if the uploaded file format is valid
-                valid_formats = ['graphml', 'json', 'csv']
-                file_extension = file.name.split('.')[-1].lower()
-                if file_extension not in valid_formats:
-                    print("bad response bad file format")
-                    return Response(
-                        {"error": "Invalid file format. Only graphML, JSON, and CSV files are allowed."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-
-                file_path = os.path.join(settings.MEDIA_ROOT, file.name)
-                with open(file_path, 'wb+') as destination:
-                    for chunk in file.chunks():
-                        destination.write(chunk)
+            modify_file(project.id, file)
 
             serializer = self.get_serializer(project, data=data, partial=True)
             serializer.is_valid(raise_exception=True)
