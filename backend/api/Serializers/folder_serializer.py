@@ -1,47 +1,6 @@
-from .models import CustomQuery
-from logging import info
 from rest_framework import serializers
-from .models import *
+from ..models import Folder, Project
 from rest_framework.exceptions import ValidationError
-
-
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        # Only the fields needed for the database
-        fields = ['id', 'name', 'file_name']
-
-    def create(self, validated_data):
-        # Create the Project instance
-        project = Project.objects.create(**validated_data)
-
-        # Create default folders
-        Folder.objects.create(
-            project=project, name='Project Custom Queires', type='Custom')
-        Folder.objects.create(
-            project=project, name='Project Favorite Queries', type='Favorite')
-
-        return project
-
-
-class FavoriteQuerySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FavoriteQuery
-        # Expected fields in the request
-        fields = ['id', 'project', 'folder', 'name',
-                  'cypher_query', 'natural_language_query']
-
-
-class CustomQuerySerializer(serializers.ModelSerializer):
-    project = serializers.PrimaryKeyRelatedField(
-        queryset=Project.objects.all())
-    folder = serializers.PrimaryKeyRelatedField(queryset=Folder.objects.all())
-
-    class Meta:
-        model = CustomQuery
-        # Expected fields in the request
-        fields = ['id', 'project', 'folder', 'name',
-                  'cypher_query', 'natural_language_query']
 
 
 class FolderSerializer(serializers.ModelSerializer):
@@ -60,13 +19,6 @@ class FolderSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     f"Project with id {project_id} does not exist.")
         return super().create(validated_data)
-
-
-# serializer class used to fetch only id and name of queries in a folder
-class QueryLiteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Query
-        fields = ['id', 'name']
 
 
 class FoldersWithQueriesSerializer(serializers.ModelSerializer):

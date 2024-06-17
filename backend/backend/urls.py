@@ -17,13 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.http import JsonResponse
-from api.views import *
+# from backend.api.Views.views import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 from backend import settings
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from api.views.project_viewset import ProjectViewSet
+from api.views.custom_query_viewset import CustomQueryViewSet
+from api.views.folder_viewset import FolderViewSet
+from api.views.favorite_query_viewset import FavoriteQueryViewSet
 
 # Define the schema view for Swagger
 schema_view = get_schema_view(
@@ -40,7 +44,8 @@ router = DefaultRouter()
 router.register(r'projects', ProjectViewSet, basename='projects')
 router.register(r"custom-queries", CustomQueryViewSet, basename='customquery')
 router.register(r"folders", FolderViewSet, basename='folders')
-router.register(r'favorite-queries', FavoriteQueryViewSet, basename='favoritequery')
+router.register(r'favorite-queries', FavoriteQueryViewSet,
+                basename='favoritequery')
 # router.register(r'folder-and-queries', FolderAndQueriesViewSet, basename='folder-and-queries')
 
 # TODO: if the existing views that are not part of a viewset
@@ -50,11 +55,12 @@ router.register(r'favorite-queries', FavoriteQueryViewSet, basename='favoriteque
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),  # testing data fetching
-    path('api/graphData', graph_data),
-    path('upload_file/', upload_file),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path('.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404)),
+    path('swagger/', schema_view.with_ui('swagger',
+         cache_timeout=0), name='schema-swagger-ui'),
+    re_path(
+        '.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404)),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
