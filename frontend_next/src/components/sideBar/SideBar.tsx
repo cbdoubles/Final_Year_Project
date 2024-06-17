@@ -29,7 +29,7 @@ export default function SideBar({
         <QueryIconButton
           handleClick={() => handlerCollapsed(!collapsed)}
           collapsed={collapsed}
-          type={"Import"}
+          type={"Collapse"}
           icon={LuAlignJustify}
         />
         <FavouriteIcon collapsed={collapsed} />

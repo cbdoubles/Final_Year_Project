@@ -13,8 +13,7 @@ const QueryTextboxAdvanced: React.FC = () => {
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
   const [inputValues, setInputValues] = useState<InputValues>({});
   const [error, setError] = useState<string | null>(null);
-  
-  
+
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
   };
@@ -36,7 +35,10 @@ const QueryTextboxAdvanced: React.FC = () => {
         placeholder="Enter your query here"
       />
       <div className="flex justify-end gap-2 mb-2">
-        <UIButton onClick={handleShowNaturalLang}>Show Natural Lang</UIButton>
+        <UIButton onClick={handleShowNaturalLang}>
+          {" "}
+          {showReadOnlyTextbox ? "Hide Natural Lang" : "Show Natural Lang"}
+        </UIButton>
         <UIButton className="bg-success-700" onClick={handleRunQuery}>
           Run
         </UIButton>
