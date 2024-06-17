@@ -1,62 +1,71 @@
 import React, { useState } from "react";
 import InputField from "@/src/components/popUps/InputField";
-import { FolderType, QueryType } from "@/src/libs/types";
+import UIButton from "../ui/UIButton";
 
-const EditQueryBody = ({
-  query,
-  type,
-  updateQueryName,
-  updateCyphertext,
-  updateNaturalLanguage,
-}: {
-  query: QueryType;
-  type: FolderType;
+type SavePopUpProps = {
+  fav?: boolean;
+  saveChooseFolder: () => void;
+  queryName: string;
+  cyphertext: string;
+  natLang: string;
   updateQueryName: (newFolderName: string) => void;
   updateCyphertext: (newCyphertext: string) => void;
   updateNaturalLanguage: (newNaturalLanguage: string) => void;
+  setQueryFolder: (newNaturalLanguage: string) => void;
+};
+
+const SavePopUp: React.FC<SavePopUpProps> = ({
+  fav,
+  saveChooseFolder,
+  queryName,
+  cyphertext,
+  natLang,
+  updateQueryName,
+  updateCyphertext,
+  updateNaturalLanguage,
+  setQueryFolder,
 }) => {
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateQueryName(e.target.value);
-    console.log("changing name");
-    console.log(query.queryName);
   };
 
   const handleCyphertext = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateCyphertext(e.target.value);
-    console.log("changing cypher");
-    console.log(query.cypherQuery);
   };
 
   const handleNatLang = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateNaturalLanguage(e.target.value);
-    console.log("changing natlang");
-    console.log(query.natLang);
   };
-
   return (
     <div>
       <InputField
         rows={2}
         label="Query name"
         placeholder="Type here"
-        value={query.queryName}
+        value={queryName}
         onChange={handleChangeName}
       />
       <InputField
+        readOnly={fav ? true : false}
         rows={4}
         label="Cyphertext representation"
         placeholder="Type here"
-        value={query.cypherQuery}
+        value={cyphertext}
         onChange={handleCyphertext}
       />
       <InputField
+        readOnly={fav ? true : false}
         rows={4}
         label="Natural language representation"
         placeholder="Type here"
-        value={query.natLang}
+        value={natLang}
         onChange={handleNatLang}
       />
+      <UIButton color="primary" onClick={saveChooseFolder}>
+        Choose folder
+      </UIButton>
+      /
     </div>
   );
 };
-export default EditQueryBody;
+export default SavePopUp;

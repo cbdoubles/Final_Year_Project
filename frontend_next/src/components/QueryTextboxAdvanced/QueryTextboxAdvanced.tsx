@@ -5,17 +5,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
 import QueryTextbox from "../queryTextbox/QueryTextbox";
-import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
-import FileOpenButt from "../ui/FileOpenButt";
+import SavePopUp from "./SavePopUp";
+import { useQueryProps } from "@/src/contexts/QueryContext";
 import { toast } from "react-toastify";
 import { validateParameters } from "@/src/utils/parameterUtils";
 
 const QueryTextboxAdvanced: React.FC = () => {
   const [query, setQuery] = useState("");
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
-  const [inputValues, setInputValues] = useState<InputValues>({});
-  const [error, setError] = useState<string | null>(null);
-  const [naturalLanguage, setNaturalLanguage] = useState("");
+
+  const { queryName, cypherQuery, naturalLanguageQuery } = useQueryProps();
+
+  const [curentQueryName, setQueryName] = useState<string>(queryName);
+  const [currentQueryCyphertext, setCyphertext] = useState<string>(cypherQuery);
+  const [curentQueryNatLang, setNatLang] =
+    useState<string>(naturalLanguageQuery);
+  const [queryFolder, setQueryFolder] = useState<string>(queryName);
+
+  const saveChooseFolder = () => {
+    console.log("clicked save");
+  };
 
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
@@ -27,7 +36,7 @@ const QueryTextboxAdvanced: React.FC = () => {
 
   const handleSaveCustom = () => {
     console.log("handleSaveCustom called");
-    if (validateParameters(query, naturalLanguage)) {
+    if (validateParameters(currentQueryCyphertext, curentQueryNatLang)) {
       console.log("Success");
       toast.success("Query saved successfully");
     } else {
@@ -38,16 +47,12 @@ const QueryTextboxAdvanced: React.FC = () => {
     }
   };
 
-  interface InputValues {
-    [key: string]: string;
-  }
-
   return (
     <div className="flex flex-col h-full w-full">
       <textarea
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={currentQueryCyphertext}
+        onChange={(e) => setCyphertext(e.target.value)}
         placeholder="Enter your query here"
       />
       <div className="flex justify-end gap-2 mb-2">
@@ -70,8 +75,8 @@ const QueryTextboxAdvanced: React.FC = () => {
               fav={true}
               query={query}
               setQuery={setQuery}
-              naturalLanguage={naturalLanguage}
-              setNaturalLanguage={setNaturalLanguage}
+              naturalLanguage={curentQueryNatLang}
+              setNaturalLanguage={setNatLang}
             ></CustomPopUp>
           }
         ></UIModal>
@@ -84,28 +89,22 @@ const QueryTextboxAdvanced: React.FC = () => {
           )}
           header={<span className="text-primary">Save custom query</span>}
           body={
-            <CustomPopUp
-              query={query}
-              setQuery={setQuery}
-              naturalLanguage={naturalLanguage}
-              setNaturalLanguage={setNaturalLanguage}
-            ></CustomPopUp>
+            <SavePopUp
+              saveChooseFolder={saveChooseFolder}
+              queryName={curentQueryName}
+              cyphertext={currentQueryCyphertext}
+              natLang={curentQueryNatLang}
+              updateQueryName={setQueryName}
+              updateCyphertext={setCyphertext}
+              updateNaturalLanguage={setNatLang}
+              setQueryFolder={setQueryFolder}
+            ></SavePopUp>
           }
           footer={({ onClose }) => (
             <>
               <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
                 Cancel
               </UIButton>
-              {/* <FileOpenButt
-                className="bg-success-700 w-full text-lg"
-                onClick={() => {
-                  handleSaveCustom();
-                  onClose();
-                }}
-              >
-                Save
-              </FileOpenButt> */}
-              {/* New Test Save Button */}
               <UIButton
                 className="bg-success-700 w-full text-lg"
                 onClick={handleSaveCustom}
