@@ -35,7 +35,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
-  const { naturalLanguageQuery, cypherQuery } = useQueryProps();
+  const { natLang, cypherQuery } = useQueryProps();
   const [boxes, setBoxes] = useState(2);
 
   const handleInputChange = (placeholder: string, value: string) => {
@@ -95,9 +95,9 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   return (
     <div>
       <div className="flex flex-col">
-        {naturalLanguageQuery}
+        {natLang}
         <NatLangBox
-          dataArray={naturalLanguageQuery}
+          dataArray={natLang}
           inputValues={inputValues}
           onInputChange={handleInputChange}
           onCheckValueChange={(checkValue) => {
