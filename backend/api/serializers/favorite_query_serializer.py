@@ -1,0 +1,10 @@
+from rest_framework import serializers
+from ..models import FavoriteQuery
+
+
+class FavoriteQuerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoriteQuery
+        # Expected fields in the request
+        fields = ['id', 'project', 'folder', 'name',
+                  'cypher_query', 'natural_language_query']
