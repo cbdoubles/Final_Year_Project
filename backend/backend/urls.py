@@ -28,6 +28,7 @@ from api.views.project_viewset import ProjectViewSet
 from api.views.custom_query_viewset import CustomQueryViewSet
 from api.views.folder_viewset import FolderViewSet
 from api.views.favorite_query_viewset import FavoriteQueryViewSet
+from api.views.default_query_viewset import DefaultQueryViewSet
 from api.views.table_view import json_view
 
 # Define the schema view for Swagger
@@ -47,6 +48,9 @@ router.register(r"custom-queries", CustomQueryViewSet, basename='customquery')
 router.register(r"folders", FolderViewSet, basename='folders')
 router.register(r'favorite-queries', FavoriteQueryViewSet,
                 basename='favoritequery')
+router.register(r'default-queries', DefaultQueryViewSet,
+                basename='defaultquery')
+
 # router.register(r'folder-and-queries', FolderAndQueriesViewSet, basename='folder-and-queries')
 
 # TODO: if the existing views that are not part of a viewset
