@@ -222,6 +222,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             }
           });
 
+          // TODO: colors don't persist when the new edges come in, fix it.
           viz.network.on("doubleClick", async (params) => {
             const nodeId = params.nodes[0];
             if (nodeId) {
