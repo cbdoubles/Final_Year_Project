@@ -29,14 +29,13 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
     // selectedQuery,
   }
 ) => {
-  // const [query, setQuery] = useState(selectedQuery);
-  // const [curentQueryName, setQueryName] = useState<string>(
-  //   selectedQuery.queryName
-  // );
-  const { getSelectedQuery, setQueryFromQuery } = useQueryProps();
-  const [selectedQuery, setSelectedQuery] = useState<QueryType>(
-    getSelectedQuery()
-  );
+  const { updatedQuery, cypherQuery, setQueryFromQuery } = useQueryProps();
+  const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
+
+  useEffect(() => {
+    setSelectedQuery(updatedQuery);
+    setEditCyphertext(cypherQuery);
+  }, [updatedQuery]);
 
   const { projectId } = useProjectProps();
 
@@ -61,23 +60,19 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
 
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
-    console.log("context query");
-    console.log(getSelectedQuery());
-    console.log("selected query");
-    console.log(selectedQuery);
   };
 
   const handleRunQuery = () => {
     console.log("Running query:", selectedQuery);
   };
 
-  // const updateQueryState = (saveCyphertext: string) => {
-  //   setSaveCyphertext(saveCyphertext);
-  // };
+  const openSave = async (onOpen: () => void) => {
+    setSaveCyphertext(editCyphertext);
+    onOpen();
+  };
 
   const handleSaveCustom = async (onClose: () => void) => {
     if (validateParameters(saveCyphertext, saveNatLang)) {
-      console.log("Success");
       const newQuery = await handleSaveQuery(
         saveQueryName,
         saveCyphertext,
@@ -87,22 +82,12 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
       );
 
       if (newQuery !== null) {
-        console.log("newquery in handle custom");
-        console.log(newQuery);
         setQueryFromQuery(newQuery);
         setSelectedQuery(newQuery);
-        setEditCyphertext(newQuery.cypherQuery);
         onClose();
         toast.success("Query saved successfully");
-      } else {
-        console.log("not a successful save query");
       }
-      console.log("context query");
-      console.log(getSelectedQuery());
-      console.log("selected query");
-      console.log(selectedQuery);
     } else {
-      console.log("Not matching");
       toast.error(
         "Not all parameters from cyphertext are present in natural language box"
       );
@@ -157,7 +142,7 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
         ></UIModal>
         <UIModal
           button={({ onOpen }) => (
-            <UIButton className="bg-gray-500" onClick={onOpen}>
+            <UIButton className="bg-gray-500" onClick={() => openSave(onOpen)}>
               <FontAwesomeIcon icon={faStar} className="w-6" />
               Add to Customs
             </UIButton>
@@ -169,7 +154,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
               queryName={saveQueryName}
               cyphertext={saveCyphertext}
               natLang={saveNatLang}
-              // updateQueryState={updateQueryState}
               updateQueryName={setSaveQueryName}
               updateCyphertext={setSaveCyphertext}
               updateNaturalLanguage={setSaveNatLang}

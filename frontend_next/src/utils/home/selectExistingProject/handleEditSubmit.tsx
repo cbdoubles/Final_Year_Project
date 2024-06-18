@@ -1,13 +1,13 @@
-import { Element } from "@/src/libs/types";
+import { ProjectType } from "@/src/libs/types";
 import { toast } from "react-toastify";
 
 export const handleEditSubmit = async (
   event: React.FormEvent<HTMLFormElement>,
-  element: Element,
-  setEditingElement: React.Dispatch<React.SetStateAction<Element | null>>,
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>,
-  elements: Element[],
-  prevElementState: Element,
+  element: ProjectType,
+  setEditingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>,
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>,
+  elements: ProjectType[],
+  prevElementState: ProjectType,
   setProjectName: (name: string) => void
 ): Promise<void> => {
   event.preventDefault();
