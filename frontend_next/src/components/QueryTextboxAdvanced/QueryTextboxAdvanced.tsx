@@ -20,13 +20,6 @@ const queryFolder: QueryFolderType = {
   folderType: "Custom", // Assigning a valid FolderType
 };
 
-// const query: QueryType = {
-//   queryId: 6,
-//   cypherQuery: "hello hello hello",
-//   natLang: "what???",
-//   queryName: "name",
-// };
-
 type QueryTextboxAdvancedProps = {
   // selectedQuery: QueryType;
 };
@@ -54,9 +47,7 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
     selectedQuery.queryName
   );
   const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
-  // const [editNatLang, setEditNatLang] = useState<string>(
-  //   selectedQuery.natLang
-  // );
+
   const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
   const [saveQueryFolder, setSaveQueryFolder] = useState<FolderType | null>(
     null
@@ -118,12 +109,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
     }
   };
 
-  // useEffect(() => {
-  //   const updateQuery = getSelectedQuery();
-  //   setSelectedQuery(updateQuery);
-  //   console.log(selectedQuery);
-  // });
-
   return (
     <div className="flex flex-col h-full w-full">
       <textarea
@@ -156,6 +141,19 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
               setNaturalLanguage={setSaveNatLang}
             ></CustomPopUp>
           }
+          footer={({ onClose }) => (
+            <>
+              <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
+                Cancel
+              </UIButton>
+              <UIButton
+                className="bg-success-700 w-full text-lg"
+                onClick={() => handleSaveCustom(onClose)}
+              >
+                Save
+              </UIButton>
+            </>
+          )}
         ></UIModal>
         <UIModal
           button={({ onOpen }) => (

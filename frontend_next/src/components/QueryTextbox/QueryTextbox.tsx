@@ -17,12 +17,6 @@ interface QueryTextboxProps {
   hideButtons?: boolean;
 }
 
-// const dataArray: string[] = [
-//   "Match the actor",
-//   "$actorname:str$",
-//   "to all the movies they did.",
-// ];
-
 interface InputValues {
   [key: string]: string;
 }
@@ -66,7 +60,6 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
   const handleShowQuery = () => {
     // Add logic to show cypher query
-    alert(`Cypher Query: ${query}`);
   };
 
   const handleRunQuery = () => {
