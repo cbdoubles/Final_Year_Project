@@ -13,6 +13,7 @@ type QueryContextType = {
   resetQueryContext: () => void;
   setQueryFromQuery: (query: QueryType) => void;
   getSelectedQuery: () => QueryType;
+  updatedQuery: QueryType
 };
 
 export const QueryContext = createContext<QueryContextType>({
@@ -33,6 +34,13 @@ export const QueryContext = createContext<QueryContextType>({
     natLang: "",
     // You can add other properties here if needed
   }),
+  updatedQuery: {
+    queryId: 0,
+    queryName: "",
+    cypherQuery: "",
+    natLang: "",
+    // You can add other properties here if needed
+  },
 });
 
 export const QueryPropsProvider = ({
@@ -82,6 +90,16 @@ export const QueryPropsProvider = ({
     };
   };
 
+  const updatedQuery = useMemo(
+    () => ({
+      queryId,
+      queryName,
+      cypherQuery,
+      natLang,
+    }),
+    [queryId, queryName, cypherQuery, natLang]
+  );
+
   const value = useMemo(
     () => ({
       cypherQuery,
@@ -95,8 +113,9 @@ export const QueryPropsProvider = ({
       resetQueryContext,
       setQueryFromQuery,
       getSelectedQuery,
+      updatedQuery,
     }),
-    [cypherQuery, queryId, queryName, natLang]
+    [cypherQuery, queryId, queryName, natLang, updatedQuery]
   );
 
   return (
