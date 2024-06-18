@@ -1,36 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "@/src/components/popUps/InputField";
 import UIButton from "../ui/UIButton";
+import SelectFolder from "./SelectFolder";
+import { QueryFolderType, FolderType } from "@/src/libs/types";
+import UIModal from "../ui/UIModal";
+import { toast } from "react-toastify";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { fetchFolders } from "@/src/utils/queryTextbox/fetches/fetchFolders";
 
 type SavePopUpProps = {
   fav?: boolean;
+
   saveChooseFolder: () => void;
   queryName: string;
   cyphertext: string;
   natLang: string;
+  selectedFolder: QueryFolderType | null;
+  folderType: FolderType;
   updateQueryName: (newFolderName: string) => void;
   updateCyphertext: (newCyphertext: string) => void;
   updateNaturalLanguage: (newNaturalLanguage: string) => void;
-  // updateQueryFolder: (newFolder: string) => void;
-  // updateQueryState: (
-  //   queryName: string,
-  //   cyphertext: string,
-  //   natLang: string
-  // ) => void;
+  setSelectedFolder: (folder: QueryFolderType | null) => void;
 };
 
 const SavePopUp: React.FC<SavePopUpProps> = ({
   fav,
-  saveChooseFolder,
   queryName,
   cyphertext,
   natLang,
+  selectedFolder,
+  folderType,
   updateQueryName,
   updateCyphertext,
   updateNaturalLanguage,
-  // updateQueryFolder,
-  // updateQueryState,
+  setSelectedFolder,
 }) => {
+  const { projectId } = useProjectProps();
+
+  const [folders, setFolders] = useState<QueryFolderType[] | null>(null);
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateQueryName(e.target.value);
   };
@@ -44,6 +51,27 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
   const handleNatLang = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateNaturalLanguage(e.target.value);
     console.log(natLang);
+  };
+
+  const handleSelectFolder = async (onClose: () => void) => {
+    if (selectedFolder) {
+      onClose();
+    } else {
+      toast.error("No folder selected");
+    }
+  };
+  const openSelectFolder = async (onOpen: () => void) => {
+    const result = await fetchFolders(projectId, folderType);
+    console.log("Fetched folders:", result);
+    if (result) {
+      console.log("setting result value");
+      console.log(result);
+      setFolders(result);
+      console.log(folders);
+      onOpen();
+    } else {
+      toast.error("No folder selected");
+    }
   };
 
   return (
@@ -71,13 +99,36 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
         value={natLang}
         onChange={handleNatLang}
       />
-      <UIButton color="primary" onClick={saveChooseFolder}>
-        Choose folder
-      </UIButton>
-      {/* <UIButton className="bg-success-700" onClick={handleCloseModal}>
-        Save
-      </UIButton> */}
-      /
+      {/* Title for selecting a folder */}
+      <label className="text-black text-sm block mb-2">Select folder</label>
+      <UIModal
+        button={({ onOpen }) => (
+          <UIButton
+            data-testid="ui-button"
+            onClick={() => openSelectFolder(onOpen)}
+          >
+            {selectedFolder ? selectedFolder.folderName : "Select folder"}
+          </UIButton>
+        )}
+        header={<p className="text-primary">select folder</p>}
+        body={
+          <SelectFolder
+            folders={folders}
+            selectedFolder={selectedFolder}
+            setSelectedFolder={setSelectedFolder}
+          />
+        }
+        footer={({ onClose }) => (
+          <>
+            <UIButton
+              color="primary"
+              onClick={() => handleSelectFolder(onClose)}
+            >
+              Select
+            </UIButton>
+          </>
+        )}
+      ></UIModal>
     </div>
   );
 };

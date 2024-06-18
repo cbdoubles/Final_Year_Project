@@ -20,6 +20,8 @@ const queryFolder: QueryFolderType = {
   folderType: "Custom", // Assigning a valid FolderType
 };
 
+const folderType = "Custom";
+
 type QueryTextboxAdvancedProps = {
   // selectedQuery: QueryType;
 };
@@ -48,7 +50,7 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
   const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
 
   const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
-  const [saveQueryFolder, setSaveQueryFolder] = useState<FolderType | null>(
+  const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
     null
   );
 
@@ -67,17 +69,18 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
   };
 
   const openSave = async (onOpen: () => void) => {
+    setSelectedFolder(null);
     setSaveCyphertext(editCyphertext);
     onOpen();
   };
 
   const handleSaveCustom = async (onClose: () => void) => {
-    if (validateParameters(saveCyphertext, saveNatLang)) {
+    if (validateParameters(saveCyphertext, saveNatLang) && selectedFolder) {
       const newQuery = await handleSaveQuery(
         saveQueryName,
         saveCyphertext,
         saveNatLang,
-        queryFolder,
+        selectedFolder,
         projectId
       );
 
@@ -157,6 +160,9 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
               updateQueryName={setSaveQueryName}
               updateCyphertext={setSaveCyphertext}
               updateNaturalLanguage={setSaveNatLang}
+              folderType={folderType}
+              selectedFolder={selectedFolder}
+              setSelectedFolder={setSelectedFolder}
               // setQueryFolder={setQueryFolder}
             ></SavePopUp>
           }

@@ -7,8 +7,8 @@ export const handleDeleteQuery = async (
   if (deletingQuery && folderType) {
     const getQueriesUrl = (folderType: FolderType): string => {
       return folderType === "Favorite"
-        ? `http://localhost:8000/api/favorite-queries/${deletingQuery.queryId}`
-        : `http://localhost:8000/api/custom-queries/${deletingQuery.queryId}`;
+        ? `http://localhost:8000/api/favorite-queries/${deletingQuery.queryId}/`
+        : `http://localhost:8000/api/custom-queries/${deletingQuery.queryId}/`;
     };
 
     try {
