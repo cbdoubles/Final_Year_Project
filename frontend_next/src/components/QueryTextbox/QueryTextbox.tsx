@@ -10,6 +10,7 @@ import FileOpenButt from "../ui/FileOpenButt";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
+import { split } from "postcss/lib/list";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -62,6 +63,16 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     // Add logic to show cypher query
   };
 
+  const replaceParametersInQuery = (query: string, params: InputValues) => {
+    let resultQuery = query;
+    for (const key in params) {
+      const realkey = split(key, ["{"], false)[0];
+      const regex = new RegExp("\\" + realkey, "g");
+      resultQuery = resultQuery.replace(regex, params[key]);
+    }
+    return resultQuery;
+  };
+
   const handleRunQuery = () => {
     // Generate the JSON output
     const parameters: Record<string, string> = {};
@@ -82,6 +93,9 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     };
 
     console.log("Generated JSON Output:", jsonOutput);
+    const finalQuery = replaceParametersInQuery(cypherQuery, inputValues);
+    console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
+
     setQueryRunTrue();
   };
 
