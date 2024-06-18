@@ -1,21 +1,28 @@
-import React, { useEffect, useRef } from "react";
-import { Network, IdType } from "vis-network";
-import { VisNetwork } from "./NeovisFunctionalities";
-
-//TODO break down the code into smaller files
+import React, { useEffect, useRef, useState } from "react";
+import InfoCard from "./InfoCard";
+import neo4j from "neo4j-driver";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
 const NEO4J_PASSWORD = "letmein";
+
+const driver = neo4j.driver(
+  NEO4J_URL,
+  neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
+);
 
 const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const visRef = useRef<HTMLDivElement>(null);
   const cypherRef = useRef<any>(null);
   const colorMap: Record<string, string> = {};
 
+  const [hoveredItem, setHoveredItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+
   useEffect(() => {
     const draw = async () => {
       const NeoVis = await import("neovis.js");
+      const { NeoVisEvents } = await import("neovis.js");
 
       const transformLabels = (labels: string[]) => {
         const transformedNodesLabels: Record<string, any> = {};
@@ -31,7 +38,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                   return label;
                 },
                 color: (node: any) => {
-                  // Use the generateColor function to get the color for this label
                   return generateColorMap(label);
                 },
               },
@@ -39,40 +45,26 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           };
         }
 
-        console.log(transformedNodesLabels);
         return transformedNodesLabels;
       };
 
-      // TODO - Modify the queries to check for projectid
       const getLabels = async () => {
-        const neo4j = await import("neo4j-driver");
-        const driver = neo4j.driver(
-          NEO4J_URL,
-          neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
-        );
         const session = driver.session();
-        let result = await session.run(
-          "MATCH (n) UNWIND labels(n) AS label RETURN DISTINCT label"
-        );
-
-        if (result.records.length === 0) {
-          result = await session.run(
-            "MATCH (n) UNWIND properties(n).labels AS label RETURN DISTINCT label"
+        try {
+          let result = await session.run(
+            "MATCH (n) UNWIND labels(n) AS label RETURN DISTINCT label"
           );
+          const labels = result.records.map((record) => record.get("label"));
+          return transformLabels(labels);
+        } finally {
+          await session.close();
         }
-        session.close();
-        driver.close();
-        const labels = result.records.map((record) => record.get("label"));
-        return transformLabels(labels);
       };
 
       const generateColorMap = (label: string) => {
-        // If the color for this label is not in the map, generate a new one
         if (!colorMap[label]) {
           colorMap[label] = generateRandomColor();
         }
-
-        // Return the color for this label
         return colorMap[label];
       };
 
@@ -89,7 +81,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         const transformedRelationshipTypes: Record<string, any> = {};
 
         for (let i = 0; i < relationshipTypes.length; i++) {
-          console.log(relationshipTypes[i]);
           const relationshipType = relationshipTypes[i];
           transformedRelationshipTypes[relationshipType] = {
             label: relationshipType,
@@ -100,7 +91,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                   return relationshipType;
                 },
                 color: (edge: any) => {
-                  // Use the generateColor function to get the color for this relationship type
                   return generateColorMap(relationshipType);
                 },
               },
@@ -108,36 +98,31 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           };
         }
 
-        console.log(transformedRelationshipTypes);
         return transformedRelationshipTypes;
       };
 
-      // TODO - Modify the queries to check for projectid
       const getRelationshipTypes = async () => {
-        const neo4j = await import("neo4j-driver");
-        const driver = neo4j.driver(
-          NEO4J_URL,
-          neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
-        );
         const session = driver.session();
-        const result = await session.run("CALL db.relationshipTypes()");
-        session.close();
-        driver.close();
-        const relationshipTypes = result.records.map((record) =>
-          record.get("relationshipType")
-        );
-        console.log(relationshipTypes);
-        return transformRelationshipTypes(relationshipTypes);
+        try {
+          const result = await session.run("CALL db.relationshipTypes()");
+          const relationshipTypes = result.records.map((record) =>
+            record.get("relationshipType")
+          );
+          return transformRelationshipTypes(relationshipTypes);
+        } finally {
+          await session.close();
+        }
       };
+
       const labelsConfig = await getLabels();
       const relationshipsConfig = await getRelationshipTypes();
 
       const config = {
         containerId: visRef.current?.id || "",
         neo4j: {
-          NEO4J_URL,
-          NEO4J_USER,
-          NEO4J_PASSWORD,
+          serverUrl: NEO4J_URL,
+          serverUser: NEO4J_USER,
+          serverPassword: NEO4J_PASSWORD,
         },
         labels: labelsConfig,
         relationships: relationshipsConfig,
@@ -155,7 +140,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               align: "middle",
             },
             labelHighlightBold: true,
-            smooth: false, // Disable smooth edges for better visibility of labels
+            smooth: false,
           },
           nodes: {
             shape: "dot",
@@ -185,22 +170,85 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             timestep: 0.5,
             adaptiveTimestep: true,
           },
+          interaction: {
+            hover: true,
+          },
         },
-        initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 500",
+        initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 70",
         nonFlat: false,
       };
 
       const viz = new NeoVis.default(config as any);
+
       viz.render();
 
       cypherRef.current = viz;
 
-      // Disable physics after stabilization
-      viz.network?.on("stabilized", () => {
+      const setupListeners = () => {
         if (viz.network) {
-          viz.network.setOptions({ physics: { enabled: false } });
+          viz.network.on("stabilized", () => {
+            viz.network?.setOptions({ physics: { enabled: false } });
+          });
+
+          viz.network.on("hoverNode", (params) => {
+            const nodeId = params.node;
+            console.log("hoverNode", nodeId); // Debug log
+            setHoveredItem(nodeId);
+          });
+
+          viz.network.on("blurNode", () => {
+            setHoveredItem(null);
+          });
+
+          viz.network.on("hoverEdge", (params) => {
+            const edgeId = params.edge;
+            console.log("hoverEdge", edgeId); // Debug log
+            setHoveredItem(edgeId);
+          });
+
+          viz.network.on("blurEdge", () => {
+            setHoveredItem(null);
+          });
+
+          viz.network.on("click", (params) => {
+            const nodeId = params.nodes[0];
+            const edgeId = params.edges[0];
+            if (nodeId) {
+              console.log("clickNode", nodeId); // Debug log
+              setSelectedItem(nodeId);
+            } else if (edgeId) {
+              console.log("clickEdge", edgeId); // Debug log
+              setSelectedItem(edgeId);
+            }
+          });
+
+          viz.network.on("doubleClick", async (params) => {
+            const nodeId = params.nodes[0];
+            if (nodeId) {
+              const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN n, r, m`;
+              console.log("doubleClickNode", nodeId, query); // Debug log
+
+              const session = driver.session();
+              try {
+                const result = await session.run(query);
+                const records = result.records;
+                const nodes = records.map((record) => record.get("n"));
+                const relationships = records.map((record) => record.get("r"));
+                const connectedNodes = records.map((record) => record.get("m"));
+                cypherRef.current.updateWithCypher(query);
+              } finally {
+                await session.close();
+                console.log("done doubleclick");
+              }
+            }
+          });
+        } else {
+          // Retry setup after a short delay
+          setTimeout(setupListeners, 100);
         }
-      });
+      };
+
+      viz.registerOnEvent(NeoVisEvents.CompletionEvent, setupListeners);
     };
 
     draw();
@@ -208,22 +256,18 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
   useEffect(() => {
     if (query && cypherRef.current) {
-      cypherRef.current.clearNetwork();
-      cypherRef.current.renderWithCypher(query);
+      cypherRef.current.updateWithCypher(query);
     }
   }, [query]);
 
-  //   const handleExpandNode = () => {
-  //     var cypher = `MATCH (p1: Page)-[l: LINKS_TO]-(p2: Page) WHERE ID(p1) IN [${visNetwork
-  //         ?.getSelectedNodes()
-  //         .toString()}] RETURN p1, l, p2`;
-  //     vis?.updateWithCypher(cypher);
-  //     // close context menu
-  //     setState({ ...state, open: false });
-  // };
-
   return (
-    <div id="viz" ref={visRef} style={{ width: "100%", height: "600px" }} />
+    <div className="flex flex-row">
+      <div id="viz" ref={visRef} style={{ width: "75%", height: "600px" }} />
+      <div style={{ width: "25%", paddingLeft: "10px" }}>
+        <InfoCard title="Hovered Item" item={hoveredItem} />
+        <InfoCard title="Selected Item" item={selectedItem} />
+      </div>
+    </div>
   );
 };
 
