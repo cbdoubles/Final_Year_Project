@@ -11,7 +11,12 @@ type SavePopUpProps = {
   updateQueryName: (newFolderName: string) => void;
   updateCyphertext: (newCyphertext: string) => void;
   updateNaturalLanguage: (newNaturalLanguage: string) => void;
-  setQueryFolder: (newNaturalLanguage: string) => void;
+  // updateQueryFolder: (newFolder: string) => void;
+  // updateQueryState: (
+  //   queryName: string,
+  //   cyphertext: string,
+  //   natLang: string
+  // ) => void;
 };
 
 const SavePopUp: React.FC<SavePopUpProps> = ({
@@ -23,19 +28,38 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
   updateQueryName,
   updateCyphertext,
   updateNaturalLanguage,
-  setQueryFolder,
+  // updateQueryFolder,
+  // updateQueryState,
 }) => {
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateQueryName(e.target.value);
   };
 
   const handleCyphertext = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // updateCyphertext(e.target.value);
     updateCyphertext(e.target.value);
+    console.log(cyphertext);
   };
 
   const handleNatLang = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateNaturalLanguage(e.target.value);
+    console.log(natLang);
   };
+
+  // const handleCloseModal = () => {
+  //   updateQueryState(
+  //     curentQueryName,
+  //     currentQueryCyphertext,
+  //     curentQueryNatLang
+  //   );
+  //   // Optionally, you can call onClose() here if you have access to it.
+  // };
+
+  // const [curentQueryName, setQueryName] = useState<string>(queryName);
+  // const [currentQueryCyphertext, setCyphertext] = useState<string>(cyphertext);
+  // const [curentQueryNatLang, setNatLang] = useState<string>(natLang);
+  // const [queryFolder, setQueryFolder] = useState<string | null>(null);
+
   return (
     <div>
       <InputField
@@ -64,6 +88,9 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
       <UIButton color="primary" onClick={saveChooseFolder}>
         Choose folder
       </UIButton>
+      {/* <UIButton className="bg-success-700" onClick={handleCloseModal}>
+        Save
+      </UIButton> */}
       /
     </div>
   );

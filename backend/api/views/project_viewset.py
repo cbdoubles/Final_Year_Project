@@ -27,7 +27,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             project = serializer.save()
 
             # Send the project ID and file to the method "modify_file"
-            modify_file(project.id, file)
+            modify_file(project.id, file, False)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 

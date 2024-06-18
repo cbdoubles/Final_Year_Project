@@ -29,7 +29,7 @@ export type QueryFolderType = {
 
 export type QueryType = {
   queryId: number;
-  folderId: number;
+  // folderId: number;
   queryName: string;
   cypherQuery: string;
   natLang: string;

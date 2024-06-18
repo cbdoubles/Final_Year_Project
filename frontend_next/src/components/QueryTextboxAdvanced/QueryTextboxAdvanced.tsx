@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,38 +7,109 @@ import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
 import QueryTextbox from "../queryTextbox/QueryTextbox";
 import SavePopUp from "./SavePopUp";
 import { useQueryProps } from "@/src/contexts/QueryContext";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { toast } from "react-toastify";
 import { validateParameters } from "@/src/utils/parameterUtils";
+import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
+import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
+import { select } from "@nextui-org/theme";
 
-const QueryTextboxAdvanced: React.FC = () => {
-  const [query, setQuery] = useState("");
-  const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
+const queryFolder: QueryFolderType = {
+  folderId: 6,
+  folderName: "My Folder",
+  folderType: "Custom", // Assigning a valid FolderType
+};
 
-  const { queryName, cypherQuery, naturalLanguageQuery } = useQueryProps();
+// const query: QueryType = {
+//   queryId: 6,
+//   cypherQuery: "hello hello hello",
+//   natLang: "what???",
+//   queryName: "name",
+// };
 
-  const [curentQueryName, setQueryName] = useState<string>(queryName);
-  const [currentQueryCyphertext, setCyphertext] = useState<string>(cypherQuery);
-  const [curentQueryNatLang, setNatLang] =
-    useState<string>(naturalLanguageQuery);
-  const [queryFolder, setQueryFolder] = useState<string>(queryName);
+type QueryTextboxAdvancedProps = {
+  // selectedQuery: QueryType;
+};
+
+const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
+  {
+    // selectedQuery,
+  }
+) => {
+  // const [query, setQuery] = useState(selectedQuery);
+  // const [curentQueryName, setQueryName] = useState<string>(
+  //   selectedQuery.queryName
+  // );
+  const { getSelectedQuery, setQueryFromQuery } = useQueryProps();
+  const [selectedQuery, setSelectedQuery] = useState<QueryType>(
+    getSelectedQuery()
+  );
+
+  const { projectId } = useProjectProps();
+
+  const [editCyphertext, setEditCyphertext] = useState<string>(
+    selectedQuery.cypherQuery
+  );
+  const [saveQueryName, setSaveQueryName] = useState<string>(
+    selectedQuery.queryName
+  );
+  const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
+  // const [editNatLang, setEditNatLang] = useState<string>(
+  //   selectedQuery.natLang
+  // );
+  const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
+  const [saveQueryFolder, setSaveQueryFolder] = useState<FolderType | null>(
+    null
+  );
 
   const saveChooseFolder = () => {
     console.log("clicked save");
   };
 
+  const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
+
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
+    console.log("context query");
+    console.log(getSelectedQuery());
+    console.log("selected query");
+    console.log(selectedQuery);
   };
 
   const handleRunQuery = () => {
-    console.log("Running query:", query);
+    console.log("Running query:", selectedQuery);
   };
 
-  const handleSaveCustom = () => {
-    console.log("handleSaveCustom called");
-    if (validateParameters(currentQueryCyphertext, curentQueryNatLang)) {
+  // const updateQueryState = (saveCyphertext: string) => {
+  //   setSaveCyphertext(saveCyphertext);
+  // };
+
+  const handleSaveCustom = async (onClose: () => void) => {
+    if (validateParameters(saveCyphertext, saveNatLang)) {
       console.log("Success");
-      toast.success("Query saved successfully");
+      const newQuery = await handleSaveQuery(
+        saveQueryName,
+        saveCyphertext,
+        saveNatLang,
+        queryFolder,
+        projectId
+      );
+
+      if (newQuery !== null) {
+        console.log("newquery in handle custom");
+        console.log(newQuery);
+        setQueryFromQuery(newQuery);
+        setSelectedQuery(newQuery);
+        setEditCyphertext(newQuery.cypherQuery);
+        onClose();
+        toast.success("Query saved successfully");
+      } else {
+        console.log("not a successful save query");
+      }
+      console.log("context query");
+      console.log(getSelectedQuery());
+      console.log("selected query");
+      console.log(selectedQuery);
     } else {
       console.log("Not matching");
       toast.error(
@@ -47,12 +118,18 @@ const QueryTextboxAdvanced: React.FC = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const updateQuery = getSelectedQuery();
+  //   setSelectedQuery(updateQuery);
+  //   console.log(selectedQuery);
+  // });
+
   return (
     <div className="flex flex-col h-full w-full">
       <textarea
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
-        value={currentQueryCyphertext}
-        onChange={(e) => setCyphertext(e.target.value)}
+        value={editCyphertext}
+        onChange={(e) => setEditCyphertext(e.target.value)}
         placeholder="Enter your query here"
       />
       <div className="flex justify-end gap-2 mb-2">
@@ -73,10 +150,10 @@ const QueryTextboxAdvanced: React.FC = () => {
           body={
             <CustomPopUp
               fav={true}
-              query={query}
-              setQuery={setQuery}
-              naturalLanguage={curentQueryNatLang}
-              setNaturalLanguage={setNatLang}
+              query={saveNatLang}
+              setQuery={setSaveNatLang}
+              naturalLanguage={saveNatLang}
+              setNaturalLanguage={setSaveNatLang}
             ></CustomPopUp>
           }
         ></UIModal>
@@ -91,13 +168,14 @@ const QueryTextboxAdvanced: React.FC = () => {
           body={
             <SavePopUp
               saveChooseFolder={saveChooseFolder}
-              queryName={curentQueryName}
-              cyphertext={currentQueryCyphertext}
-              natLang={curentQueryNatLang}
-              updateQueryName={setQueryName}
-              updateCyphertext={setCyphertext}
-              updateNaturalLanguage={setNatLang}
-              setQueryFolder={setQueryFolder}
+              queryName={saveQueryName}
+              cyphertext={saveCyphertext}
+              natLang={saveNatLang}
+              // updateQueryState={updateQueryState}
+              updateQueryName={setSaveQueryName}
+              updateCyphertext={setSaveCyphertext}
+              updateNaturalLanguage={setSaveNatLang}
+              // setQueryFolder={setQueryFolder}
             ></SavePopUp>
           }
           footer={({ onClose }) => (
@@ -107,7 +185,7 @@ const QueryTextboxAdvanced: React.FC = () => {
               </UIButton>
               <UIButton
                 className="bg-success-700 w-full text-lg"
-                onClick={handleSaveCustom}
+                onClick={() => handleSaveCustom(onClose)}
               >
                 Save
               </UIButton>
@@ -116,7 +194,11 @@ const QueryTextboxAdvanced: React.FC = () => {
         ></UIModal>
       </div>
       {showReadOnlyTextbox && (
-        <QueryTextbox readOnly={true} initialQuery={query} hideButtons={true} />
+        <QueryTextbox
+          readOnly={true}
+          initialQuery={saveNatLang}
+          hideButtons={true}
+        />
       )}
     </div>
   );
