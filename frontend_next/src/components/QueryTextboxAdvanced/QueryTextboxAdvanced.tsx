@@ -46,6 +46,7 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
     selectedQuery.queryName
   );
   const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
+
   const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
   const [saveQueryFolder, setSaveQueryFolder] = useState<FolderType | null>(
     null
@@ -125,6 +126,19 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
               setNaturalLanguage={setSaveNatLang}
             ></CustomPopUp>
           }
+          footer={({ onClose }) => (
+            <>
+              <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
+                Cancel
+              </UIButton>
+              <UIButton
+                className="bg-success-700 w-full text-lg"
+                onClick={() => handleSaveCustom(onClose)}
+              >
+                Save
+              </UIButton>
+            </>
+          )}
         ></UIModal>
         <UIModal
           button={({ onOpen }) => (

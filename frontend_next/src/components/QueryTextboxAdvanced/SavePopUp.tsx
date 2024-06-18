@@ -46,20 +46,6 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
     console.log(natLang);
   };
 
-  // const handleCloseModal = () => {
-  //   updateQueryState(
-  //     curentQueryName,
-  //     currentQueryCyphertext,
-  //     curentQueryNatLang
-  //   );
-  //   // Optionally, you can call onClose() here if you have access to it.
-  // };
-
-  // const [curentQueryName, setQueryName] = useState<string>(queryName);
-  // const [currentQueryCyphertext, setCyphertext] = useState<string>(cyphertext);
-  // const [curentQueryNatLang, setNatLang] = useState<string>(natLang);
-  // const [queryFolder, setQueryFolder] = useState<string | null>(null);
-
   return (
     <div>
       <InputField
