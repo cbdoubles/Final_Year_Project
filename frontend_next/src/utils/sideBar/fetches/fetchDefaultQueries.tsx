@@ -1,0 +1,19 @@
+import { QueryType } from "@/src/libs/types";
+
+export const fetchDefaultQueries = async (): Promise<QueryType[] | void> => {
+  try {
+    const response = await fetch("http://localhost:8000/api/default-queries/");
+    const data = await response.json();
+
+    const transformedData: QueryType[] = data.map((query: any) => ({
+      queryId: query.id,
+      queryName: query.name,
+      cypherQuery: query.cypher_query,
+      natLang: query.natural_language_query,
+    }));
+
+    return transformedData;
+  } catch (error) {
+    console.error("Error fetching default queries:", error);
+  }
+};
