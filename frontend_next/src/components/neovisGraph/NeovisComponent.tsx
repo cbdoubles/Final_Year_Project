@@ -140,7 +140,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               align: "middle",
             },
             labelHighlightBold: true,
-            smooth: false,
+            smooth: {
+              enabled: true,
+              type: "dynamic",
+            },
           },
           nodes: {
             shape: "dot",
@@ -222,7 +225,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             }
           });
 
-          // TODO: colors don't persist when the new edges come in, fix it.
           viz.network.on("doubleClick", async (params) => {
             const nodeId = params.nodes[0];
             if (nodeId) {
@@ -237,6 +239,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 const relationships = records.map((record) => record.get("r"));
                 const connectedNodes = records.map((record) => record.get("m"));
                 cypherRef.current.updateWithCypher(query);
+                viz.network?.setOptions({ physics: { enabled: true } });
+                viz.network?.on("stabilized", () => {
+                  viz.network?.setOptions({ physics: { enabled: false } });
+                });
               } finally {
                 await session.close();
                 console.log("done doubleclick");
