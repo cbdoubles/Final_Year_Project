@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
+import { useNeoVisContext } from "@/components/neovisGraph/NeoVisContext";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -23,6 +24,19 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const visRef = useRef<HTMLDivElement>(null);
   const cypherRef = useRef<any>(null);
   const colorMap: Record<string, string> = {};
+
+  const {
+    nodeSize,
+    edgeWidth,
+    fontSize,
+    colorMapState,
+    items,
+    setNodeSize, // state update function for nodeSize
+    setEdgeWidth, // state update function for edgeWidth
+    setFontSize, // state update function for fontSize
+    setColorMapState, // state update function for colorMapState
+    setItems, // state update function for items
+  } = useNeoVisContext();
 
   const [hoveredItem, setHoveredItem] = useState<any>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -138,6 +152,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             );
             const labels = result.records.map((record) => record.get("label"));
             setNodeClasses(labels); // Set node classes
+            setItems((prevItems) => ({
+              ...prevItems,
+              displayedNodeLabels: labels,
+            })); // Update items with node labels
             return transformLabels(labels);
           } finally {
             await session.close();
@@ -148,6 +166,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           if (!colorMap[label]) {
             colorMap[label] = generateRandomColor();
           }
+          setColorMapState((prevState) => ({
+            ...prevState,
+            [label]: colorMap[label],
+          })); // Update colorMapState
           return colorMap[label];
         };
 
@@ -192,6 +214,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               record.get("relationshipType")
             );
             setEdgeClasses(relationshipTypes); // Set edge classes
+            setItems((prevItems) => ({
+              ...prevItems,
+              displayedEdgeTypes: relationshipTypes,
+            })); // Update items with edge types
             return transformRelationshipTypes(relationshipTypes);
           } finally {
             await session.close();
@@ -215,9 +241,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               arrows: {
                 to: { enabled: true },
               },
-              width: 2,
+              width: edgeWidth,
               font: {
-                size: 12,
+                size: fontSize,
                 color: "#000000",
                 strokeWidth: 3,
                 strokeColor: "#ffffff",
@@ -231,9 +257,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             },
             nodes: {
               shape: "dot",
-              size: 15,
+              size: nodeSize,
               font: {
-                size: 16,
+                size: fontSize,
                 color: "#000000",
               },
               labelHighlightBold: true,
@@ -322,8 +348,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 const nodeId = params.nodes[0];
                 if (nodeId) {
                   const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN n, r, m`;
-                  console.log("doubleClickNode", nodeId, query); // Debug log
-
                   const session = driver.session();
                   try {
                     const result = await session.run(query);
@@ -335,10 +359,32 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                     const connectedNodes = records.map((record) =>
                       record.get("m")
                     );
+
+                    const nodeLabels = nodes.map((node) => node.labels).flat();
+                    const relationshipTypes = relationships.map(
+                      (relationship) => relationship.type
+                    );
+
+                    // Update items with new node labels and relationship types
+                    setItems((prevItems) => ({
+                      ...prevItems,
+                      displayedNodeLabels: Array.from(
+                        new Set([
+                          ...prevItems.displayedNodeLabels,
+                          ...nodeLabels,
+                        ])
+                      ),
+                      displayedEdgeTypes: Array.from(
+                        new Set([
+                          ...prevItems.displayedEdgeTypes,
+                          ...relationshipTypes,
+                        ])
+                      ),
+                    }));
+
                     cypherRef.current.updateWithCypher(query);
                   } finally {
                     await session.close();
-                    console.log("done doubleclick");
                   }
                 }
               });
@@ -368,6 +414,10 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
   useEffect(() => {
     if (query) {
+      setItems({
+        displayedNodeLabels: [],
+        displayedEdgeTypes: [],
+      });
       runQuery(query).then((result) => {
         const isTable = checkForTableData(result);
         setIsTableView(isTable);
@@ -463,6 +513,82 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     console.log(" handle collapse");
     setIsCardCollapsed(!isCardCollapsed);
   };
+  useEffect(() => {
+    if (cypherRef.current) {
+      const updatedConfig = {
+        ...config,
+        visConfig: {
+          ...config.visConfig,
+          edges: {
+            ...config.visConfig.edges,
+            width: edgeWidth,
+            font: {
+              ...config.visConfig.edges.font,
+              size: fontSize,
+            },
+          },
+          nodes: {
+            ...config.visConfig.nodes,
+            size: nodeSize,
+            font: {
+              ...config.visConfig.nodes.font,
+              size: fontSize,
+            },
+          },
+        },
+      };
+      cypherRef.current.reinit(updatedConfig);
+    }
+  }, [nodeSize, edgeWidth, fontSize, config]);
+
+  useEffect(() => {
+    const updateGraphColors = async () => {
+      if (typeof window !== "undefined" && cypherRef.current) {
+        const { default: NeoVis } = await import("neovis.js");
+
+        const updatedConfig = {
+          ...config,
+          labels: {
+            ...config.labels,
+            ...Object.keys(colorMapState).reduce((acc, label) => {
+              (acc as any)[label] = {
+                ...config.labels[label],
+                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                  function: {
+                    ...config.labels[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
+                      ?.function,
+                    color: () => colorMapState[label],
+                  },
+                },
+              };
+              return acc;
+            }, {} as Record<string, any>),
+          },
+          relationships: {
+            ...config.relationships,
+            ...Object.keys(colorMapState).reduce((acc, type) => {
+              (acc as any)[type] = {
+                ...config.relationships[type],
+                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                  function: {
+                    ...config.relationships[type]?.[
+                      NeoVis.NEOVIS_ADVANCED_CONFIG
+                    ]?.function,
+                    color: () => colorMapState[type],
+                  },
+                },
+              };
+              return acc;
+            }, {} as Record<string, any>),
+          },
+        };
+
+        cypherRef.current.reinit(updatedConfig);
+      }
+    };
+
+    updateGraphColors();
+  }, [colorMapState, config]);
 
   return (
     <div className="relative flex flex-col">
