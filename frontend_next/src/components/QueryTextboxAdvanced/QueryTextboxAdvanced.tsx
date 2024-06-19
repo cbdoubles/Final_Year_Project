@@ -32,7 +32,8 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
     // selectedQuery,
   }
 ) => {
-  const { updatedQuery, cypherQuery, setQueryFromQuery } = useQueryProps();
+  const { updatedQuery, cypherQuery, queryName, setQueryFromQuery } =
+    useQueryProps();
   const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
 
   useEffect(() => {
@@ -99,8 +100,9 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
 
   return (
     <div className="flex flex-col h-full w-full">
+      <div className="text-md text-black">{"Query: " + queryName}</div>
       <textarea
-        className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
+        className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
         value={editCyphertext}
         onChange={(e) => setEditCyphertext(e.target.value)}
         placeholder="Enter your query here"

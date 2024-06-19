@@ -13,7 +13,7 @@ type QueryContextType = {
   resetQueryContext: () => void;
   setQueryFromQuery: (query: QueryType) => void;
   getSelectedQuery: () => QueryType;
-  updatedQuery: QueryType
+  updatedQuery: QueryType;
 };
 
 export const QueryContext = createContext<QueryContextType>({
@@ -48,14 +48,10 @@ export const QueryPropsProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [cypherQuery, setCypherQuery] = useState<string>(
-    `MATCH (b:Book)-[:WRITTEN_BY]->(a:Author) WHERE a.name = $authorName AND b.year > $year RETURN b`
-  );
+  const [cypherQuery, setCypherQuery] = useState<string>("");
   const [queryId, setQueryId] = useState<number>(0);
-  const [queryName, setQueryName] = useState<string>("matching good people");
-  const [natLang, setNaturalLanguageQuery] = useState<string>(
-    `Find books by author $authorName{author name} published after $year{year}.`
-  );
+  const [queryName, setQueryName] = useState<string>("");
+  const [natLang, setNaturalLanguageQuery] = useState<string>("");
 
   const resetQueryContext = () => {
     setCypherQuery("");
