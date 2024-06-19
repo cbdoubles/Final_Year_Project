@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import InfoCard from "./InfoCard";
 import neo4j from "neo4j-driver";
+import dynamic from "next/dynamic";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -18,11 +19,45 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
   const [hoveredItem, setHoveredItem] = useState<any>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [nodeClasses, setNodeClasses] = useState<string[]>([]);
+  const [edgeClasses, setEdgeClasses] = useState<string[]>([]);
+  const [config, setConfig] = useState<any>(null);
+
+  const getNodeProperties = async (nodeId: number) => {
+    const session = driver.session();
+    try {
+      const result = await session.run(
+        "MATCH (n) WHERE ID(n) = $nodeId RETURN properties(n) AS properties",
+        { nodeId }
+      );
+      if (result.records.length > 0) {
+        return result.records[0].get("properties");
+      }
+      return null;
+    } finally {
+      await session.close();
+    }
+  };
+
+  const getEdgeProperties = async (edgeId: number) => {
+    const session = driver.session();
+    try {
+      const result = await session.run(
+        "MATCH ()-[r]->() WHERE ID(r) = $edgeId RETURN properties(r) AS properties",
+        { edgeId }
+      );
+      if (result.records.length > 0) {
+        return result.records[0].get("properties");
+      }
+      return null;
+    } finally {
+      await session.close();
+    }
+  };
 
   useEffect(() => {
     const draw = async () => {
-      const NeoVis = await import("neovis.js");
-      const { NeoVisEvents } = await import("neovis.js");
+      const { default: NeoVis, NeoVisEvents } = await import("neovis.js");
 
       const transformLabels = (labels: string[]) => {
         const transformedNodesLabels: Record<string, any> = {};
@@ -55,6 +90,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             "MATCH (n) UNWIND labels(n) AS label RETURN DISTINCT label"
           );
           const labels = result.records.map((record) => record.get("label"));
+          setNodeClasses(labels); // Set node classes
           return transformLabels(labels);
         } finally {
           await session.close();
@@ -108,6 +144,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           const relationshipTypes = result.records.map((record) =>
             record.get("relationshipType")
           );
+          setEdgeClasses(relationshipTypes); // Set edge classes
           return transformRelationshipTypes(relationshipTypes);
         } finally {
           await session.close();
@@ -117,7 +154,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       const labelsConfig = await getLabels();
       const relationshipsConfig = await getRelationshipTypes();
 
-      const config = {
+      const initialConfig = {
         containerId: visRef.current?.id || "",
         neo4j: {
           serverUrl: NEO4J_URL,
@@ -181,7 +218,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         nonFlat: false,
       };
 
-      const viz = new NeoVis.default(config as any);
+      setConfig(initialConfig);
+
+      const viz = new NeoVis(initialConfig as any);
 
       viz.render();
 
@@ -189,39 +228,39 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
       const setupListeners = () => {
         if (viz.network) {
-          viz.network.on("stabilized", () => {
-            viz.network?.setOptions({ physics: { enabled: false } });
-          });
-
-          viz.network.on("hoverNode", (params) => {
+          viz.network.on("hoverNode", async (params) => {
             const nodeId = params.node;
             console.log("hoverNode", nodeId); // Debug log
-            setHoveredItem(nodeId);
+            const properties = await getNodeProperties(nodeId);
+            setHoveredItem({ id: nodeId, properties, type: "node" });
           });
 
           viz.network.on("blurNode", () => {
             setHoveredItem(null);
           });
 
-          viz.network.on("hoverEdge", (params) => {
+          viz.network.on("hoverEdge", async (params) => {
             const edgeId = params.edge;
             console.log("hoverEdge", edgeId); // Debug log
-            setHoveredItem(edgeId);
+            const properties = await getEdgeProperties(edgeId);
+            setHoveredItem({ id: edgeId, properties, type: "edge" });
           });
 
           viz.network.on("blurEdge", () => {
             setHoveredItem(null);
           });
 
-          viz.network.on("click", (params) => {
+          viz.network.on("click", async (params) => {
             const nodeId = params.nodes[0];
             const edgeId = params.edges[0];
             if (nodeId) {
               console.log("clickNode", nodeId); // Debug log
-              setSelectedItem(nodeId);
+              const properties = await getNodeProperties(nodeId);
+              setSelectedItem({ id: nodeId, properties, type: "node" });
             } else if (edgeId) {
               console.log("clickEdge", edgeId); // Debug log
-              setSelectedItem(edgeId);
+              const properties = await getEdgeProperties(edgeId);
+              setSelectedItem({ id: edgeId, properties, type: "edge" });
             }
           });
 
@@ -239,10 +278,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 const relationships = records.map((record) => record.get("r"));
                 const connectedNodes = records.map((record) => record.get("m"));
                 cypherRef.current.updateWithCypher(query);
-                viz.network?.setOptions({ physics: { enabled: true } });
-                viz.network?.on("stabilized", () => {
-                  viz.network?.setOptions({ physics: { enabled: false } });
-                });
               } finally {
                 await session.close();
                 console.log("done doubleclick");
@@ -299,7 +334,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   };
 
   return (
-    <div className="relative flex flex-row">
+    <div className="relative flex flex-col">
       <div id="viz" ref={visRef} className="w-full h-[600px]" />
       <button
         onClick={downloadPNG}
