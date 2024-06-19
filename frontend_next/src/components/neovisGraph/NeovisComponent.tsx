@@ -261,9 +261,23 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     }
   }, [query]);
 
+  const downloadPNG = () => {
+    const container = visRef.current?.querySelector("canvas");
+    if (container) {
+      const image = container
+        .toDataURL("image/png")
+        .replace("image/png", "image/octet-stream");
+      const link = document.createElement("a");
+      link.download = "neovis-graph.png";
+      link.href = image;
+      link.click();
+    }
+  };
+
   return (
     <div className="flex flex-row">
       <div id="viz" ref={visRef} style={{ width: "75%", height: "600px" }} />
+      <button onClick={downloadPNG}>Export PNG</button>
       <div style={{ width: "25%", paddingLeft: "10px" }}>
         <InfoCard title="Hovered Item" item={hoveredItem} />
         <InfoCard title="Selected Item" item={selectedItem} />
