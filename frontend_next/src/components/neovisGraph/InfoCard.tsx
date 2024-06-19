@@ -1,63 +1,84 @@
 import React from "react";
-import { Card, CardBody, Button, Spacer } from "@nextui-org/react";
+import { Card, CardBody, Spacer } from "@nextui-org/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 interface InfoCardProps {
   title: string;
   item: any;
+  onCollapse: () => void;
+  isCollapsed: boolean;
 }
 
-const InfoCard: React.FC<InfoCardProps> = ({ title, item }) => {
-  if (!item) {
-    return null;
-  }
-
+const InfoCard: React.FC<InfoCardProps> = ({
+  title,
+  item,
+  onCollapse,
+  isCollapsed,
+}) => {
   const renderPropertiesTable = () => {
-    const properties = item.properties || {};
+    const properties = item?.properties || {};
     return (
-      <table className="table-auto w-full">
-        <tbody>
-          {Object.entries(properties).map(([key, value]) => (
-            <tr key={key}>
-              <td className="border px-4 py-2 font-medium">{key}</td>
-              <td className="border px-4 py-2">
-                {(value as string).toString()}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border rounded-lg shadow-md">
+          <tbody>
+            {Object.entries(properties).map(([key, value]) => (
+              <tr key={key} className="bg-gray-100 border-b">
+                <td className="text-left px-4 py-2 font-medium break-words max-w-xs">
+                  {key}
+                </td>
+                <td className="text-left px-4 py-2 break-words max-w-lg">
+                  {String(value)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   };
 
   return (
     <Card
       isBlurred
-      className="bg-white bg-opacity-80 backdrop-blur-lg border-none rounded-lg shadow-lg mb-4 p-4 max-h-[400px] overflow-y-auto"
+      className={`relative bg-white bg-opacity-80 backdrop-blur-lg border-none rounded-lg shadow-lg mb-4 max-h-[400px] overflow-y-auto transition-all duration-300 ${
+        isCollapsed ? "bg-transparent shadow-none mb-0 p-2 w-20" : "p-4 w-96"
+      }`}
       shadow="sm"
     >
-      <CardBody>
+      <CardBody className={`${isCollapsed ? "p-7" : "p-4"}`}>
         <div className="flex flex-col gap-3">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col">
-              <h4>{title}</h4>
-              <p>Type: {item.type === "node" ? "Node" : "Edge"}</p>
-            </div>
-            <Button
-              isIconOnly
-              className="text-default-900/60 data-[hover]:bg-foreground/10"
-              radius="full"
-              variant="light"
-            ></Button>
-          </div>
-
-          <Spacer y={0.5} />
-
-          <div className="flex flex-col">
-            <p>Properties:</p>
-            {renderPropertiesTable()}
-          </div>
+          {!isCollapsed && (
+            <>
+              <div className="flex flex-col">
+                <h4>{title}</h4>
+                <p>
+                  Type:{" "}
+                  {item ? (item.type === "node" ? "Node" : "Edge") : "None"}
+                </p>
+              </div>
+              <Spacer y={0.5} />
+              <div className="flex flex-col">
+                <p>Properties:</p>
+                {item ? (
+                  renderPropertiesTable()
+                ) : (
+                  <p>No nodes or edges selected.</p>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </CardBody>
+      <button
+        className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg transform transition-transform duration-300 hover:scale-110"
+        onClick={onCollapse}
+      >
+        {isCollapsed ? (
+          <ChevronRightIcon className="h-6 w-6 text-gray-700" />
+        ) : (
+          <ChevronLeftIcon className="h-6 w-6 text-gray-700" />
+        )}
+      </button>
     </Card>
   );
 };

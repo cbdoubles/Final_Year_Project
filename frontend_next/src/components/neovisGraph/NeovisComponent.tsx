@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import InfoCard from "./InfoCard";
 import neo4j from "neo4j-driver";
-import dynamic from "next/dynamic";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -22,6 +21,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const [nodeClasses, setNodeClasses] = useState<string[]>([]);
   const [edgeClasses, setEdgeClasses] = useState<string[]>([]);
   const [config, setConfig] = useState<any>(null);
+  const [isCardCollapsed, setIsCardCollapsed] = useState<boolean>(false);
 
   const getNodeProperties = async (nodeId: number) => {
     const session = driver.session();
@@ -345,17 +345,30 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     }
   };
 
+  const handleCollapse = () => {
+    setIsCardCollapsed(!isCardCollapsed);
+  };
+
   return (
     <div className="relative flex flex-col">
       <div id="viz" ref={visRef} className="w-full h-[600px]" />
-      <button
+      {/* <button
         onClick={downloadPNG}
         className="absolute top-2 right-2 bg-white rounded shadow p-2"
       >
         Export PNG
-      </button>
-      <div className="absolute top-10 right-10 w-1/4">
-        <InfoCard title="Details" item={hoveredItem || selectedItem} />
+      </button> */}
+      <div
+        className={`absolute top-10 right-10 transition-all ${
+          isCardCollapsed ? "w-16" : "w-96"
+        }`}
+      >
+        <InfoCard
+          title="Details"
+          item={hoveredItem || selectedItem}
+          onCollapse={handleCollapse}
+          isCollapsed={isCardCollapsed}
+        />
       </div>
     </div>
   );
