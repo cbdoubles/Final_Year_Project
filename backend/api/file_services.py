@@ -1,14 +1,11 @@
 import os
 from django.conf import settings
 from neo4j import GraphDatabase
-import gc
-import time
+import atexit
 
 # Set up Neo4j connection
-# values don't really matter just change them if needed
 neo4j_user = os.getenv('NEO4J_USER')
 neo4j_password = os.getenv('NEO4J_PASSWORD')
-#neo4j_dir = os.environ.get('NEO4J_HOME')
 uri = "bolt://localhost:7687"
 
 driver = GraphDatabase.driver(uri, auth=(neo4j_user, neo4j_password))
@@ -40,7 +37,6 @@ def import_json_data(tx, file_path):
 
 # Function to import GraphML data into Neo4j, currently works only for graphid = directed
 def import_graphml_data(tx, file_path):
-    #see if we can change the batch sizes to make it faster # for apoc.import.graphml
     query = "CALL apoc.import.graphml($file_path, {})"
     tx.run(query, file_path=file_path)
 
@@ -132,11 +128,9 @@ def modify_file(project_id, file_data, reupload):
                     print("Unsupported file format.")
         except Exception as e:
             print(f"An error occurred during Neo4j transaction: {e}")
-        finally:
-            driver.close()
-            print("Driver closed")
-        gc.collect()
-        time.sleep(5)
         delete_file(file_path)
     except Exception as e:
         print(f"An error occurred while trying to modify the file: {e}")
+
+# Ensure the driver is closed when the script finishes
+atexit.register(lambda: driver.close())
