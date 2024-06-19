@@ -469,7 +469,21 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       {isTableView ? (
         renderTable()
       ) : (
-        <div key={query} id="viz" ref={visRef} className="w-full h-[600px]" />
+        <>
+          <div key={query} id="viz" ref={visRef} className="w-full h-[600px]" />
+          <div
+            className={`absolute top-10 right-10 transition-all ${
+              isCardCollapsed ? "w-16" : "w-96"
+            }`}
+          >
+            <InfoCard
+              title="Details"
+              item={hoveredItem || selectedItem}
+              onCollapse={handleCollapse}
+              isCollapsed={isCardCollapsed}
+            />
+          </div>
+        </>
       )}
       {/* <button
         onClick={downloadPNG}
@@ -477,18 +491,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       >
         Export PNG
       </button> */}
-      <div
-        className={`absolute top-10 right-10 transition-all ${
-          isCardCollapsed ? "w-16" : "w-96"
-        }`}
-      >
-        <InfoCard
-          title="Details"
-          item={hoveredItem || selectedItem}
-          onCollapse={handleCollapse}
-          isCollapsed={isCardCollapsed}
-        />
-      </div>
     </div>
   );
 };
