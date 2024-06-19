@@ -7,10 +7,11 @@ import UIModal from "../ui/UIModal";
 import { toast } from "react-toastify";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { fetchFolders } from "@/src/utils/queryTextbox/fetches/fetchFolders";
+import { handleSaveFolder } from "@/utils/queryTextbox/fetches/handleSaveFolder";
+import NewFolderPopUp from "./NewFolderPopup";
 
 type SavePopUpProps = {
   fav?: boolean;
-
   saveChooseFolder: () => void;
   queryName: string;
   cyphertext: string;
@@ -38,6 +39,9 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
   const { projectId } = useProjectProps();
 
   const [folders, setFolders] = useState<QueryFolderType[] | null>(null);
+
+  const [showNewFolderPopup, setShowNewFolderPopup] = useState(false);
+
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateQueryName(e.target.value);
   };
@@ -72,6 +76,22 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
     } else {
       toast.error("No folder selected");
     }
+  };
+
+  const handleCreateNewFolder = async (folderName: string) => {
+    // Logic to create a new folder and update the folders state
+    const newFolder = await handleSaveFolder(folderName, folderType, projectId);
+
+    if (newFolder) {
+      setFolders([...(folders || []), newFolder]);
+      setSelectedFolder(newFolder);
+    }
+
+    // const newFolder: QueryFolderType = {
+    //   folderId: folders ? folders.length + 1 : 1,
+    //   folderName,
+    //   folderType,
+    // };
   };
 
   return (
@@ -112,23 +132,46 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
         )}
         header={<p className="text-primary">select folder</p>}
         body={
-          <SelectFolder
-            folders={folders}
-            selectedFolder={selectedFolder}
-            setSelectedFolder={setSelectedFolder}
-          />
+          <div>
+            <SelectFolder
+              folders={folders}
+              selectedFolder={selectedFolder}
+              setSelectedFolder={setSelectedFolder}
+            />
+          </div>
         }
         footer={({ onClose }) => (
           <>
-            <UIButton
-              color="primary"
-              onClick={() => handleSelectFolder(onClose)}
-            >
-              Select
-            </UIButton>
+            <div className="w-full flex justify-between mt-4 text-black">
+              <UIModal
+                button={({ onOpen }) => (
+                  <UIButton className="bg-success-700" onClick={onOpen}>
+                    Create New Folder
+                  </UIButton>
+                )}
+                header={<span className="text-primary">Create New Folder</span>}
+                body={
+                  <NewFolderPopUp
+                    onSave={handleCreateNewFolder}
+                    onClose={onClose}
+                  />
+                }
+                footer={({ onClose }) => (
+                  <UIButton color="primary" onClick={onClose}>
+                    Close
+                  </UIButton>
+                )}
+              />
+              <UIButton
+                color="primary"
+                onClick={() => handleSelectFolder(onClose)}
+              >
+                Select
+              </UIButton>
+            </div>
           </>
         )}
-      ></UIModal>
+      />
     </div>
   );
 };

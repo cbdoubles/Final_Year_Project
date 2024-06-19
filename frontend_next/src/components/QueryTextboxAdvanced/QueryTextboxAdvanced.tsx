@@ -13,6 +13,7 @@ import { validateParameters } from "@/src/utils/parameterUtils";
 import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
 import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
 import { select } from "@nextui-org/theme";
+import NewFolderPopUp from "./NewFolderPopup";
 
 const queryFolder: QueryFolderType = {
   folderId: 6,
@@ -53,7 +54,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
   const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
     null
   );
-
   const saveChooseFolder = () => {
     console.log("clicked save");
   };
@@ -121,13 +121,19 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
           )}
           header={<span className="text-primary">Save favorite query</span>}
           body={
-            <CustomPopUp
-              fav={true}
-              query={saveNatLang}
-              setQuery={setSaveNatLang}
-              naturalLanguage={saveNatLang}
-              setNaturalLanguage={setSaveNatLang}
-            ></CustomPopUp>
+            <SavePopUp
+              saveChooseFolder={saveChooseFolder}
+              queryName={saveQueryName}
+              cyphertext={saveCyphertext}
+              natLang={saveNatLang}
+              updateQueryName={setSaveQueryName}
+              updateCyphertext={setSaveCyphertext}
+              updateNaturalLanguage={setSaveNatLang}
+              folderType={"Favorite"}
+              selectedFolder={selectedFolder}
+              setSelectedFolder={setSelectedFolder}
+              // setQueryFolder={setQueryFolder}
+            ></SavePopUp>
           }
           footer={({ onClose }) => (
             <>
@@ -160,7 +166,7 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
               updateQueryName={setSaveQueryName}
               updateCyphertext={setSaveCyphertext}
               updateNaturalLanguage={setSaveNatLang}
-              folderType={folderType}
+              folderType={"Custom"}
               selectedFolder={selectedFolder}
               setSelectedFolder={setSelectedFolder}
               // setQueryFolder={setQueryFolder}
