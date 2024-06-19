@@ -156,11 +156,11 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
                     onClose={onClose}
                   />
                 }
-                footer={({ onClose }) => (
-                  <UIButton color="primary" onClick={onClose}>
-                    Close
-                  </UIButton>
-                )}
+                // footer={({ onClose }) => (
+                //   <UIButton color="primary" onClick={onClose}>
+                //     Close
+                //   </UIButton>
+                // )}
               />
               <UIButton
                 color="primary"

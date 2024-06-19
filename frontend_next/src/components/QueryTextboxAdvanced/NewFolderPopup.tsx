@@ -30,9 +30,14 @@ const NewFolderPopUp: React.FC<NewFolderPopUpProps> = ({ onSave, onClose }) => {
         value={folderName}
         onChange={(e) => setFolderName(e.target.value)}
       />
-      <UIButton className="bg-success-700 w-full text-lg" onClick={handleSave}>
-        Save
-      </UIButton>
+      <div className="w-full flex justify-between mt-4 mb-4">
+        <UIButton className="bg-success-700 text-lg ml-2" onClick={handleSave}>
+          Save
+        </UIButton>
+        <UIButton className="bg-danger text-lg mr-2" onClick={onClose}>
+          Cancel
+        </UIButton>
+      </div>
     </div>
   );
 };
