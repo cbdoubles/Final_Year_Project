@@ -19,14 +19,14 @@ const InfoCard: React.FC<InfoCardProps> = ({
     const properties = item?.properties || {};
     return (
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border rounded-lg shadow-md">
+        <table className="min-w-full bg-white border rounded-lg shadow-md table-fixed text-sm">
           <tbody>
             {Object.entries(properties).map(([key, value]) => (
               <tr key={key} className="bg-gray-100 border-b">
-                <td className="text-left px-4 py-2 font-medium break-words max-w-xs">
+                <td className="text-left px-4 py-2 font-medium break-words w-1/4 break-all">
                   {key}
                 </td>
-                <td className="text-left px-4 py-2 break-words max-w-lg">
+                <td className="text-left px-4 py-2 break-words w-3/4 break-all">
                   {String(value)}
                 </td>
               </tr>
