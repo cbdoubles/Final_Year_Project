@@ -514,40 +514,31 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     setIsCardCollapsed(!isCardCollapsed);
   };
   useEffect(() => {
-    if (cypherRef.current) {
-      const updatedConfig = {
-        ...config,
-        visConfig: {
-          ...config.visConfig,
-          edges: {
-            ...config.visConfig.edges,
-            width: edgeWidth,
-            font: {
-              ...config.visConfig.edges.font,
-              size: fontSize,
-            },
-          },
-          nodes: {
-            ...config.visConfig.nodes,
-            size: nodeSize,
-            font: {
-              ...config.visConfig.nodes.font,
-              size: fontSize,
-            },
-          },
-        },
-      };
-      cypherRef.current.reinit(updatedConfig);
-    }
-  }, [nodeSize, edgeWidth, fontSize, config]);
-
-  useEffect(() => {
-    const updateGraphColors = async () => {
+    const updateGraphConfig = async () => {
       if (typeof window !== "undefined" && cypherRef.current) {
         const { default: NeoVis } = await import("neovis.js");
 
         const updatedConfig = {
           ...config,
+          visConfig: {
+            ...config.visConfig,
+            edges: {
+              ...config.visConfig.edges,
+              width: edgeWidth,
+              font: {
+                ...config.visConfig.edges.font,
+                size: fontSize,
+              },
+            },
+            nodes: {
+              ...config.visConfig.nodes,
+              size: nodeSize,
+              font: {
+                ...config.visConfig.nodes.font,
+                size: fontSize,
+              },
+            },
+          },
           labels: {
             ...config.labels,
             ...Object.keys(colorMapState).reduce((acc, label) => {
@@ -587,8 +578,8 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       }
     };
 
-    updateGraphColors();
-  }, [colorMapState, config]);
+    updateGraphConfig();
+  }, [nodeSize, edgeWidth, fontSize, colorMapState, config]);
 
   return (
     <div className="relative flex flex-col">
