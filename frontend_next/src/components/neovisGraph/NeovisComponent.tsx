@@ -1,6 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import InfoCard from "./InfoCard";
 import neo4j from "neo4j-driver";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@nextui-org/react";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -388,30 +396,35 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     const headers = Object.keys(tableData[0]);
 
     return (
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr>
+      <div className="overflow-auto">
+        <Table
+          aria-label="Example table with static content"
+          className="w-full"
+        >
+          <TableHeader>
             {headers.map((header) => (
-              <th key={header} className="py-2 px-4 border-b border-gray-200">
-                {header}
-              </th>
+              <TableColumn key={header}>{header}</TableColumn>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, index) => (
-            <tr key={index}>
-              {headers.map((header) => (
-                <td key={header} className="py-2 px-4 border-b border-gray-200">
-                  {typeof row[header] === "object"
-                    ? JSON.stringify(row[header])
-                    : row[header]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </TableHeader>
+          <TableBody>
+            {tableData.map((row, index) => (
+              <TableRow key={index}>
+                {headers.map((header) => (
+                  <TableCell key={header} className="whitespace-pre-wrap">
+                    {typeof row[header] === "object" ? (
+                      <pre className="whitespace-pre-wrap">
+                        {JSON.stringify(row[header], null, 2)}
+                      </pre>
+                    ) : (
+                      row[header]
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     );
   };
 
