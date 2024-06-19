@@ -299,10 +299,15 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   };
 
   return (
-    <div className="flex flex-row">
-      <div id="viz" ref={visRef} style={{ width: "75%", height: "600px" }} />
-      <button onClick={downloadPNG}>Export PNG</button>
-      <div style={{ width: "25%", paddingLeft: "10px" }}>
+    <div className="relative flex flex-row">
+      <div id="viz" ref={visRef} className="w-full h-[600px]" />
+      <button
+        onClick={downloadPNG}
+        className="absolute top-2 right-2 bg-white rounded shadow p-2"
+      >
+        Export PNG
+      </button>
+      <div className="absolute top-10 right-10 w-1/4">
         <InfoCard title="Hovered Item" item={hoveredItem} />
         <InfoCard title="Selected Item" item={selectedItem} />
       </div>

@@ -14,7 +14,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, item }) => {
   return (
     <Card
       isBlurred
-      className="border-none bg-background/60 dark:bg-default-100/50 max-w-[400px] mb-4"
+      className="bg-white bg-opacity-80 backdrop-blur-lg border-none rounded-lg shadow-lg mb-4 p-4"
       shadow="sm"
     >
       <CardBody>
