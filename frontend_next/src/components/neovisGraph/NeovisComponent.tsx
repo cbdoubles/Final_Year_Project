@@ -396,7 +396,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     const headers = Object.keys(tableData[0]);
 
     return (
-      <div className="overflow-auto">
+      <div className="overflow-auto max-h-[600px]">
         <Table
           aria-label="Example table with static content"
           className="w-full"
