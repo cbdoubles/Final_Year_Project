@@ -5,7 +5,7 @@ import UIModal from "@/src/components/ui/UIModal";
 import UIButton from "@/src/components/ui/UIButton";
 import { QueryType } from "@/src/libs/types";
 import DefaultPopUp from "@/src/components/sideBar/DefaultPopUp";
-import { fetchDefaultQueries } from "./fetches/fetchDefaultFiles";
+import { fetchDefaultQueries } from "./fetches/fetchDefaultQueries";
 import { toast } from "react-toastify";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 
@@ -20,7 +20,7 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
   );
   const [selectedDefaultQuery, setSelectedDefaultQuery] =
     useState<QueryType | null>(null);
-  const { setQueryFromQuery } = useQueryProps();
+  const { updatedQuery, setQueryFromQuery } = useQueryProps();
 
   const openSelectFolder = async (onOpen: () => void) => {
     const result = await fetchDefaultQueries();
@@ -33,7 +33,7 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
     }
   };
 
-  const handleSelectFolder = async (onClose: () => void) => {
+  const handleSelectQuery = async (onClose: () => void) => {
     if (selectedDefaultQuery) {
       setQueryFromQuery(selectedDefaultQuery);
       onClose();
@@ -46,9 +46,9 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
     <div>
       <UIModal
         button={({ onOpen }) => (
-          <div
+          <button
             data-testid="ui-button"
-            className="flex items-center cursor-pointer"
+            className="w-full flex relative h-[48px] grow items-center justify-start gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:justify-start md:p-2 md:px-3"
             onClick={() => openSelectFolder(onOpen)}
           >
             <GlobeAsiaAustraliaIcon className="w-6" />
@@ -57,7 +57,7 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
                 {"Default"}
               </p>
             )}
-          </div>
+          </button>
         )}
         header={<p className="text-primary">select folder</p>}
         body={
@@ -71,7 +71,7 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
           <>
             <UIButton
               color="primary"
-              onClick={() => handleSelectFolder(onClose)}
+              onClick={() => handleSelectQuery(onClose)}
             >
               Select
             </UIButton>
