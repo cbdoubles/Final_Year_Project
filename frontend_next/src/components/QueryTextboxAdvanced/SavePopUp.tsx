@@ -87,11 +87,6 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
       setSelectedFolder(newFolder);
     }
 
-    // const newFolder: QueryFolderType = {
-    //   folderId: folders ? folders.length + 1 : 1,
-    //   folderName,
-    //   folderType,
-    // };
   };
 
   return (

@@ -1,13 +1,13 @@
 import React from "react";
 import { QueryType } from "@/src/libs/types";
 
-type SelectProjectProps = {
+type DefaultPopUpProps = {
   defaultQueries: QueryType[] | null;
   selectedDefaultQuery: QueryType | null;
   setSelectedDefaultQuery: (folder: QueryType | null) => void;
 };
 
-const SelectFolder: React.FC<SelectProjectProps> = ({
+const DefaultPopUp: React.FC<DefaultPopUpProps> = ({
   defaultQueries,
   selectedDefaultQuery,
   setSelectedDefaultQuery,
@@ -37,4 +37,4 @@ const SelectFolder: React.FC<SelectProjectProps> = ({
   );
 };
 
-export default SelectFolder;
+export default DefaultPopUp;

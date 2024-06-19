@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ProjectItem from "./selectExistingProject/ProjectItem";
 import { Element } from "@/src/libs/types";
-import { fetchElements } from "@/src/utils/home/selectExistingProject/fetchProjects";
+import { fetchProjects } from "@/src/utils/home/selectExistingProject/fetchProjects";
 
 type SelectExistingProjectProps = {};
 
@@ -16,7 +16,7 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
   }, []);
 
   const onLoad = async () => {
-    const result = await fetchElements();
+    const result = await fetchProjects();
 
     if (result) {
       setElements(result);

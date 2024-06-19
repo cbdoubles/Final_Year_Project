@@ -1,6 +1,6 @@
 import { ProjectType, ProjectTypeFetch } from "@/src/libs/types";
 
-export const fetchElements = async (
+export const fetchProjects = async (
 ) => {
   try {
     const response = await fetch("http://localhost:8000/api/projects/");
