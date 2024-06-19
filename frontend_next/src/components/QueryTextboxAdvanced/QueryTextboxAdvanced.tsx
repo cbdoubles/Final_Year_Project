@@ -100,18 +100,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
           hideButtons={true}
         />
       )}
-      {queryRunClicked && (
-        <Card className="flex-grow bg-capgemini-gray mt-4 p-2">
-          <NeovisComponent query={localQuery} />
-        </Card>
-      )}
-      <div>
-        <iframe
-          src="http://localhost:3001"
-          width="100%"
-          height="5000px"
-        ></iframe>
-      </div>
     </div>
   );
 };

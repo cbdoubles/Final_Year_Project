@@ -1,11 +1,12 @@
-import { AppProps } from "next/app"
-import Head from "next/head"
-import React from "react"
+import { AppProps } from "next/app";
+import Head from "next/head";
+import React from "react";
 
-import "../public/styles/globals.css"
-import "../public/styles/style.css"
-import { PropsProvider } from "@/src/contexts/PropsContext"
-import { NextUIProvider } from "@nextui-org/react"
+import "../public/styles/globals.css";
+import "../public/styles/style.css";
+import { PropsProvider } from "@/src/contexts/PropsContext";
+import { NextUIProvider } from "@nextui-org/react";
+import { NeoVisProvider } from "@/src/components/neovisGraph/NeoVisContext";
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
@@ -17,13 +18,15 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
           name="viewport"
         />
       </Head>
-      <NextUIProvider>
-        <PropsProvider>
-          <Component {...pageProps} />
-        </PropsProvider>
-      </NextUIProvider>
+      <NeoVisProvider>
+        <NextUIProvider>
+          <PropsProvider>
+            <Component {...pageProps} />
+          </PropsProvider>
+        </NextUIProvider>
+      </NeoVisProvider>
     </>
-  )
-}
+  );
+};
 
-export default MyApp
+export default MyApp;
