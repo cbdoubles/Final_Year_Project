@@ -11,10 +11,28 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, item }) => {
     return null;
   }
 
+  const renderPropertiesTable = () => {
+    const properties = item.properties || {};
+    return (
+      <table className="table-auto w-full">
+        <tbody>
+          {Object.entries(properties).map(([key, value]) => (
+            <tr key={key}>
+              <td className="border px-4 py-2 font-medium">{key}</td>
+              <td className="border px-4 py-2">
+                {(value as string).toString()}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
   return (
     <Card
       isBlurred
-      className="bg-white bg-opacity-80 backdrop-blur-lg border-none rounded-lg shadow-lg mb-4 p-4"
+      className="bg-white bg-opacity-80 backdrop-blur-lg border-none rounded-lg shadow-lg mb-4 p-4 max-h-[400px] overflow-y-auto"
       shadow="sm"
     >
       <CardBody>
@@ -22,7 +40,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, item }) => {
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
               <h4>{title}</h4>
-              <p>Type: {item.labels ? "Node" : "Edge"}</p>
+              <p>Type: {item.type === "node" ? "Node" : "Edge"}</p>
             </div>
             <Button
               isIconOnly
@@ -36,7 +54,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, item }) => {
 
           <div className="flex flex-col">
             <p>Properties:</p>
-            <pre>{JSON.stringify(item.properties || item, null, 2)}</pre>
+            {renderPropertiesTable()}
           </div>
         </div>
       </CardBody>

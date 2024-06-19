@@ -229,10 +229,12 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       const setupListeners = () => {
         if (viz.network) {
           viz.network.on("hoverNode", async (params) => {
-            const nodeId = params.node;
-            console.log("hoverNode", nodeId); // Debug log
-            const properties = await getNodeProperties(nodeId);
-            setHoveredItem({ id: nodeId, properties, type: "node" });
+            if (!selectedItem) {
+              const nodeId = params.node;
+              console.log("hoverNode", nodeId); // Debug log
+              const properties = await getNodeProperties(nodeId);
+              setHoveredItem({ id: nodeId, properties, type: "node" });
+            }
           });
 
           viz.network.on("blurNode", () => {
@@ -240,10 +242,12 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           });
 
           viz.network.on("hoverEdge", async (params) => {
-            const edgeId = params.edge;
-            console.log("hoverEdge", edgeId); // Debug log
-            const properties = await getEdgeProperties(edgeId);
-            setHoveredItem({ id: edgeId, properties, type: "edge" });
+            if (!selectedItem) {
+              const edgeId = params.edge;
+              console.log("hoverEdge", edgeId); // Debug log
+              const properties = await getEdgeProperties(edgeId);
+              setHoveredItem({ id: edgeId, properties, type: "edge" });
+            }
           });
 
           viz.network.on("blurEdge", () => {
@@ -261,6 +265,8 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               console.log("clickEdge", edgeId); // Debug log
               const properties = await getEdgeProperties(edgeId);
               setSelectedItem({ id: edgeId, properties, type: "edge" });
+            } else {
+              setSelectedItem(null);
             }
           });
 
@@ -284,6 +290,12 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               }
             }
           });
+
+          viz.network.on("click", (event) => {
+            if (event.nodes.length === 0 && event.edges.length === 0) {
+              setSelectedItem(null);
+            }
+          });
         } else {
           // Retry setup after a short delay
           setTimeout(setupListeners, 100);
@@ -298,7 +310,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
   useEffect(() => {
     if (query && cypherRef.current) {
-      cypherRef.current.updateWithCypher(query);
+      cypherRef.current.render(query);
     }
   }, [query]);
 
@@ -343,8 +355,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         Export PNG
       </button>
       <div className="absolute top-10 right-10 w-1/4">
-        <InfoCard title="Hovered Item" item={hoveredItem} />
-        <InfoCard title="Selected Item" item={selectedItem} />
+        <InfoCard title="Details" item={hoveredItem || selectedItem} />
       </div>
     </div>
   );
