@@ -262,13 +262,29 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   }, [query]);
 
   const downloadPNG = () => {
-    const container = visRef.current?.querySelector("canvas");
-    if (container) {
-      const image = container
-        .toDataURL("image/png")
-        .replace("image/png", "image/octet-stream");
-      const link = document.createElement("a");
-      link.download = "neovis-graph.png";
+    const scale = 4; // Scale factor for higher resolution
+  
+    // Get the canvas and its context
+    const canvas = visRef.current.querySelector('canvas');
+    if (canvas) {
+      const width = canvas.width * scale;
+      const height = canvas.height * scale;
+      const largeCanvas = document.createElement('canvas');
+      largeCanvas.width = width;
+      largeCanvas.height = height;
+      const context = largeCanvas.getContext('2d');
+  
+      // Clear the canvas for transparency
+      context.clearRect(0, 0, width, height);
+  
+      // Draw the original canvas on the larger canvas
+      context.scale(scale, scale);
+      context.drawImage(canvas, 0, 0);
+  
+      // Create the download link
+      const image = largeCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+      const link = document.createElement('a');
+      link.download = 'neovis-graph.png';
       link.href = image;
       link.click();
     }
