@@ -1,4 +1,3 @@
-// NeovisComponent.tsx
 import React, { useEffect, useRef, useState } from "react";
 import InfoCard from "./InfoCard";
 import neo4j from "neo4j-driver";
@@ -420,7 +419,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         destroyNeovisInstance(); // Ensure cleanup on unmount or query change
       };
     }
-  }, [query, isTableView, layout]); // Add layout as a dependency here to re-render the graph
+  }, [query, isTableView]); // Removed layout from here
 
   useEffect(() => {
     if (query) {
@@ -523,31 +522,90 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   };
 
   useEffect(() => {
+    if (cypherRef.current) {
+      // Update node size
+      const nodes = cypherRef.current.network.body.data.nodes.get();
+      nodes.forEach((node: any) => {
+        cypherRef.current.network.body.data.nodes.update({
+          id: node.id,
+          size: nodeSize,
+        });
+      });
+
+      // Update edge width and font size
+      const edges = cypherRef.current.network.body.data.edges.get();
+      edges.forEach((edge: any) => {
+        cypherRef.current.network.body.data.edges.update({
+          id: edge.id,
+          width: edgeWidth,
+        });
+      });
+
+      // Update node font size
+      cypherRef.current.network.body.data.nodes.update(
+        nodes.map((node: any) => ({
+          id: node.id,
+          font: { size: fontSize },
+        }))
+      );
+
+      // Update edge font size
+      cypherRef.current.network.body.data.edges.update(
+        edges.map((edge: any) => ({
+          id: edge.id,
+          font: { size: fontSize },
+        }))
+      );
+
+      // Update layout
+      const layoutConfig =
+        layout === "hierarchical"
+          ? {
+              hierarchical: {
+                enabled: true,
+                direction: "UD", // UD for top-down, LR for left-right, DU for bottom-up, RL for right-left
+                sortMethod: "directed", // Directed sorting
+                nodeSpacing: 400,
+              },
+            }
+          : {
+              hierarchical: false,
+            };
+
+      cypherRef.current.network.setOptions({
+        layout: layoutConfig,
+        physics: {
+          enabled: layout !== "hierarchical",
+          solver: "forceAtlas2Based",
+          stabilization: {
+            enabled: true,
+            iterations: 10,
+            fit: true,
+          },
+          forceAtlas2Based: {
+            gravitationalConstant: -50,
+            centralGravity: 0.005,
+            springLength: 230,
+            springConstant: 0.18,
+          },
+          maxVelocity: 50,
+          minVelocity: 0.1,
+          timestep: 0.5,
+          adaptiveTimestep: true,
+        },
+      });
+
+      cypherRef.current.network.redraw();
+    }
+  }, [nodeSize, fontSize, edgeWidth, layout]);
+
+  useEffect(() => {
     const updateGraphConfig = async () => {
       if (typeof window !== "undefined" && cypherRef.current) {
         const { default: NeoVis } = await import("neovis.js");
 
         const updatedConfig = {
           ...config,
-          visConfig: {
-            ...config.visConfig,
-            edges: {
-              ...config.visConfig.edges,
-              width: edgeWidth,
-              font: {
-                ...config.visConfig.edges.font,
-                size: fontSize,
-              },
-            },
-            nodes: {
-              ...config.visConfig.nodes,
-              size: nodeSize,
-              font: {
-                ...config.visConfig.nodes.font,
-                size: fontSize,
-              },
-            },
-          },
           labels: {
             ...config.labels,
             ...Object.keys(colorMapState).reduce((acc, label) => {
@@ -582,13 +640,14 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             }, {} as Record<string, any>),
           },
         };
-
+        console.log("Updated config", updatedConfig); // Debug log
         cypherRef.current.reinit(updatedConfig);
+        cypherRef.current.render();
       }
     };
 
     updateGraphConfig();
-  }, [nodeSize, edgeWidth, fontSize, colorMapState, config]);
+  }, [colorMapState, config]); // Only depends on colorMapState and config
 
   return (
     <div className="relative flex flex-col">
