@@ -6,23 +6,20 @@ import Default from "@/src/utils/sideBar/DefaultIcon";
 import Reupload from "@/src/utils/sideBar/ReuploadIcon";
 import { LuAlignJustify } from "react-icons/lu";
 import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
-import GraphToolBoxContainer from "@/components/graphDisplay/GraphToolBoxContainer";
 import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
-import UIModal from "../ui/UIModal";
-import UIButton from "../ui/UIButton";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import ChooseProject from "../importChain/ChooseProject";
 import ImportIcon from "@/src/utils/sideBar/ImportIcon";
 import NeoVisToolBox from "../neovisGraph/NeoVisToolBox";
 
 export default function SideBar({
   collapsed,
   handlerCollapsed,
+  isTableView, // Add isTableView prop
 }: {
   collapsed: boolean;
   handlerCollapsed: (collapsed: boolean) => void;
+  isTableView: boolean; // Add isTableView prop
 }) {
   const { queryRunClicked } = useProps();
   const { projectId } = useProjectProps();
@@ -43,18 +40,15 @@ export default function SideBar({
         <SwitchMode collapsed={collapsed} />
         <ImportIcon collapsed={collapsed} />
 
-        {!collapsed && (
+        {!collapsed && !isTableView && (
           <>
             {queryRunClicked && (
               <Card className="bg-gray-50">
-                {/* <GraphToolBoxContainer /> */}
                 <NeoVisToolBox title="Node and Edge Information" />
               </Card>
             )}
           </>
         )}
-        {/* <Settings collapsed={collapsed} />
-        {!collapsed && <>{<NeoVisToolBox title="Whatever" />}</>} */}
       </div>
     </div>
   );

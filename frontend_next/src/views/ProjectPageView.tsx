@@ -20,6 +20,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
   const [queryRunClicked2, setQueryRunClicked2] = useState(false);
 
   const [collapsed, setCollapsed] = useState(false);
+  const [isTableView, setIsTableView] = useState(false);
 
   const [query, setQuery] = useState("");
   const [localQuery, setLocalQuery] = useState("");
@@ -41,7 +42,11 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
         <NeoVisProvider>
           {/* <GraphDataProvider> */}
           <div className="w-full">
-            <SideBar collapsed={collapsed} handlerCollapsed={setCollapsed} />
+            <SideBar
+              collapsed={collapsed}
+              handlerCollapsed={setCollapsed}
+              isTableView={isTableView}
+            />
           </div>
           <div className="grid-cols-1 p-4 h-full w-full">
             {advancedMode ? (
@@ -52,7 +57,11 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             <div className="flex-grow overflow-auto">{children}</div>
             {queryRunClicked && (
               <Card className="flex-grow bg-capgemini-gray mt-4 p-2">
-                <NeovisComponent query={localQuery} />
+                <NeovisComponent
+                  query={localQuery}
+                  setIsTableView={setIsTableView}
+                  isTableView={isTableView}
+                />
               </Card>
             )}
           </div>

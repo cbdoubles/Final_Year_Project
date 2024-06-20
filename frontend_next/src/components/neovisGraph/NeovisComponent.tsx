@@ -20,7 +20,11 @@ const driver = neo4j.driver(
   neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
 );
 
-const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
+const NeovisComponent: React.FC<{
+  query: string;
+  setIsTableView: (isTableView: boolean) => void;
+  isTableView: boolean;
+}> = ({ query, setIsTableView, isTableView }) => {
   const visRef = useRef<HTMLDivElement>(null);
   const cypherRef = useRef<any>(null);
   const colorMap: Record<string, string> = {};
@@ -47,7 +51,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const [config, setConfig] = useState<any>(null);
   const [isCardCollapsed, setIsCardCollapsed] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any[]>([]);
-  const [isTableView, setIsTableView] = useState<boolean>(false);
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
   const [nodeData, setNodeData] = useState<any[]>([]);
   const [edgeData, setEdgeData] = useState<any[]>([]);
@@ -672,26 +675,30 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       ) : (
         <>
           <div key={query} id="viz" ref={visRef} className="w-full h-[600px]" />
-          <div
-            className={`absolute top-10 right-10 transition-all ${
-              isCardCollapsed ? "w-16" : "w-96"
-            }`}
-          >
-            <InfoCard
-              title="Details"
-              item={hoveredItem || selectedItem}
-              onCollapse={handleCollapse}
-              isCollapsed={isCardCollapsed}
-            />
-          </div>
+          {!isTableView && (
+            <div
+              className={`absolute top-10 right-10 transition-all ${
+                isCardCollapsed ? "w-16" : "w-96"
+              }`}
+            >
+              <InfoCard
+                title="Details"
+                item={hoveredItem || selectedItem}
+                onCollapse={handleCollapse}
+                isCollapsed={isCardCollapsed}
+              />
+            </div>
+          )}
         </>
       )}
-      <button
-        onClick={downloadPNG}
-        className="absolute top-2 right-2 bg-white rounded shadow p-2"
-      >
-        Export PNG
-      </button>
+      {!isTableView && (
+        <button
+          onClick={downloadPNG}
+          className="absolute top-2 right-2 bg-white rounded shadow p-2"
+        >
+          Export PNG
+        </button>
+      )}
     </div>
   );
 };
