@@ -48,7 +48,7 @@ export default function SideBar({
             {queryRunClicked && (
               <Card className="bg-gray-50">
                 {/* <GraphToolBoxContainer /> */}
-                <NeoVisToolBox title="Whatever" />
+                <NeoVisToolBox title="Node and Edge Information" />
               </Card>
             )}
           </>
