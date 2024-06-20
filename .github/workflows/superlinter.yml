@@ -51,8 +51,8 @@ jobs:
   build:
     name: Lint
     runs-on: self-hosted
-    container:
-      image: ubuntu:22.04
+    # container:
+    #   image: ubuntu:22.04
 
     permissions:
       contents: read
@@ -60,10 +60,10 @@ jobs:
       statuses: write
 
     steps:
-      - name: Set up SSH
-        run: |
-          apt-get update
-          apt-get install -y openssh-client
+      # - name: Set up SSH
+      #   run: |
+      #     apt-get update
+      #     apt-get install -y openssh-client
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
