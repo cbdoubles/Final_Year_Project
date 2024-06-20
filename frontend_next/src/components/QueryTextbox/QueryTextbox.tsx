@@ -13,6 +13,9 @@ import { useQueryProps } from "@/src/contexts/QueryContext";
 import { split } from "postcss/lib/list";
 import { QueryType } from "@/src/libs/types";
 import SavePopUp from "../QueryTextboxAdvanced/SavePopUp";
+import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { validateParameters } from "@/src/utils/parameterUtils";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -49,6 +52,12 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
     null
   );
+
+  const { projectId } = useProjectProps();
+
+  const saveChooseFolder = () => {
+    console.log("clicked save");
+  };
 
   const [saveQueryName, setSaveQueryName] = useState<string>(
     selectedQuery.queryName
@@ -134,6 +143,35 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     setQueryRunTrue();
   };
 
+  const handleSaveFavorite = async (onClose: () => void) => {
+    if (selectedFolder === null) {
+      toast.error("No folder selected");
+      return;
+    } else {
+      if (validateParameters(saveCyphertext, saveNatLang)) {
+        const newQuery = await handleSaveQuery(
+          saveQueryName,
+          saveCyphertext,
+          saveNatLang,
+          selectedFolder,
+          projectId
+        );
+
+        if (newQuery !== null) {
+          setQueryFromQuery(newQuery);
+          setSelectedQuery(newQuery);
+          onClose();
+          toast.success("Query saved successfully");
+        }
+      } else {
+        toast.error(
+          "Not all parameters from cyphertext match in natural language box"
+        );
+        console.log(saveCyphertext, saveNatLang);
+      }
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col">
@@ -170,7 +208,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
               header={<span className="text-primary">Save favorite query</span>}
               body={
                 <SavePopUp
-                  saveChooseFolder={() => {}}
+                  saveChooseFolder={saveChooseFolder}
                   queryName={saveQueryName}
                   cyphertext={saveCyphertext}
                   natLang={saveNatLang}
@@ -193,7 +231,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
                   </UIButton>
                   <UIButton
                     className="bg-success-700 w-full text-lg"
-                    onClick={() => handleSaveCustom(onClose)}
+                    onClick={() => handleSaveFavorite(onClose)}
                   >
                     Save
                   </UIButton>
