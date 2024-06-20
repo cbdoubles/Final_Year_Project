@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { useNeoVisContext } from "@/components/neovisGraph/NeoVisContext";
-import cloneDeep from "lodash/cloneDeep";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -235,8 +234,8 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             serverUser: NEO4J_USER,
             serverPassword: NEO4J_PASSWORD,
           },
-          labels: labelsConfig || {},
-          relationships: relationshipsConfig || {},
+          labels: labelsConfig,
+          relationships: relationshipsConfig,
           visConfig: {
             edges: {
               arrows: {
@@ -361,9 +360,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                       record.get("m")
                     );
 
-                    const nodeLabels = [...nodes, ...connectedNodes]
-                      .map((node) => node.labels)
-                      .flat();
+                    const nodeLabels = nodes.map((node) => node.labels).flat();
                     const relationshipTypes = relationships.map(
                       (relationship) => relationship.type
                     );
@@ -385,51 +382,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                       ),
                     }));
 
-                    // Ensure `config.labels` and `config.relationships` are not null
-                    const labelsConfig = config.labels || {};
-                    const relationshipsConfig = config.relationships || {};
-
-                    // Update cypherRef with the new nodes and edges
-                    const newConfig = {
-                      ...config,
-                      labels: {
-                        ...labelsConfig,
-                        ...Object.keys(colorMapState).reduce((acc, label) => {
-                          (acc as any)[label] = {
-                            ...(labelsConfig[label] || {}),
-                            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-                              function: {
-                                ...(labelsConfig[label]?.[
-                                  NeoVis.NEOVIS_ADVANCED_CONFIG
-                                ]?.function || {}),
-                                color: () => colorMapState[label],
-                              },
-                            },
-                          };
-                          return acc;
-                        }, {}),
-                      },
-                      relationships: {
-                        ...relationshipsConfig,
-                        ...Object.keys(colorMapState).reduce((acc, type) => {
-                          (acc as any)[type] = {
-                            ...(relationshipsConfig[type] || {}),
-                            [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-                              function: {
-                                ...(relationshipsConfig[type]?.[
-                                  NeoVis.NEOVIS_ADVANCED_CONFIG
-                                ]?.function || {}),
-                                color: () => colorMapState[type],
-                              },
-                            },
-                          };
-                          return acc;
-                        }, {}),
-                      },
-                    };
-
-                    // Merge the new nodes and edges into the existing visualization
-                    cypherRef.current.reinit(newConfig);
                     cypherRef.current.updateWithCypher(query);
                   } finally {
                     await session.close();
@@ -588,37 +540,37 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
             },
           },
           labels: {
-            ...(config.labels || {}),
+            ...config.labels,
             ...Object.keys(colorMapState).reduce((acc, label) => {
               (acc as any)[label] = {
-                ...(config.labels?.[label] || {}),
+                ...config.labels[label],
                 [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
                   function: {
-                    ...(config.labels?.[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
-                      ?.function || {}),
+                    ...config.labels[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
+                      ?.function,
                     color: () => colorMapState[label],
                   },
                 },
               };
               return acc;
-            }, {}),
+            }, {} as Record<string, any>),
           },
           relationships: {
-            ...(config.relationships || {}),
+            ...config.relationships,
             ...Object.keys(colorMapState).reduce((acc, type) => {
               (acc as any)[type] = {
-                ...(config.relationships?.[type] || {}),
+                ...config.relationships[type],
                 [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
                   function: {
-                    ...(config.relationships?.[type]?.[
+                    ...config.relationships[type]?.[
                       NeoVis.NEOVIS_ADVANCED_CONFIG
-                    ]?.function || {}),
+                    ]?.function,
                     color: () => colorMapState[type],
                   },
                 },
               };
               return acc;
-            }, {}),
+            }, {} as Record<string, any>),
           },
         };
 
