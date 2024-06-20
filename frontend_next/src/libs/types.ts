@@ -7,17 +7,20 @@ export type FolderType = "Default" | "Custom" | "Favorite" | null;
 export type Element = {
   projectId: string;
   projectName: string;
+  graphName: string;
 };
 
 //Project type for fetch from be and fe
 export type ProjectTypeFetch = {
   id: string;
   name: string;
+  file_name: string;
 };
 
 export type ProjectType = {
   projectId: string;
   projectName: string;
+  graphName: string;
 };
 
 //QueryFolderType and QueryType for fetch from be and fe

@@ -39,6 +39,9 @@ export const handleEditSubmit = async (
     );
     setElements(updatedElements);
     setProjectName(prevElementState.projectName); // Set project name to the previous name
-    toast.error("Using old name");
+    toast.error("This name already exists", {
+      position: "top-right",
+      theme: "colored",
+    });
   }
 };

@@ -13,6 +13,7 @@ import { validateParameters } from "@/src/utils/parameterUtils";
 import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
 import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
 import { select } from "@nextui-org/theme";
+import { Textarea } from "@nextui-org/react";
 
 const queryFolder: QueryFolderType = {
   folderId: 6,
@@ -99,8 +100,8 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
 
   return (
     <div className="flex flex-col h-full w-full">
-      <textarea
-        className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
+      <Textarea
+        className="bg-white w-full h-20 p-2 text-lg border border-gray-300 mb-2 mt-5 resize-none text-black"
         value={editCyphertext}
         onChange={(e) => setEditCyphertext(e.target.value)}
         placeholder="Enter your query here"

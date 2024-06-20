@@ -5,13 +5,17 @@ type ProjectContextType = {
   setProjectId: (projectId: number) => void;
   projectName: string;
   setProjectName: (projectName: string) => void;
+  graphName: string;
+  setGraphName: (graphName: string) => void;
 };
 
 export const ProjectContext = createContext<ProjectContextType>({
   projectId: 1, // Default value for projectId
   setProjectId: () => {},
-  projectName: "test", // Default value for projectName
+  projectName: "", // Default value for projectName
   setProjectName: () => {},
+  graphName: "", // Default value for graphName
+  setGraphName: () => {},
 });
 
 export const ProjectPropsProvider = ({
@@ -20,7 +24,8 @@ export const ProjectPropsProvider = ({
   children: React.ReactNode;
 }) => {
   const [projectId, setProjectId] = useState<number>(1);
-  const [projectName, setProjectName] = useState<string>("test");
+  const [projectName, setProjectName] = useState<string>("");
+  const [graphName, setGraphName] = useState<string>("");
 
   const value = useMemo(
     () => ({
@@ -28,8 +33,10 @@ export const ProjectPropsProvider = ({
       setProjectId,
       projectName,
       setProjectName,
+      graphName,
+      setGraphName,
     }),
-    [projectId, projectName]
+    [projectId, projectName, graphName]
   );
 
   return (

@@ -1,16 +1,16 @@
-import { ArrowPathIcon } from "@heroicons/react/24/outline"
-import Link from "next/link"
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 /*import DefaultIcon from  '/public/sidebarImages/defaulticon.png';*/
 
 //Detail for icon
 const properties = {
-  name: "Reupload graph data",
+  name: "Reupload project data",
   href: "/sideBar",
-  icon: ArrowPathIcon
-}
+  icon: ArrowPathIcon,
+};
 
 export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
-  const LinkIcon = properties.icon
+  const LinkIcon = properties.icon;
   return (
     <Link
       key={properties.name}
@@ -24,5 +24,5 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
         </p>
       )}
     </Link>
-  )
+  );
 }
