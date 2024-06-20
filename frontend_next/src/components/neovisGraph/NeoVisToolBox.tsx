@@ -84,8 +84,8 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
         <label>
           Layout:
           <select value={layout} onChange={handleLayoutChange}>
-            <option value="hierarchical">Hierarchical</option>
             <option value="force-directed">Force Directed</option>
+            <option value="hierarchical">Hierarchical</option>
           </select>
         </label>
         <div>

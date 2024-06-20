@@ -49,6 +49,8 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [isTableView, setIsTableView] = useState<boolean>(false);
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
+  const [nodeData, setNodeData] = useState<any[]>([]);
+  const [edgeData, setEdgeData] = useState<any[]>([]);
 
   const getNodeProperties = async (nodeId: number) => {
     const session = driver.session();
@@ -176,6 +178,18 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         await session.close();
       }
     }
+  };
+
+  const saveGraphState = () => {
+    const nodes = cypherRef.current.network.body.data.nodes.get();
+    const edges = cypherRef.current.network.body.data.edges.get();
+    setNodeData(nodes);
+    setEdgeData(edges);
+  };
+
+  const restoreGraphState = () => {
+    cypherRef.current.network.body.data.nodes.update(nodeData);
+    cypherRef.current.network.body.data.edges.update(edgeData);
   };
 
   useEffect(() => {
@@ -490,6 +504,93 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     }
   }, [query]);
 
+  useEffect(() => {
+    const updateGraphConfig = async () => {
+      if (typeof window !== "undefined" && cypherRef.current) {
+        const { default: NeoVis } = await import("neovis.js");
+
+        const layoutConfig =
+          layout === "hierarchical"
+            ? {
+                hierarchical: {
+                  enabled: true,
+                  direction: "UD", // UD for top-down, LR for left-right, DU for bottom-up, RL for right-left
+                  sortMethod: "directed", // Directed sorting
+                  nodeSpacing: 400,
+                },
+              }
+            : {
+                hierarchical: false,
+              };
+
+        const updatedConfig = {
+          ...config,
+          labels: {
+            ...config.labels,
+            ...Object.keys(colorMapState).reduce((acc, label) => {
+              (acc as any)[label] = {
+                ...config.labels[label],
+                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                  function: {
+                    ...config.labels[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
+                      ?.function,
+                    color: () => colorMapState[label],
+                  },
+                },
+              };
+              return acc;
+            }, {} as Record<string, any>),
+          },
+          relationships: {
+            ...config.relationships,
+            ...Object.keys(colorMapState).reduce((acc, type) => {
+              (acc as any)[type] = {
+                ...config.relationships[type],
+                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                  function: {
+                    ...config.relationships[type]?.[
+                      NeoVis.NEOVIS_ADVANCED_CONFIG
+                    ]?.function,
+                    color: () => colorMapState[type],
+                  },
+                },
+              };
+              return acc;
+            }, {} as Record<string, any>),
+          },
+          visConfig: {
+            ...config.visConfig,
+            layout: layoutConfig,
+            physics: {
+              enabled: layout !== "hierarchical",
+              solver: "forceAtlas2Based",
+              stabilization: {
+                enabled: true,
+                iterations: 10,
+                fit: true,
+              },
+              forceAtlas2Based: {
+                gravitationalConstant: -50,
+                centralGravity: 0.005,
+                springLength: 230,
+                springConstant: 0.18,
+              },
+              maxVelocity: 50,
+              minVelocity: 0.1,
+              timestep: 0.5,
+              adaptiveTimestep: true,
+            },
+          },
+        };
+        console.log("Updated config", updatedConfig); // Debug log
+        cypherRef.current.reinit(updatedConfig);
+        cypherRef.current.render();
+      }
+    };
+
+    updateGraphConfig();
+  }, [colorMapState, config, layout, nodeSize, fontSize, edgeWidth]); // Now it depends on layout, nodeSize, fontSize, edgeWidth
+
   const renderTable = () => {
     if (tableData.length === 0) {
       return <div>No data to display</div>;
@@ -563,134 +664,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const handleCollapse = () => {
     setIsCardCollapsed(!isCardCollapsed);
   };
-
-  useEffect(() => {
-    if (cypherRef.current) {
-      // Update node size
-      const nodes = cypherRef.current.network.body.data.nodes.get();
-      nodes.forEach((node: any) => {
-        cypherRef.current.network.body.data.nodes.update({
-          id: node.id,
-          size: nodeSize,
-        });
-      });
-
-      // Update edge width and font size
-      const edges = cypherRef.current.network.body.data.edges.get();
-      edges.forEach((edge: any) => {
-        cypherRef.current.network.body.data.edges.update({
-          id: edge.id,
-          width: edgeWidth,
-        });
-      });
-
-      // Update node font size
-      cypherRef.current.network.body.data.nodes.update(
-        nodes.map((node: any) => ({
-          id: node.id,
-          font: { size: fontSize },
-        }))
-      );
-
-      // Update edge font size
-      cypherRef.current.network.body.data.edges.update(
-        edges.map((edge: any) => ({
-          id: edge.id,
-          font: { size: fontSize },
-        }))
-      );
-
-      // Update layout
-      const layoutConfig =
-        layout === "hierarchical"
-          ? {
-              hierarchical: {
-                enabled: true,
-                direction: "UD", // UD for top-down, LR for left-right, DU for bottom-up, RL for right-left
-                sortMethod: "directed", // Directed sorting
-                nodeSpacing: 400,
-              },
-            }
-          : {
-              hierarchical: false,
-            };
-
-      cypherRef.current.network.setOptions({
-        layout: layoutConfig,
-        physics: {
-          enabled: layout !== "hierarchical",
-          solver: "forceAtlas2Based",
-          stabilization: {
-            enabled: true,
-            iterations: 10,
-            fit: true,
-          },
-          forceAtlas2Based: {
-            gravitationalConstant: -50,
-            centralGravity: 0.005,
-            springLength: 230,
-            springConstant: 0.18,
-          },
-          maxVelocity: 50,
-          minVelocity: 0.1,
-          timestep: 0.5,
-          adaptiveTimestep: true,
-        },
-      });
-
-      cypherRef.current.network.redraw();
-    }
-  }, [nodeSize, fontSize, edgeWidth, layout]);
-
-  useEffect(() => {
-    const updateGraphConfig = async () => {
-      if (typeof window !== "undefined" && cypherRef.current) {
-        const { default: NeoVis } = await import("neovis.js");
-
-        const updatedConfig = {
-          ...config,
-          labels: {
-            ...config.labels,
-            ...Object.keys(colorMapState).reduce((acc, label) => {
-              (acc as any)[label] = {
-                ...config.labels[label],
-                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-                  function: {
-                    ...config.labels[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
-                      ?.function,
-                    color: () => colorMapState[label],
-                  },
-                },
-              };
-              return acc;
-            }, {} as Record<string, any>),
-          },
-          relationships: {
-            ...config.relationships,
-            ...Object.keys(colorMapState).reduce((acc, type) => {
-              (acc as any)[type] = {
-                ...config.relationships[type],
-                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-                  function: {
-                    ...config.relationships[type]?.[
-                      NeoVis.NEOVIS_ADVANCED_CONFIG
-                    ]?.function,
-                    color: () => colorMapState[type],
-                  },
-                },
-              };
-              return acc;
-            }, {} as Record<string, any>),
-          },
-        };
-        console.log("Updated config", updatedConfig); // Debug log
-        cypherRef.current.reinit(updatedConfig);
-        cypherRef.current.render();
-      }
-    };
-
-    updateGraphConfig();
-  }, [colorMapState, config]); // Only depends on colorMapState and config
 
   return (
     <div className="relative flex flex-col">
