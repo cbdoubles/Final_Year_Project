@@ -49,6 +49,8 @@ jobs:
   build:
     name: Lint
     runs-on: self-hosted
+    container:
+      image: ubuntu:22.04
 
     permissions:
       contents: read
