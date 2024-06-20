@@ -105,7 +105,14 @@ def modify_file(project_id, file_data, reupload):
 
         # You can add any additional file modification logic here @Nikola
         if reupload:
-            clear_db(project_id)
+            try: 
+                with driver.session() as session:
+                    session.execute_write(clear_db, project_id)
+                    driver.close()
+            #clear_db(project_id)
+            except Exception as e:
+                print(f"An error occurred reuploading the data {e}")
+                driver.close()
 
         # Import data into Neo4j based on file format
         try:
