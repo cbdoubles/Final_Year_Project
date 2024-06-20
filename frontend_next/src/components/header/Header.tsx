@@ -6,7 +6,7 @@ const Header = ({ showProject }: { showProject?: boolean }) => (
   <>
     <div
       data-testid="header"
-      className=" bg-capgemini-gray h-18 flex items-center justify-between px-6 border-b border-gray-300 shadow-lg z-10"
+      className=" bg-capgemini-gray h-30 flex items-center justify-between px-6 border-b border-gray-300 shadow-lg z-10"
     >
       <Link href="/" legacyBehavior>
         <a>
@@ -14,7 +14,7 @@ const Header = ({ showProject }: { showProject?: boolean }) => (
             src={"/images/blackminiNG.png"}
             alt="Capgemini Logo"
             width={200}
-            height={300}
+            height={400}
             className="cursor-pointer"
             data-testid="capgemini-logo"
           />

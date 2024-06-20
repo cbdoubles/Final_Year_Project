@@ -10,11 +10,12 @@ import { useProjectProps } from "@/src/contexts/ProjectContext";
 
 export default function Home() {
   const router = useRouter();
-  const { projectId, projectName } = useProjectProps();
+  const { projectId, projectName, graphName } = useProjectProps();
 
   const handleSelect = () => {
     console.log("Selected Project Name:", projectName);
     console.log("Selected Project ID:", projectId);
+    console.log("Selected graph name", graphName);
     //Handle Select
     router.push("/projectpage");
   };

@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { split } from "postcss/lib/list";
+import { QueryType } from "@/src/libs/types";
+import QueryTextboxAdvanced from "../QueryTextboxAdvanced/QueryTextboxAdvanced";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -32,6 +34,23 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [inputValues, setInputValues] = useState<InputValues>({});
   const { natLang, cypherQuery, queryName } = useQueryProps();
   const [boxes, setBoxes] = useState(2);
+  const { getSelectedQuery, setQueryFromQuery } = useQueryProps();
+  const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState<QueryType>(
+    getSelectedQuery()
+  );
+  const [editCyphertext, setEditCyphertext] = useState<string>(
+    selectedQuery.cypherQuery
+  );
+  const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
+
+  const handleShowCypherQuery = () => {
+    setShowReadOnlyTextbox((prevState) => !prevState);
+    console.log("context query");
+    console.log(getSelectedQuery());
+    console.log("selected query");
+    console.log(selectedQuery);
+  };
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
@@ -105,6 +124,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
         <div className="text-md text-black">{"Query: " + queryName}</div>
         <NatLangBox
           dataArray={natLang}
+          readOnly={readOnly}
           inputValues={inputValues}
           onInputChange={handleInputChange}
           onCheckValueChange={(checkValue) => {
@@ -113,13 +133,10 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
         />
         {!hideButtons && (
           <div className="flex justify-end gap-2 mb-2">
-            <UIButton
-              onClick={handleShowQuery}
-              disabled={readOnly}
-              className="bg-primary"
-            >
-              Show Cypher
+            <UIButton onClick={handleShowCypherQuery}>
+              {showReadOnlyTextbox ? "Hide Cypher Query" : "Show Cypher query"}
             </UIButton>
+
             <UIButton
               onClick={handleRunQuery}
               disabled={readOnly}
@@ -159,6 +176,13 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
           </div>
         )}
       </div>
+      {showReadOnlyTextbox && (
+        <QueryTextboxAdvanced
+          readOnly={true}
+          initialQuery={"d"}
+          hideButtons={true}
+        />
+      )}
     </div>
   );
 };

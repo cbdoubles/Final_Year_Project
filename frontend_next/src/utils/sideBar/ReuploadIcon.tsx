@@ -7,7 +7,7 @@ import { useProjectProps } from "@/src/contexts/ProjectContext";
 import Link from "next/link";
 
 const properties = {
-  name: "Reupload graph data",
+  name: "Reupload project data",
   href: "/sideBar",
   icon: ArrowPathIcon,
 };

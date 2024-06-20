@@ -18,6 +18,7 @@ import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
 import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
 import { select } from "@nextui-org/theme";
 import NewFolderPopUp from "./NewFolderPopup";
+import { Textarea } from "@nextui-org/react";
 
 const queryFolder: QueryFolderType = {
   folderId: 6,
@@ -27,26 +28,27 @@ const queryFolder: QueryFolderType = {
 
 const folderType = "Custom";
 
-type QueryTextboxAdvancedProps = {
-  // selectedQuery: QueryType;
-};
 
-const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
-  {
-    // selectedQuery,
-  }
-) => {
+interface QueryTextboxAdvancedProps {
+  readOnly?: boolean;
+  initialQuery?: string;
+  hideButtons?: boolean;
+}
+const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
+  readOnly = false,
+  initialQuery = "",
+  hideButtons = false,
+}) => {
   const { updatedQuery, cypherQuery, queryName, setQueryFromQuery } =
-    useQueryProps();
-  const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
+  useQueryProps();
+const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
 
-  useEffect(() => {
-    setSelectedQuery(updatedQuery);
-    setEditCyphertext(cypherQuery);
-  }, [updatedQuery]);
+useEffect(() => {
+  setSelectedQuery(updatedQuery);
+  setEditCyphertext(cypherQuery);
+}, [updatedQuery]);
 
   const { projectId } = useProjectProps();
-
   const [editCyphertext, setEditCyphertext] = useState<string>(
     selectedQuery.cypherQuery
   );
@@ -54,7 +56,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
     selectedQuery.queryName
   );
   const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
-
   const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
   const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
     null
@@ -64,7 +65,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
   };
 
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
-
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
   };
@@ -134,98 +134,101 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = (
         value={editCyphertext}
         onChange={(e) => setEditCyphertext(e.target.value)}
         placeholder="Enter your query here"
+        readOnly={readOnly}
       />
-      <div className="flex justify-end gap-2 mb-2">
-        <UIButton onClick={handleShowNaturalLang}>
-          {showReadOnlyTextbox ? "Hide Natural Lang" : "Show Natural Lang"}
-        </UIButton>
-        <UIButton className="bg-success-700" onClick={handleRunQuery}>
-          Run
-        </UIButton>
-        <UIModal
-          button={({ onOpen }) => (
-            <UIButton className="bg-gray-500" onClick={onOpen}>
-              <FontAwesomeIcon icon={faStar} className="w-6" />
-              Add to Favorites
+      {!hideButtons && (
+        <>
+          <div className="flex justify-end gap-2 mb-2">
+            <UIButton onClick={handleShowNaturalLang}>
+              {showReadOnlyTextbox ? "Hide Natural Lang" : "Show Natural Lang"}
             </UIButton>
-          )}
-          header={<span className="text-primary">Save favorite query</span>}
-          body={
-            <SavePopUp
-              saveChooseFolder={saveChooseFolder}
-              queryName={saveQueryName}
-              cyphertext={saveCyphertext}
-              natLang={saveNatLang}
-              updateQueryName={setSaveQueryName}
-              updateCyphertext={setSaveCyphertext}
-              updateNaturalLanguage={setSaveNatLang}
-              folderType={"Favorite"}
-              selectedFolder={selectedFolder}
-              setSelectedFolder={setSelectedFolder}
-              // setQueryFolder={setQueryFolder}
-            ></SavePopUp>
-          }
-          footer={({ onClose }) => (
-            <>
-              <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
-                Cancel
-              </UIButton>
-              <UIButton
-                className="bg-success-700 w-full text-lg"
-                onClick={() => handleSaveCustom(onClose)}
-              >
-                Save
-              </UIButton>
-            </>
-          )}
-        ></UIModal>
-        <UIModal
-          button={({ onOpen }) => (
-            <UIButton className="bg-gray-500" onClick={() => openSave(onOpen)}>
-              <FontAwesomeIcon icon={faStar} className="w-6" />
-              Add to Customs
+            <UIButton className="bg-success-700" onClick={handleRunQuery}>
+              Run
             </UIButton>
+            <UIModal
+              button={({ onOpen }) => (
+                <UIButton className="bg-gray-500" onClick={onOpen}>
+                  <FontAwesomeIcon icon={faStar} className="w-6" />
+                  Add to Favorites
+                </UIButton>
+              )}
+              header={<span className="text-primary">Save favorite query</span>}
+              body={
+                <SavePopUp
+                  saveChooseFolder={saveChooseFolder}
+                  queryName={saveQueryName}
+                  cyphertext={saveCyphertext}
+                  natLang={saveNatLang}
+                  updateQueryName={setSaveQueryName}
+                  updateCyphertext={setSaveCyphertext}
+                  updateNaturalLanguage={setSaveNatLang}
+                  folderType={"Favorite"}
+                  selectedFolder={selectedFolder}
+                  setSelectedFolder={setSelectedFolder}
+                />
+              }
+              footer={({ onClose }) => (
+                <>
+                  <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
+                    Cancel
+                  </UIButton>
+                  <UIButton
+                    className="bg-success-700 w-full text-lg"
+                    onClick={() => handleSaveCustom(onClose)}
+                  >
+                    Save
+                  </UIButton>
+                </>
+              )}
+            />
+            <UIModal
+              button={({ onOpen }) => (
+                <UIButton className="bg-gray-500" onClick={() => openSave(onOpen)}>
+                  <FontAwesomeIcon icon={faStar} className="w-6" />
+                  Add to Customs
+                </UIButton>
+              )}
+              header={<span className="text-primary">Save custom query</span>}
+              body={
+                <SavePopUp
+                  saveChooseFolder={saveChooseFolder}
+                  queryName={saveQueryName}
+                  cyphertext={saveCyphertext}
+                  natLang={saveNatLang}
+                  updateQueryName={setSaveQueryName}
+                  updateCyphertext={setSaveCyphertext}
+                  updateNaturalLanguage={setSaveNatLang}
+                  folderType={"Custom"}
+                  selectedFolder={selectedFolder}
+                  setSelectedFolder={setSelectedFolder}
+                />
+              }
+              footer={({ onClose }) => (
+                <>
+                  <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
+                    Cancel
+                  </UIButton>
+                  <UIButton
+                    className="bg-success-700 w-full text-lg"
+                    onClick={() => handleSaveCustom(onClose)}
+                  >
+                    Save
+                  </UIButton>
+                </>
+              )}
+            />
+          </div>
+          {showReadOnlyTextbox && (
+            <QueryTextbox
+              readOnly={true}
+              initialQuery={saveNatLang}
+              hideButtons={true}
+            />
           )}
-          header={<span className="text-primary">Save custom query</span>}
-          body={
-            <SavePopUp
-              saveChooseFolder={saveChooseFolder}
-              queryName={saveQueryName}
-              cyphertext={saveCyphertext}
-              natLang={saveNatLang}
-              updateQueryName={setSaveQueryName}
-              updateCyphertext={setSaveCyphertext}
-              updateNaturalLanguage={setSaveNatLang}
-              folderType={"Custom"}
-              selectedFolder={selectedFolder}
-              setSelectedFolder={setSelectedFolder}
-              // setQueryFolder={setQueryFolder}
-            ></SavePopUp>
-          }
-          footer={({ onClose }) => (
-            <>
-              <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
-                Cancel
-              </UIButton>
-              <UIButton
-                className="bg-success-700 w-full text-lg"
-                onClick={() => handleSaveCustom(onClose)}
-              >
-                Save
-              </UIButton>
-            </>
-          )}
-        ></UIModal>
-      </div>
-      {showReadOnlyTextbox && (
-        <QueryTextbox
-          readOnly={true}
-          initialQuery={saveNatLang}
-          hideButtons={true}
-        />
+        </>
       )}
     </div>
-  );
+  );  
 };
 
 export default QueryTextboxAdvanced;
