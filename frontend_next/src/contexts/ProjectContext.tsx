@@ -7,6 +7,7 @@ type ProjectContextType = {
   setProjectName: (projectName: string) => void;
   graphName: string;
   setGraphName: (graphName: string) => void;
+  resetProject: () => void;
 };
 
 export const ProjectContext = createContext<ProjectContextType>({
@@ -16,6 +17,7 @@ export const ProjectContext = createContext<ProjectContextType>({
   setProjectName: () => {},
   graphName: "", // Default value for graphName
   setGraphName: () => {},
+  resetProject: () => {},
 });
 
 export const ProjectPropsProvider = ({
@@ -27,6 +29,12 @@ export const ProjectPropsProvider = ({
   const [projectName, setProjectName] = useState<string>("");
   const [graphName, setGraphName] = useState<string>("");
 
+  const resetProject = () => {
+    setProjectId(1);
+    setProjectName("");
+    setGraphName("");
+  };
+
   const value = useMemo(
     () => ({
       projectId,
@@ -35,12 +43,15 @@ export const ProjectPropsProvider = ({
       setProjectName,
       graphName,
       setGraphName,
+      resetProject,
     }),
     [projectId, projectName, graphName]
   );
 
   return (
-    <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
+    <ProjectContext.Provider value={value}>
+      {children}
+    </ProjectContext.Provider>
   );
 };
 

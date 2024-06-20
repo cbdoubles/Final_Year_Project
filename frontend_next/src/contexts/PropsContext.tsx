@@ -6,6 +6,7 @@ type PropsContextType = {
   queryRunClicked: boolean;
   setQueryRunTrue: () => void;
   setQueryRunFalse: () => void;
+  resetProps: () => void;
 };
 
 export const PropsContext = createContext<PropsContextType>({
@@ -14,6 +15,7 @@ export const PropsContext = createContext<PropsContextType>({
   queryRunClicked: false,
   setQueryRunTrue: () => {},
   setQueryRunFalse: () => {},
+  resetProps: () => {},
 });
 
 export const PropsProvider = ({ children }: { children: React.ReactNode }) => {
@@ -23,6 +25,11 @@ export const PropsProvider = ({ children }: { children: React.ReactNode }) => {
   const setQueryRunTrue = () => setQueryRun(true);
   const setQueryRunFalse = () => setQueryRun(false);
 
+  const resetProps = () => {
+    setAdvancedMode(false);
+    setQueryRun(false);
+  };
+
   const value = useMemo(
     () => ({
       advancedMode,
@@ -30,6 +37,7 @@ export const PropsProvider = ({ children }: { children: React.ReactNode }) => {
       queryRunClicked,
       setQueryRunTrue,
       setQueryRunFalse,
+      resetProps,
     }),
     [advancedMode, queryRunClicked]
   );
