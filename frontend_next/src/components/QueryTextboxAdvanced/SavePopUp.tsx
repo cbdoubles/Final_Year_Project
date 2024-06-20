@@ -144,7 +144,12 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
                   </UIButton>
                 )}
                 header={<span className="text-primary">Create New Folder</span>}
-                body={<NewFolderPopUp onSave={handleCreateNewFolder} />}
+                body={
+                  <NewFolderPopUp
+                    onSave={handleCreateNewFolder}
+                    onClose={onClose}
+                  />
+                }
                 footer={({ onClose }) => (
                   <>
                     <div className="w-full h-full flex flex-col justify-end items-start ">
@@ -158,7 +163,6 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
                   </>
                 )}
               />
-              );
               <UIButton
                 color="primary"
                 onClick={() => handleSelectFolder(onClose)}
