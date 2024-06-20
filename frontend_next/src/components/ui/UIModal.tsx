@@ -29,7 +29,7 @@ const UIModal: FC<UIModalProps> = ({
   return (
     <>
       {button({ onOpen })}
-      <Modal isOpen={isOpen} onClose={onClose} size = "5xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="5xl">
         <ModalContent>
           {header && (
             <>

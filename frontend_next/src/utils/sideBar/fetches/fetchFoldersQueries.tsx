@@ -6,6 +6,7 @@ export const fetchFoldersQueries = async (
 ): Promise<QueryFolderListType[]> => {
   try {
     // Fetch the list of folders
+    console.log("in fetch");
     console.log(projectId);
     console.log(selectedFolderType);
     const folderResponse = await fetch(

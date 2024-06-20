@@ -9,10 +9,12 @@ import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
 import GraphToolBoxContainer from "@/components/graphDisplay/GraphToolBoxContainer";
 import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
 import UIModal from "../ui/UIModal";
 import UIButton from "../ui/UIButton";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import ChooseProject from "../importChain/ChooseProject";
+import ImportIcon from "@/src/utils/sideBar/ImportIcon";
 
 export default function SideBar({
   collapsed,
@@ -22,6 +24,7 @@ export default function SideBar({
   handlerCollapsed: (collapsed: boolean) => void;
 }) {
   const { queryRunClicked } = useProps();
+  const { projectId } = useProjectProps();
 
   return (
     <div className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start">
@@ -32,27 +35,13 @@ export default function SideBar({
           type={"Collapse"}
           icon={LuAlignJustify}
         />
-        <FavouriteIcon collapsed={collapsed} />
-        <CustomButton collapsed={collapsed} />
+        <FavouriteIcon collapsed={collapsed} projectId={projectId} />
+        <CustomButton collapsed={collapsed} projectId={projectId} />
         <Default collapsed={collapsed} />
         <Reupload collapsed={collapsed} />
         <SwitchMode collapsed={collapsed} />
+        <ImportIcon collapsed={collapsed} />
 
-        <UIModal
-          button={({ onOpen }) => (
-            <QueryIconButton
-              handleClick={() => {
-                onOpen();
-              }}
-              collapsed={collapsed}
-              type={"Import"}
-              icon={ArrowDownTrayIcon}
-            />
-          )}
-          header={<span className="text-primary">Select source</span>}
-          body={<ChooseProject></ChooseProject>}
-          footer={({ onClose }) => <></>}
-        ></UIModal>
         {!collapsed && (
           <>
             {queryRunClicked && (

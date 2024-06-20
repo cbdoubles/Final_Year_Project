@@ -1,27 +1,70 @@
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
-import Link from "next/link"
-
-//Detail for icon
-const properties = {
-  name: "Import",
-  href: "/Import",
-  icon: ArrowDownTrayIcon 
-}
+import React, { useState } from "react";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import UIModal from "@/src/components/ui/UIModal";
+import { ProjectType } from "@/src/libs/types";
+import { fetchProjects } from "@/utils/home/selectExistingProject/fetchProjects";
+import { toast } from "react-toastify";
+import ChooseProject from "@/src/components/importChain/ChooseProject";
+import SelectFolderType from "@/src/components/importChain/SelectFolderType";
 
 export default function ImportIcon({ collapsed }: { collapsed: boolean }) {
-  const ImportIcon = properties.icon
+  const [projects, setProjects] = useState<ProjectType[] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(
+    null
+  );
+
+  const openSelectProject = async (onOpen: () => void) => {
+    const result = await fetchProjects();
+    console.log("Fetched folders:", result);
+    if (result) {
+      setProjects(result);
+      onOpen();
+    } else {
+      toast.error("No query selected");
+    }
+  };
+
+  const onCloseReset = (onClose: () => void) => {
+    setSelectedProject(null);
+    onClose();
+  };
+
   return (
-    <Link
-      key={properties.name}
-      href={properties.href}
-      className="flex h-[48px] grow items-center justify-center relative gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-    >
-      <ImportIcon className="w-6" />
-      {!collapsed && (
-        <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
-      
-        </p>
-      )}
-    </Link>
-  )
+    <div>
+      <UIModal
+        button={({ onOpen }) => (
+          <button
+            data-testid="ui-button"
+            className="w-full flex relative h-[48px] grow items-center justify-start gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:justify-start md:p-2 md:px-3"
+            onClick={() => openSelectProject(onOpen)}
+          >
+            <ArrowDownTrayIcon className="w-6" />
+            {!collapsed && (
+              <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
+                Import
+              </p>
+            )}
+          </button>
+        )}
+        header={<p className="text-primary">Select Project</p>}
+        body={
+          <ChooseProject
+            projects={projects}
+            selectedProject={selectedProject}
+            setSelectedProject={setSelectedProject}
+          />
+        }
+        footer={({ onClose }) =>
+          selectedProject !== null && (
+            <SelectFolderType
+              projectId={selectedProject.projectId}
+              onCloseChooseProject={() => onCloseReset(onClose)}
+              folderTypes={["Custom", "Favorite"]}
+              selectedProject={selectedProject}
+            />
+          )
+        }
+      />
+    </div>
+  );
 }

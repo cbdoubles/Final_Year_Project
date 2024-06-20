@@ -2,24 +2,36 @@ import React, { useState } from "react";
 import FolderTest from "@/src/components/favouriteFolder/FolderTest";
 import QueryIconButton from "./QueryIconButton";
 import UIModal from "@/src/components/ui/UIModal";
-import UIButton from "@/src/components/ui/UIButton";
+import UIButton, { UIButtonProps } from "@/src/components/ui/UIButton";
 import { FolderType, QueryType, QueryFolderListType } from "@/src/libs/types";
 import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
-import { useProjectProps } from "@/src/contexts/ProjectContext";
+// import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { toast } from "react-toastify";
 
 interface SelectProps {
+  onCloseSelectFolder?: () => void;
+  onCloseChooseProject?: () => void;
   collapsed?: boolean;
   type: FolderType;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon:
+    | React.ComponentType<React.SVGProps<SVGSVGElement>>
+    | React.FunctionComponent<UIButtonProps>;
+  projectId: number;
 }
 
-const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
+const QueryIcon: React.FC<SelectProps> = ({
+  onCloseSelectFolder,
+  onCloseChooseProject,
+  collapsed,
+  type,
+  icon: Icon,
+  projectId,
+}) => {
   const [items, setItems] = useState<QueryFolderListType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedQuery, setSelectedQuery] = useState<QueryType | null>(null);
-  const { projectId } = useProjectProps();
+  // const { projectId } = useProjectProps();
   const { setQueryFromQuery } = useQueryProps();
 
   const loadItems = async (queryFolderList: Promise<QueryFolderListType[]>) => {
@@ -51,6 +63,12 @@ const QueryIcon: React.FC<SelectProps> = ({ collapsed, type, icon: Icon }) => {
     if (selectedQuery) {
       onClose();
       setQueryFromQuery(selectedQuery);
+      if (onCloseSelectFolder) {
+        onCloseSelectFolder();
+      }
+      if (onCloseChooseProject) {
+        onCloseChooseProject();
+      }
     } else {
       toast.error("No query selected");
     }

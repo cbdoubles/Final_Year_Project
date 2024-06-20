@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react"
 import { Button, ButtonProps } from "@nextui-org/button"
 
-type UIButtonProps = {
+export type UIButtonProps = {
   onClick?: () => void
   children?: ReactNode
   color?: string

@@ -5,7 +5,7 @@ export type FolderType = "Default" | "Custom" | "Favorite" | null;
 //element (to be replaced by ProjectType at some point)
 
 export type Element = {
-  projectId: string;
+  projectId: number;
   projectName: string;
 };
 
@@ -16,7 +16,7 @@ export type ProjectTypeFetch = {
 };
 
 export type ProjectType = {
-  projectId: string;
+  projectId: number;
   projectName: string;
 };
 
