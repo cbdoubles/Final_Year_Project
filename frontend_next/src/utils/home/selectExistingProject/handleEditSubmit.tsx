@@ -2,7 +2,9 @@ import { ProjectType } from "@/src/libs/types";
 import { toast } from "react-toastify";
 
 export const handleEditSubmit = async (
-  event: React.FormEvent<HTMLFormElement>,
+  event:
+    | React.FormEvent<HTMLFormElement>
+    | React.FocusEvent<HTMLInputElement, Element>,
   element: ProjectType,
   setEditingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>,
   setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>,
@@ -37,11 +39,11 @@ export const handleEditSubmit = async (
     const updatedElements = elements.map((el) =>
       el.projectId === prevElementState.projectId ? prevElementState : el
     );
-    setElements(updatedElements);
-    setProjectName(prevElementState.projectName); // Set project name to the previous name
     toast.error("This name already exists", {
       position: "top-right",
       theme: "colored",
     });
+    setElements(updatedElements);
+    setProjectName(prevElementState.projectName); // Set project name to the previous name
   }
 };
