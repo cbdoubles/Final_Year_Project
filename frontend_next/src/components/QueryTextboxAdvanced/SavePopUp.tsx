@@ -106,7 +106,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
         onChange={handleCyphertext}
       />
       <InputField
-        readOnly={fav ? true : false}
+        // readOnly={fav ? true : false}
         rows={4}
         label="Natural language representation"
         placeholder="Type here"

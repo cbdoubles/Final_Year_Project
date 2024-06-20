@@ -46,21 +46,29 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
-  const { natLang, cypherQuery, queryName } = useQueryProps();
+  const { updatedQuery, natLang, cypherQuery, queryName } = useQueryProps();
   const [boxes, setBoxes] = useState(2);
   const { getSelectedQuery, setQueryFromQuery } = useQueryProps();
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
   const [selectedQuery, setSelectedQuery] = useState<QueryType>(
     getSelectedQuery()
   );
-  const [editCyphertext, setEditCyphertext] = useState<string>(
+  // const [editCyphertext] = useState<string>(selectedQuery.cypherQuery);
+  // const [saveNatLang] = useState<string>(selectedQuery.natLang);
+  const [saveCyphertext, setSaveCyphertext] = useState<string>(
     selectedQuery.cypherQuery
   );
-  const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
   const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
   const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
     null
   );
+
+  useEffect(() => {
+    setSelectedQuery(updatedQuery);
+    setSaveCyphertext(cypherQuery);
+    setSaveQueryName(queryName);
+    setSaveNatLang(natLang);
+  }, [updatedQuery]);
 
   const { projectId } = useProjectProps();
 
@@ -72,25 +80,36 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     selectedQuery.queryName
   );
 
-  const openSave = async (onOpen: () => void) => {
-    setSelectedFolder(null);
-    setSaveCyphertext(editCyphertext);
-    onOpen();
-  };
+  // const openSave = async (onOpen: () => void) => {
+  //   setSelectedFolder(null);
+  //   setSaveCyphertext(editCyphertext);
+  //   onOpen();
+  // };
 
   const handleShowCypherQuery = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
-    console.log("context query");
-    console.log(getSelectedQuery());
-    console.log("selected query");
-    console.log(selectedQuery);
   };
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
   };
 
-  const handleError = (onOpen: () => void) => {
+  const handleSaveFavorites = (onOpen: () => void) => {
+    if (handleError()) {
+      setSaveCyphertext(
+        replaceParametersInCypherQuery(saveCyphertext, inputValues)
+      );
+      setSaveNatLang(
+        replaceNaturalLanguageParameters(saveNatLang, inputValues)
+      );
+      console.log(saveCyphertext);
+      console.log(saveNatLang);
+      onOpen();
+      onOpen();
+    }
+  };
+
+  const handleError = (): boolean => {
     console.log("There is this many boxes:", boxes);
     console.log("----", inputValues);
     if (Object.keys(inputValues).length < boxes) {
@@ -98,7 +117,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
         position: "bottom-right",
         theme: "colored",
       });
-      return;
+      return false;
     }
     for (const key in inputValues) {
       if (inputValues[key] === "") {
@@ -106,17 +125,34 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
           position: "bottom-right",
           theme: "colored",
         });
-        return;
+        return false;
       }
     }
-    onOpen();
+    return true;
   };
 
-  const handleShowQuery = () => {
-    // Add logic to show cypher query
+  const replaceNaturalLanguageParameters = (
+    query: string,
+    params: InputValues
+  ) => {
+    const regex = /\$(\w+)\{(\w+):(\w+)\}/g;
+    let resultQuery = query;
+    let match;
+
+    while ((match = regex.exec(query)) !== null) {
+      const [placeholder, variable, type, key] = match;
+      if (params.hasOwnProperty(variable)) {
+        resultQuery = resultQuery.replace(placeholder, params[variable]);
+      }
+    }
+
+    return resultQuery;
   };
 
-  const replaceParametersInQuery = (query: string, params: InputValues) => {
+  const replaceParametersInCypherQuery = (
+    query: string,
+    params: InputValues
+  ) => {
     let resultQuery = query;
     for (const key in params) {
       const realkey = split(key, ["{"], false)[0];
@@ -128,33 +164,38 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
   const handleRunQuery = () => {
     // Generate the JSON output
-    const parameters: Record<string, string> = {};
+    if (handleError()) {
+      const parameters: Record<string, string> = {};
 
-    // Iterate through the input values and populate the parameters object
-    for (const key in inputValues) {
-      // Extract the part between $ and {
-      const match = key.match(/\$(\w+)\{/);
-      if (match) {
-        const parameterKey = match[1];
-        parameters[parameterKey] = inputValues[key];
+      // Iterate through the input values and populate the parameters object
+      for (const key in inputValues) {
+        // Extract the part between $ and {
+        const match = key.match(/\$(\w+)\{/);
+        if (match) {
+          const parameterKey = match[1];
+          parameters[parameterKey] = inputValues[key];
+        }
       }
-    }
 
-    const jsonOutput = {
-      Parameter: parameters,
-      Query: cypherQuery,
-    };
+      const jsonOutput = {
+        Parameter: parameters,
+        Query: cypherQuery,
+      };
 
-    console.log("Generated JSON Output:", jsonOutput);
-    const finalQuery = replaceParametersInQuery(cypherQuery, inputValues);
+      console.log("Generated JSON Output:", jsonOutput);
+      const finalQuery = replaceParametersInCypherQuery(
+        cypherQuery,
+        inputValues
+      );
 
-    if (finalQuery === "") {
-      ///what they do
-      if (setQueryToRun) {
-        setQueryToRun(finalQuery);
+      if (finalQuery !== "") {
+        ///what they do
+        if (setQueryToRun) {
+          setQueryToRun(finalQuery);
+        }
+        console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
+        setQueryRunTrue();
       }
-      console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
-      setQueryRunTrue();
     }
   };
 
@@ -215,7 +256,10 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
             </UIButton>
             <UIModal
               button={({ onOpen }) => (
-                <UIButton className="bg-gray-500" onClick={onOpen}>
+                <UIButton
+                  className="bg-gray-500"
+                  onClick={() => handleSaveFavorites(onOpen)}
+                >
                   <FontAwesomeIcon icon={faStar} className="w-6" />
                   <p>Add to Favorites</p>
                 </UIButton>

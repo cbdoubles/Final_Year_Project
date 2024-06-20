@@ -40,13 +40,15 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   hideButtons = false,
   setQuery,
 }) => {
-  const { updatedQuery, cypherQuery, queryName, setQueryFromQuery } =
+  const { updatedQuery, cypherQuery, queryName, natLang, setQueryFromQuery } =
     useQueryProps();
   const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
 
   useEffect(() => {
     setSelectedQuery(updatedQuery);
     setEditCyphertext(cypherQuery);
+    setSaveQueryName(queryName);
+    setSaveNatLang(natLang);
   }, [updatedQuery]);
 
   const { projectId } = useProjectProps();
