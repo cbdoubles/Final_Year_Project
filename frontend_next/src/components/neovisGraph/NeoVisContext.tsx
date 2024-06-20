@@ -40,7 +40,7 @@ export const NeoVisProvider: React.FC<{ children: React.ReactNode }> = ({
     displayedNodeLabels: [],
     displayedEdgeTypes: [],
   });
-  const [layout, setLayout] = useState<string>("hierarchical");
+  const [layout, setLayout] = useState<string>("Force Directed");
 
   return (
     <NeoVisContext.Provider
