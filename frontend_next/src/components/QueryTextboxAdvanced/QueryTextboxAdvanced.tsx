@@ -75,13 +75,16 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
 
   const handleRunQuery = () => {
     const query = inputRef.current?.value || "";
-    console.log("Running query:", query);
-    setLocalQuery(query);
-    if (setQuery) {
-      setQuery(query);
+    if (query === "") {
+    } else {
+      console.log("Running query:", query);
+      setLocalQuery(query);
+      if (setQuery) {
+        setQuery(query);
+      }
+      setQueryRunClicked(true); // Initialize the NeovisComponent
+      console.log("set query run clicked to true");
     }
-    setQueryRunClicked(true); // Initialize the NeovisComponent
-    console.log("set query run clicked to true");
   };
 
   const openSave = async (onOpen: () => void) => {
