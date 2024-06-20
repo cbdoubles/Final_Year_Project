@@ -6,16 +6,14 @@ import { QueryFolderType } from "@/src/libs/types";
 
 type NewFolderPopUpProps = {
   onSave: (folderName: string) => void;
-  onClose: () => void;
 };
 
-const NewFolderPopUp: React.FC<NewFolderPopUpProps> = ({ onSave, onClose }) => {
+const NewFolderPopUp: React.FC<NewFolderPopUpProps> = ({ onSave }) => {
   const [folderName, setFolderName] = useState("");
 
   const handleSave = () => {
     if (folderName.trim()) {
       onSave(folderName);
-      onClose();
     } else {
       toast.error("Folder name cannot be empty");
     }
@@ -30,12 +28,9 @@ const NewFolderPopUp: React.FC<NewFolderPopUpProps> = ({ onSave, onClose }) => {
         value={folderName}
         onChange={(e) => setFolderName(e.target.value)}
       />
-      <div className="w-full flex justify-between mt-4 mb-4">
-        <UIButton className="bg-success-700 text-lg ml-2" onClick={handleSave}>
+      <div className="absolute bottom-4 right-5">
+        <UIButton className="bg-success-700 text-lg" onClick={handleSave}>
           Save
-        </UIButton>
-        <UIButton className="bg-danger text-lg mr-2" onClick={onClose}>
-          Cancel
         </UIButton>
       </div>
     </div>

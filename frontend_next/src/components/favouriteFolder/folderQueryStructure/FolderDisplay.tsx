@@ -23,6 +23,7 @@ const FolderDisplay = ({
   const [open, setOpen] = useState(true);
   const [folder, setFolder] = useState<QueryFolderType>(item.folder);
   const [queries, setQueries] = useState(item.queries);
+  const [selectedButtonId, setSelectedButtonId] = useState<number | null>(null);
 
   const handleFolderClick = () => {
     setOpen(!open);
@@ -72,10 +73,12 @@ const FolderDisplay = ({
           <QueryDisplay
             queries={queries}
             canBeShared={canBeShared}
-            handlerClick={handlerClick} // Ensure handlerClick matches the type here
+            handlerClick={handlerClick}
             deleteQuery={deleteQuery}
             editQuery={editQuery}
             type={item.folder.folderType}
+            selectedButtonId={selectedButtonId}
+            setSelectedButtonId={setSelectedButtonId}
           />
         </div>
       )}

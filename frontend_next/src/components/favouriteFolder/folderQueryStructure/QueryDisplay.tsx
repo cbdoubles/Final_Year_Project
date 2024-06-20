@@ -2,6 +2,8 @@ import { LuCornerDownRight, LuShare } from "react-icons/lu";
 import { FolderType, QueryType } from "@/src/libs/types";
 import EditQuery from "./EditQuery";
 import DeleteQuery from "./DeleteQuery";
+import { Button } from "@nextui-org/button";
+import { useState } from "react";
 
 const QueryDisplay = ({
   queries,
@@ -10,6 +12,8 @@ const QueryDisplay = ({
   deleteQuery,
   editQuery,
   type,
+  selectedButtonId,
+  setSelectedButtonId,
 }: {
   queries: QueryType[];
   canBeShared: boolean;
@@ -17,8 +21,10 @@ const QueryDisplay = ({
   deleteQuery: (deletingQuery: boolean, deleteQuery: QueryType) => void;
   editQuery: (editingQuery: boolean, editQuery: QueryType) => void;
   type: FolderType;
+  selectedButtonId: number | null;
+  setSelectedButtonId: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
-
+  const [pressedButtonId, setPressedButtonId] = useState<number | null>(null);
 
   return (
     <>
@@ -28,14 +34,25 @@ const QueryDisplay = ({
             key % 2 === 0 ? "bg-sky-100" : "bg-white"
           }`}
           key={query.queryId}
-          onClick={() => handlerClick(query)}
         >
-          <button className="flex gap-1 items-center">
+          <Button
+            className={`flex w-full gap-1 justify-start text-lg ${
+              selectedButtonId === query.queryId
+                ? "bg-blue-500"
+                : "bg-transparent"
+            }`}
+            onClick={() => {
+              handlerClick(query);
+              setSelectedButtonId((prevId) =>
+                prevId === query.queryId ? null : query.queryId
+              );
+            }}
+          >
             <LuCornerDownRight className="text-gray-600" />
             <p className="cursor-pointer text-black capitalize">
               {query.queryName}
             </p>
-          </button>
+          </Button>
           <div className="flex gap-2 ">
             {canBeShared && (
               <button>
@@ -50,5 +67,4 @@ const QueryDisplay = ({
     </>
   );
 };
-
 export default QueryDisplay;

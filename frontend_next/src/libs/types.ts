@@ -36,6 +36,7 @@ export type QueryType = {
   queryName: string;
   cypherQuery: string;
   natLang: string;
+  clicked?: boolean;
 };
 
 export type QueryFolderTypeFetch = {

@@ -59,7 +59,7 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
             )}
           </button>
         )}
-        header={<p className="text-primary">select folder</p>}
+        header={<p className="text-primary">Select Default Query</p>}
         body={
           <DefaultPopUp
             defaultQueries={defaultQueries}

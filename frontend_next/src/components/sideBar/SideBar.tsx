@@ -6,7 +6,6 @@ import Default from "@/src/utils/sideBar/DefaultIcon";
 import Reupload from "@/src/utils/sideBar/ReuploadIcon";
 import { LuAlignJustify } from "react-icons/lu";
 import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
-import GraphToolBoxContainer from "@/components/graphDisplay/GraphToolBoxContainer";
 import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
@@ -48,7 +47,7 @@ export default function SideBar({
             {queryRunClicked && (
               <Card className="bg-gray-50">
                 {/* <GraphToolBoxContainer /> */}
-                <NeoVisToolBox title="Whatever" />
+                <NeoVisToolBox title="Toolbox" />
               </Card>
             )}
           </>

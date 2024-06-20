@@ -86,7 +86,6 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
       setFolders([...(folders || []), newFolder]);
       setSelectedFolder(newFolder);
     }
-
   };
 
   return (
@@ -145,18 +144,21 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
                   </UIButton>
                 )}
                 header={<span className="text-primary">Create New Folder</span>}
-                body={
-                  <NewFolderPopUp
-                    onSave={handleCreateNewFolder}
-                    onClose={onClose}
-                  />
-                }
-                // footer={({ onClose }) => (
-                //   <UIButton color="primary" onClick={onClose}>
-                //     Close
-                //   </UIButton>
-                // )}
+                body={<NewFolderPopUp onSave={handleCreateNewFolder} />}
+                footer={({ onClose }) => (
+                  <>
+                    <div className="w-full h-full flex flex-col justify-end items-start ">
+                      <UIButton
+                        className="bg-danger text-lg "
+                        onClick={onClose}
+                      >
+                        Cancel
+                      </UIButton>
+                    </div>
+                  </>
+                )}
               />
+              );
               <UIButton
                 color="primary"
                 onClick={() => handleSelectFolder(onClose)}
