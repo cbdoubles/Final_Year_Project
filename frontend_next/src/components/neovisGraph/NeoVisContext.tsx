@@ -12,6 +12,7 @@ interface NeoVisContextProps {
   fontSize: number;
   colorMapState: Record<string, string>;
   items: ToolBoxItem;
+  layout: string;
   setNodeSize: React.Dispatch<React.SetStateAction<number>>;
   setEdgeWidth: React.Dispatch<React.SetStateAction<number>>;
   setFontSize: React.Dispatch<React.SetStateAction<number>>;
@@ -19,6 +20,7 @@ interface NeoVisContextProps {
     React.SetStateAction<Record<string, string>>
   >;
   setItems: React.Dispatch<React.SetStateAction<ToolBoxItem>>;
+  setLayout: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const NeoVisContext = createContext<NeoVisContextProps | undefined>(
@@ -38,6 +40,7 @@ export const NeoVisProvider: React.FC<{ children: React.ReactNode }> = ({
     displayedNodeLabels: [],
     displayedEdgeTypes: [],
   });
+  const [layout, setLayout] = useState<string>("Force Directed");
 
   return (
     <NeoVisContext.Provider
@@ -47,11 +50,13 @@ export const NeoVisProvider: React.FC<{ children: React.ReactNode }> = ({
         fontSize,
         colorMapState,
         items,
+        layout,
         setNodeSize,
         setEdgeWidth,
         setFontSize,
         setColorMapState,
         setItems,
+        setLayout,
       }}
     >
       {children}

@@ -124,14 +124,14 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     console.log("Generated JSON Output:", jsonOutput);
     const finalQuery = replaceParametersInQuery(cypherQuery, inputValues);
 
-    ///what they do
-    if (setQueryToRun) {
-      setQueryToRun(finalQuery);
+    if (finalQuery === "") {
+      ///what they do
+      if (setQueryToRun) {
+        setQueryToRun(finalQuery);
+      }
+      console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
+      setQueryRunTrue();
     }
-
-    console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
-
-    setQueryRunTrue();
   };
 
   return (

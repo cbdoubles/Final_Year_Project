@@ -4,7 +4,7 @@ import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
-import QueryTextbox from "../queryTextbox/QueryTextbox";
+import QueryTextbox from "../QueryTextbox/QueryTextbox";
 import SavePopUp from "./SavePopUp";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
@@ -75,13 +75,16 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
 
   const handleRunQuery = () => {
     const query = inputRef.current?.value || "";
-    console.log("Running query:", query);
-    setLocalQuery(query);
-    if (setQuery) {
-      setQuery(query);
+    if (query === "") {
+    } else {
+      console.log("Running query:", query);
+      setLocalQuery(query);
+      if (setQuery) {
+        setQuery(query);
+      }
+      setQueryRunClicked(true); // Initialize the NeovisComponent
+      console.log("set query run clicked to true");
     }
-    setQueryRunClicked(true); // Initialize the NeovisComponent
-    console.log("set query run clicked to true");
   };
 
   const openSave = async (onOpen: () => void) => {
@@ -139,7 +142,7 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
 
   //TODO see if we need defaultValue = {localQuery}, or defaultValue = {editCyphertext}, for passing it to NeoVis
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-50 w-full">
       <div className="text-md text-black">{"Query: " + queryName}</div>
       <textarea
         ref={inputRef}

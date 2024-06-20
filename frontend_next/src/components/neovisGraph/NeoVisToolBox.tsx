@@ -1,3 +1,4 @@
+// NeoVisToolBox.tsx
 import React, { useState } from "react";
 import { Card, CardHeader, CardBody } from "@nextui-org/card";
 import { useNeoVisContext } from "./NeoVisContext";
@@ -13,10 +14,12 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
     fontSize,
     colorMapState,
     items,
+    layout,
     setNodeSize,
     setEdgeWidth,
     setFontSize,
     setColorMapState,
+    setLayout,
   } = useNeoVisContext();
 
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
@@ -38,13 +41,17 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
     return labels.filter((label) => colorMapState[label] !== undefined);
   };
 
+  const handleLayoutChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setLayout(event.target.value);
+  };
+
   return (
     <Card className="py-4">
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
         <h4 className="font-bold text-large">{title}</h4>
       </CardHeader>
       <CardBody className="overflow-visible py-2">
-        <label>
+        {/* <label>
           Node Size: {nodeSize}
           <input
             type="range"
@@ -73,7 +80,14 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
             value={edgeWidth}
             onChange={(e) => setEdgeWidth(Number(e.target.value))}
           />
-        </label>
+        </label> */}
+        {/* <label>
+          Layout:
+          <select value={layout} onChange={handleLayoutChange}>
+            <option value="force-directed">Force Directed</option>
+            <option value="hierarchical">Hierarchical</option>
+          </select>
+        </label> */}
         <div>
           <h5>Displayed Node Labels:</h5>
           {filterDisplayedItems(items.displayedNodeLabels).map((label) => (

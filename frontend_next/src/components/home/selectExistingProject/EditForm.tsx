@@ -49,6 +49,17 @@ const EditForm: React.FC<EditFormProps> = ({
         type="text"
         value={element.projectName}
         onChange={(event) => handleEditChange(event, element)}
+        onBlur={(event) =>
+          handleEditSubmit(
+            event,
+            element,
+            setEditingElement,
+            setElements,
+            elements,
+            prevElementState,
+            setProjectName
+          )
+        }
         autoFocus
         className="focus:outline-none"
       />
