@@ -44,13 +44,13 @@ export const handleSaveQuery = async (
         cypherQuery: responseData.cypher_query,
         natLang: responseData.natural_language_query,
       };
-      console.log("newquery in handlesave")
-      console.log(newQuery)
+      console.log("newquery in handlesave");
+      console.log(newQuery);
 
       return newQuery; // Return true if update was successful
     } catch (error) {
       console.error("Error editing query:", error);
-      toast.error("Query name already in use");
+      toast.error("Invalid Query name (possible duplicate or empty)");
       return null; // Return false if any error occurs during update
     }
   }
