@@ -21,22 +21,20 @@ const NatLangBox: React.FC<NatLangBoxProps> = ({
     const regex = /(\$\w+\{[^}]*\})/g;
     let parts = dataArray.split(regex);
     let indices: number[] = [];
-
+    let check = 0;
     // Iterate over the parts and find the indices of the matched patterns
     parts.forEach((part, index) => {
       if (regex.test(part)) {
         indices.push(index);
       }
     });
-
+    check = data.indices.length;
     return {
+      check: check,
       parts: parts,
       indices: indices,
     };
   }, [dataArray]);
-
-  const countParts = () => data.indices.length;
-  const check = countParts();
 
   return (
     <Card className="justify-center p-4 rounded-lg w-full mb-2">
