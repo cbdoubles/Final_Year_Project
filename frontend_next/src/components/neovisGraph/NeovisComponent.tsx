@@ -1,4 +1,3 @@
-// NeovisComponent.tsx
 import React, { useEffect, useRef, useState } from "react";
 import InfoCard from "./InfoCard";
 import neo4j from "neo4j-driver";
@@ -21,7 +20,11 @@ const driver = neo4j.driver(
   neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
 );
 
-const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
+const NeovisComponent: React.FC<{
+  query: string;
+  setIsTableView: (isTableView: boolean) => void;
+  isTableView: boolean;
+}> = ({ query, setIsTableView, isTableView }) => {
   const visRef = useRef<HTMLDivElement>(null);
   const cypherRef = useRef<any>(null);
   const colorMap: Record<string, string> = {};
@@ -48,7 +51,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const [config, setConfig] = useState<any>(null);
   const [isCardCollapsed, setIsCardCollapsed] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any[]>([]);
-  const [isTableView, setIsTableView] = useState<boolean>(false);
+  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
+  const [nodeData, setNodeData] = useState<any[]>([]);
+  const [edgeData, setEdgeData] = useState<any[]>([]);
 
   const getNodeProperties = async (nodeId: number) => {
     const session = driver.session();
@@ -60,6 +65,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       if (result.records.length > 0) {
         return result.records[0].get("properties");
       }
+      return null;
+    } catch (error) {
+      console.error("Error fetching node properties:", error);
       return null;
     } finally {
       await session.close();
@@ -77,6 +85,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         return result.records[0].get("properties");
       }
       return null;
+    } catch (error) {
+      console.error("Error fetching edge properties:", error);
+      return null;
     } finally {
       await session.close();
     }
@@ -87,6 +98,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     try {
       const result = await session.run(cypherQuery);
       return result;
+    } catch (error) {
+      console.error("Error running query:", error);
+      return null;
     } finally {
       await session.close();
     }
@@ -107,6 +121,78 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       cypherRef.current.clearNetwork();
       cypherRef.current = null;
     }
+  };
+
+  const expandNode = async (nodeId: number) => {
+    const updatedExpandedNodes = new Set(expandedNodes);
+    if (expandedNodes.has(nodeId)) {
+      // Node is already expanded, collapse it
+      const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN ID(r) AS edgeId, ID(m) AS nodeId`;
+      const session = driver.session();
+      try {
+        const result = await session.run(query);
+        const edgesToRemove = result.records.map((record) =>
+          record.get("edgeId")
+        );
+        const nodesToRemove = result.records.map((record) =>
+          record.get("nodeId")
+        );
+
+        cypherRef.current.network.body.data.edges.remove(edgesToRemove);
+        cypherRef.current.network.body.data.nodes.remove(nodesToRemove);
+
+        updatedExpandedNodes.delete(nodeId);
+        setExpandedNodes(updatedExpandedNodes);
+      } finally {
+        await session.close();
+      }
+    } else {
+      // Node is not expanded, expand it
+      const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN n, r, m`;
+      const session = driver.session();
+      try {
+        const result = await session.run(query);
+        const records = result.records;
+        const nodes = records.map((record) => record.get("n"));
+        const relationships = records.map((record) => record.get("r"));
+        const connectedNodes = records.map((record) => record.get("m"));
+
+        const nodeLabels = nodes.map((node) => node.labels).flat();
+        const relationshipTypes = relationships.map(
+          (relationship) => relationship.type
+        );
+
+        // Update items with new node labels and relationship types
+        setItems((prevItems) => ({
+          ...prevItems,
+          displayedNodeLabels: Array.from(
+            new Set([...prevItems.displayedNodeLabels, ...nodeLabels])
+          ),
+          displayedEdgeTypes: Array.from(
+            new Set([...prevItems.displayedEdgeTypes, ...relationshipTypes])
+          ),
+        }));
+
+        cypherRef.current.updateWithCypher(query);
+
+        updatedExpandedNodes.add(nodeId);
+        setExpandedNodes(updatedExpandedNodes);
+      } finally {
+        await session.close();
+      }
+    }
+  };
+
+  const saveGraphState = () => {
+    const nodes = cypherRef.current.network.body.data.nodes.get();
+    const edges = cypherRef.current.network.body.data.edges.get();
+    setNodeData(nodes);
+    setEdgeData(edges);
+  };
+
+  const restoreGraphState = () => {
+    cypherRef.current.network.body.data.nodes.update(nodeData);
+    cypherRef.current.network.body.data.edges.update(edgeData);
   };
 
   useEffect(() => {
@@ -311,8 +397,17 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           cypherRef.current = viz;
 
           const setupListeners = () => {
-            if (viz.network) {
-              viz.network.on("hoverNode", async (params) => {
+            const network = viz.network;
+
+            if (network) {
+              network.off("hoverNode");
+              network.off("blurNode");
+              network.off("hoverEdge");
+              network.off("blurEdge");
+              network.off("click");
+              network.off("doubleClick");
+
+              network.on("hoverNode", async (params) => {
                 if (!selectedItem) {
                   const nodeId = params.node;
                   console.log("hoverNode", nodeId); // Debug log
@@ -321,11 +416,11 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 }
               });
 
-              viz.network.on("blurNode", () => {
+              network.on("blurNode", () => {
                 setHoveredItem(null);
               });
 
-              viz.network.on("hoverEdge", async (params) => {
+              network.on("hoverEdge", async (params) => {
                 if (!selectedItem) {
                   const edgeId = params.edge;
                   console.log("hoverEdge", edgeId); // Debug log
@@ -334,11 +429,11 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 }
               });
 
-              viz.network.on("blurEdge", () => {
+              network.on("blurEdge", () => {
                 setHoveredItem(null);
               });
 
-              viz.network.on("click", async (params) => {
+              network.on("click", async (params) => {
                 const nodeId = params.nodes[0];
                 const edgeId = params.edges[0];
                 if (nodeId) {
@@ -354,52 +449,14 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 }
               });
 
-              viz.network.on("doubleClick", async (params) => {
+              network.on("doubleClick", async (params) => {
                 const nodeId = params.nodes[0];
                 if (nodeId) {
-                  const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN n, r, m`;
-                  const session = driver.session();
-                  try {
-                    const result = await session.run(query);
-                    const records = result.records;
-                    const nodes = records.map((record) => record.get("n"));
-                    const relationships = records.map((record) =>
-                      record.get("r")
-                    );
-                    const connectedNodes = records.map((record) =>
-                      record.get("m")
-                    );
-
-                    const nodeLabels = nodes.map((node) => node.labels).flat();
-                    const relationshipTypes = relationships.map(
-                      (relationship) => relationship.type
-                    );
-
-                    // Update items with new node labels and relationship types
-                    setItems((prevItems) => ({
-                      ...prevItems,
-                      displayedNodeLabels: Array.from(
-                        new Set([
-                          ...prevItems.displayedNodeLabels,
-                          ...nodeLabels,
-                        ])
-                      ),
-                      displayedEdgeTypes: Array.from(
-                        new Set([
-                          ...prevItems.displayedEdgeTypes,
-                          ...relationshipTypes,
-                        ])
-                      ),
-                    }));
-
-                    cypherRef.current.updateWithCypher(query);
-                  } finally {
-                    await session.close();
-                  }
+                  await expandNode(nodeId);
                 }
               });
 
-              viz.network.on("click", (event) => {
+              network.on("click", (event) => {
                 if (event.nodes.length === 0 && event.edges.length === 0) {
                   setSelectedItem(null);
                 }
@@ -420,7 +477,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         destroyNeovisInstance(); // Ensure cleanup on unmount or query change
       };
     }
-  }, [query, isTableView, layout]); // Add layout as a dependency here to re-render the graph
+  }, [query, isTableView]); // Removed layout from here
 
   useEffect(() => {
     if (query) {
@@ -429,24 +486,113 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         displayedEdgeTypes: [],
       });
       runQuery(query).then((result) => {
-        const isTable = checkForTableData(result);
-        setIsTableView(isTable);
+        if (result) {
+          const isTable = checkForTableData(result);
+          setIsTableView(isTable);
 
-        if (isTable) {
-          const tableData = result.records.map((record: any) => {
-            const row: Record<string, any> = {};
-            record.keys.forEach((key: string) => {
-              row[key] = record.get(key);
+          if (isTable) {
+            const tableData = result.records.map((record: any) => {
+              const row: Record<string, any> = {};
+              record.keys.forEach((key: string) => {
+                row[key] = record.get(key);
+              });
+              return row;
             });
-            return row;
-          });
-          setTableData(tableData);
-        } else if (cypherRef.current) {
-          cypherRef.current.render(query);
+            setTableData(tableData);
+          } else if (cypherRef.current) {
+            cypherRef.current.render(query);
+          }
         }
       });
     }
   }, [query]);
+
+  useEffect(() => {
+    const updateGraphConfig = async () => {
+      if (typeof window !== "undefined" && cypherRef.current) {
+        const { default: NeoVis } = await import("neovis.js");
+
+        const layoutConfig =
+          layout === "hierarchical"
+            ? {
+                hierarchical: {
+                  enabled: true,
+                  direction: "UD", // UD for top-down, LR for left-right, DU for bottom-up, RL for right-left
+                  sortMethod: "directed", // Directed sorting
+                  nodeSpacing: 400,
+                },
+              }
+            : {
+                hierarchical: false,
+              };
+
+        const updatedConfig = {
+          ...config,
+          labels: {
+            ...config.labels,
+            ...Object.keys(colorMapState).reduce((acc, label) => {
+              (acc as any)[label] = {
+                ...config.labels[label],
+                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                  function: {
+                    ...config.labels[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
+                      ?.function,
+                    color: () => colorMapState[label],
+                  },
+                },
+              };
+              return acc;
+            }, {} as Record<string, any>),
+          },
+          relationships: {
+            ...config.relationships,
+            ...Object.keys(colorMapState).reduce((acc, type) => {
+              (acc as any)[type] = {
+                ...config.relationships[type],
+                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                  function: {
+                    ...config.relationships[type]?.[
+                      NeoVis.NEOVIS_ADVANCED_CONFIG
+                    ]?.function,
+                    color: () => colorMapState[type],
+                  },
+                },
+              };
+              return acc;
+            }, {} as Record<string, any>),
+          },
+          visConfig: {
+            ...config.visConfig,
+            layout: layoutConfig,
+            physics: {
+              enabled: layout !== "hierarchical",
+              solver: "forceAtlas2Based",
+              stabilization: {
+                enabled: true,
+                iterations: 10,
+                fit: true,
+              },
+              forceAtlas2Based: {
+                gravitationalConstant: -50,
+                centralGravity: 0.005,
+                springLength: 230,
+                springConstant: 0.18,
+              },
+              maxVelocity: 50,
+              minVelocity: 0.1,
+              timestep: 0.5,
+              adaptiveTimestep: true,
+            },
+          },
+        };
+        console.log("Updated config", updatedConfig); // Debug log
+        cypherRef.current.reinit(updatedConfig);
+        cypherRef.current.render();
+      }
+    };
+
+    updateGraphConfig();
+  }, [colorMapState, config, layout, nodeSize, fontSize, edgeWidth]); // Now it depends on layout, nodeSize, fontSize, edgeWidth
 
   const renderTable = () => {
     if (tableData.length === 0) {
@@ -522,74 +668,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     setIsCardCollapsed(!isCardCollapsed);
   };
 
-  useEffect(() => {
-    const updateGraphConfig = async () => {
-      if (typeof window !== "undefined" && cypherRef.current) {
-        const { default: NeoVis } = await import("neovis.js");
-
-        const updatedConfig = {
-          ...config,
-          visConfig: {
-            ...config.visConfig,
-            edges: {
-              ...config.visConfig.edges,
-              width: edgeWidth,
-              font: {
-                ...config.visConfig.edges.font,
-                size: fontSize,
-              },
-            },
-            nodes: {
-              ...config.visConfig.nodes,
-              size: nodeSize,
-              font: {
-                ...config.visConfig.nodes.font,
-                size: fontSize,
-              },
-            },
-          },
-          labels: {
-            ...config.labels,
-            ...Object.keys(colorMapState).reduce((acc, label) => {
-              (acc as any)[label] = {
-                ...config.labels[label],
-                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-                  function: {
-                    ...config.labels[label]?.[NeoVis.NEOVIS_ADVANCED_CONFIG]
-                      ?.function,
-                    color: () => colorMapState[label],
-                  },
-                },
-              };
-              return acc;
-            }, {} as Record<string, any>),
-          },
-          relationships: {
-            ...config.relationships,
-            ...Object.keys(colorMapState).reduce((acc, type) => {
-              (acc as any)[type] = {
-                ...config.relationships[type],
-                [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
-                  function: {
-                    ...config.relationships[type]?.[
-                      NeoVis.NEOVIS_ADVANCED_CONFIG
-                    ]?.function,
-                    color: () => colorMapState[type],
-                  },
-                },
-              };
-              return acc;
-            }, {} as Record<string, any>),
-          },
-        };
-
-        cypherRef.current.reinit(updatedConfig);
-      }
-    };
-
-    updateGraphConfig();
-  }, [nodeSize, edgeWidth, fontSize, colorMapState, config]);
-
   return (
     <div className="relative flex flex-col">
       {isTableView ? (
@@ -597,26 +675,30 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       ) : (
         <>
           <div key={query} id="viz" ref={visRef} className="w-full h-[600px]" />
-          <div
-            className={`absolute top-10 right-10 transition-all ${
-              isCardCollapsed ? "w-16" : "w-96"
-            }`}
-          >
-            <InfoCard
-              title="Details"
-              item={hoveredItem || selectedItem}
-              onCollapse={handleCollapse}
-              isCollapsed={isCardCollapsed}
-            />
-          </div>
+          {!isTableView && (
+            <div
+              className={`absolute top-10 right-10 transition-all ${
+                isCardCollapsed ? "w-16" : "w-96"
+              }`}
+            >
+              <InfoCard
+                title="Details"
+                item={hoveredItem || selectedItem}
+                onCollapse={handleCollapse}
+                isCollapsed={isCardCollapsed}
+              />
+            </div>
+          )}
         </>
       )}
-      <button
-        onClick={downloadPNG}
-        className="absolute top-2 right-2 bg-white rounded shadow p-2"
-      >
-        Export PNG
-      </button>
+      {!isTableView && (
+        <button
+          onClick={downloadPNG}
+          className="absolute top-2 right-2 bg-white rounded shadow p-2"
+        >
+          Export PNG
+        </button>
+      )}
     </div>
   );
 };

@@ -51,7 +51,7 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
         <h4 className="font-bold text-large">{title}</h4>
       </CardHeader>
       <CardBody className="overflow-visible py-2">
-        <label>
+        {/* <label>
           Node Size: {nodeSize}
           <input
             type="range"
@@ -80,14 +80,14 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
             value={edgeWidth}
             onChange={(e) => setEdgeWidth(Number(e.target.value))}
           />
-        </label>
-        <label>
+        </label> */}
+        {/* <label>
           Layout:
           <select value={layout} onChange={handleLayoutChange}>
-            <option value="hierarchical">Hierarchical</option>
             <option value="force-directed">Force Directed</option>
+            <option value="hierarchical">Hierarchical</option>
           </select>
-        </label>
+        </label> */}
         <div>
           <h5>Displayed Node Labels:</h5>
           {filterDisplayedItems(items.displayedNodeLabels).map((label) => (
