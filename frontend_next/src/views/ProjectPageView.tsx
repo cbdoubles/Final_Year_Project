@@ -14,23 +14,20 @@ interface ProjectPageViewProps {
 }
 
 const ProjectPageView = ({ children }: ProjectPageViewProps) => {
-  const { advancedMode, queryRunClicked, setQueryRunTrue } = useProps();
+  const { advancedMode, queryRunClicked, setQueryRunTrue, setQueryRunFalse } =
+    useProps();
   const { projectId, projectName } = useProjectProps();
+  const [queryRunClicked2, setQueryRunClicked2] = useState(false);
 
   const [collapsed, setCollapsed] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("Project ID:", projectId);
-  //   console.log("Project Name:", projectName);
-  // }, []);
   const [query, setQuery] = useState("");
-  // const [queryRunClicked, setQueryRunClicked] = useState(false);
   const [localQuery, setLocalQuery] = useState("");
 
   const handleRunQuery = (query: string) => {
     setLocalQuery(query);
     setQuery(query);
-    setQueryRunTrue(); // Initialize the NeovisComponent
+    setQueryRunTrue();
   };
 
   return (
@@ -50,7 +47,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             {advancedMode ? (
               <QueryTextboxAdvanced setQuery={handleRunQuery} />
             ) : (
-              <QueryTextbox />
+              <QueryTextbox setQueryToRun={handleRunQuery} />
             )}
             <div className="flex-grow overflow-auto">{children}</div>
             {queryRunClicked && (

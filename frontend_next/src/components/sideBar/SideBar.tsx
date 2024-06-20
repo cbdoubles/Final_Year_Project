@@ -48,6 +48,7 @@ export default function SideBar({
             {queryRunClicked && (
               <Card className="bg-gray-50">
                 {/* <GraphToolBoxContainer /> */}
+                <NeoVisToolBox title="Whatever" />
               </Card>
             )}
           </>

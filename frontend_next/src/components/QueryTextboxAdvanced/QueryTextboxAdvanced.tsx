@@ -20,20 +20,19 @@ import { select } from "@nextui-org/theme";
 import NewFolderPopUp from "./NewFolderPopup";
 import { Textarea } from "@nextui-org/react";
 
-const queryFolder: QueryFolderType = {
-  folderId: 6,
-  folderName: "My Folder",
-  folderType: "Custom", // Assigning a valid FolderType
-};
+// const queryFolder: QueryFolderType = {
+//   folderId: 6,
+//   folderName: "My Folder",
+//   folderType: "Custom", // Assigning a valid FolderType
+// };
 
-const folderType = "Custom";
-
+// const folderType = "Custom";
 
 interface QueryTextboxAdvancedProps {
   readOnly?: boolean;
   initialQuery?: string;
   hideButtons?: boolean;
-  setQuery: (query: string) => void;
+  setQuery?: (query: string) => void;
 }
 const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   readOnly = false,
@@ -42,13 +41,13 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   setQuery,
 }) => {
   const { updatedQuery, cypherQuery, queryName, setQueryFromQuery } =
-  useQueryProps();
-const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
+    useQueryProps();
+  const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
 
-useEffect(() => {
-  setSelectedQuery(updatedQuery);
-  setEditCyphertext(cypherQuery);
-}, [updatedQuery]);
+  useEffect(() => {
+    setSelectedQuery(updatedQuery);
+    setEditCyphertext(cypherQuery);
+  }, [updatedQuery]);
 
   const { projectId } = useProjectProps();
   const [editCyphertext, setEditCyphertext] = useState<string>(
@@ -78,8 +77,11 @@ useEffect(() => {
     const query = inputRef.current?.value || "";
     console.log("Running query:", query);
     setLocalQuery(query);
-    setQuery(query);
+    if (setQuery) {
+      setQuery(query);
+    }
     setQueryRunClicked(true); // Initialize the NeovisComponent
+    console.log("set query run clicked to true");
   };
 
   const openSave = async (onOpen: () => void) => {
@@ -181,7 +183,10 @@ useEffect(() => {
               }
               footer={({ onClose }) => (
                 <>
-                  <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
+                  <UIButton
+                    className=" bg-danger w-full text-lg"
+                    onClick={onClose}
+                  >
                     Cancel
                   </UIButton>
                   <UIButton
@@ -195,7 +200,10 @@ useEffect(() => {
             />
             <UIModal
               button={({ onOpen }) => (
-                <UIButton className="bg-gray-500" onClick={() => openSave(onOpen)}>
+                <UIButton
+                  className="bg-gray-500"
+                  onClick={() => openSave(onOpen)}
+                >
                   <FontAwesomeIcon icon={faStar} className="w-6" />
                   Add to Customs
                 </UIButton>
@@ -217,7 +225,10 @@ useEffect(() => {
               }
               footer={({ onClose }) => (
                 <>
-                  <UIButton className=" bg-danger w-full text-lg" onClick={onClose}>
+                  <UIButton
+                    className=" bg-danger w-full text-lg"
+                    onClick={onClose}
+                  >
                     Cancel
                   </UIButton>
                   <UIButton
@@ -240,7 +251,7 @@ useEffect(() => {
         </>
       )}
     </div>
-  );  
+  );
 };
 
 export default QueryTextboxAdvanced;

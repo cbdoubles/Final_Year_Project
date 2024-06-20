@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +24,7 @@ interface QueryTextboxProps {
   readOnly?: boolean;
   initialQuery?: string;
   hideButtons?: boolean;
+  setQueryToRun?: (query: string) => void;
 }
 
 interface InputValues {
@@ -28,6 +35,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   readOnly = false,
   initialQuery = "",
   hideButtons = false,
+  setQueryToRun,
 }) => {
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
@@ -51,6 +59,8 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     console.log("selected query");
     console.log(selectedQuery);
   };
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
@@ -113,6 +123,12 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
     console.log("Generated JSON Output:", jsonOutput);
     const finalQuery = replaceParametersInQuery(cypherQuery, inputValues);
+
+    ///what they do
+    if (setQueryToRun) {
+      setQueryToRun(finalQuery);
+    }
+
     console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
 
     setQueryRunTrue();
