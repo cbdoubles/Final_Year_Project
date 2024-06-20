@@ -6,11 +6,13 @@ interface NatLangBoxProps {
   inputValues: Record<string, string>;
   onInputChange: (placeholder: string, value: string) => void;
   onCheckValueChange: (checkValue: number) => void;
+  readOnly?: boolean;
 }
 
 const NatLangBox: React.FC<NatLangBoxProps> = ({
   dataArray,
   inputValues,
+  readOnly,
   onInputChange,
   onCheckValueChange,
 }) => {
@@ -55,6 +57,7 @@ const NatLangBox: React.FC<NatLangBoxProps> = ({
                   value={inputValues[placeholder] || ""}
                   onChange={(e) => onInputChange(placeholder, e.target.value)}
                   className="w-full m-2"
+                  readOnly={readOnly}
                   title={placeholder}
                 />
               </span>

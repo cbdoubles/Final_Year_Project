@@ -29,12 +29,13 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   deletingElement,
   setDeletingElement,
 }) => {
-  const { setProjectId, setProjectName } = useProjectProps();
+  const { setProjectId, setProjectName, setGraphName } = useProjectProps();
 
   const handleElementClick = () => {
     setSelectedElement(element);
     setProjectId(element.projectId);
     setProjectName(element.projectName);
+    setGraphName(element.graphName);
   };
 
   const handleIconClick1 = () => {

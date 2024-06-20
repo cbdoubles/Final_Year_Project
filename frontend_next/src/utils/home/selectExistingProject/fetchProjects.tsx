@@ -9,6 +9,7 @@ export const fetchProjects = async () => {
     const transformedData: ProjectType[] = data.map((project) => ({
       projectId: Number(project.id),
       projectName: project.name,
+      graphName: project.file_name,
     }));
 
     return transformedData;
