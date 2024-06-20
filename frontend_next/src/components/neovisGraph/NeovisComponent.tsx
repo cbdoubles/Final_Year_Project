@@ -48,6 +48,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const [isCardCollapsed, setIsCardCollapsed] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any[]>([]);
   const [isTableView, setIsTableView] = useState<boolean>(false);
+  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
 
   const getNodeProperties = async (nodeId: number) => {
     const session = driver.session();
@@ -59,6 +60,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
       if (result.records.length > 0) {
         return result.records[0].get("properties");
       }
+      return null;
+    } catch (error) {
+      console.error("Error fetching node properties:", error);
       return null;
     } finally {
       await session.close();
@@ -76,6 +80,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         return result.records[0].get("properties");
       }
       return null;
+    } catch (error) {
+      console.error("Error fetching edge properties:", error);
+      return null;
     } finally {
       await session.close();
     }
@@ -86,6 +93,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     try {
       const result = await session.run(cypherQuery);
       return result;
+    } catch (error) {
+      console.error("Error running query:", error);
+      return null;
     } finally {
       await session.close();
     }
@@ -105,6 +115,66 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     if (cypherRef.current) {
       cypherRef.current.clearNetwork();
       cypherRef.current = null;
+    }
+  };
+
+  const expandNode = async (nodeId: number) => {
+    const updatedExpandedNodes = new Set(expandedNodes);
+    if (expandedNodes.has(nodeId)) {
+      // Node is already expanded, collapse it
+      const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN ID(r) AS edgeId, ID(m) AS nodeId`;
+      const session = driver.session();
+      try {
+        const result = await session.run(query);
+        const edgesToRemove = result.records.map((record) =>
+          record.get("edgeId")
+        );
+        const nodesToRemove = result.records.map((record) =>
+          record.get("nodeId")
+        );
+
+        cypherRef.current.network.body.data.edges.remove(edgesToRemove);
+        cypherRef.current.network.body.data.nodes.remove(nodesToRemove);
+
+        updatedExpandedNodes.delete(nodeId);
+        setExpandedNodes(updatedExpandedNodes);
+      } finally {
+        await session.close();
+      }
+    } else {
+      // Node is not expanded, expand it
+      const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN n, r, m`;
+      const session = driver.session();
+      try {
+        const result = await session.run(query);
+        const records = result.records;
+        const nodes = records.map((record) => record.get("n"));
+        const relationships = records.map((record) => record.get("r"));
+        const connectedNodes = records.map((record) => record.get("m"));
+
+        const nodeLabels = nodes.map((node) => node.labels).flat();
+        const relationshipTypes = relationships.map(
+          (relationship) => relationship.type
+        );
+
+        // Update items with new node labels and relationship types
+        setItems((prevItems) => ({
+          ...prevItems,
+          displayedNodeLabels: Array.from(
+            new Set([...prevItems.displayedNodeLabels, ...nodeLabels])
+          ),
+          displayedEdgeTypes: Array.from(
+            new Set([...prevItems.displayedEdgeTypes, ...relationshipTypes])
+          ),
+        }));
+
+        cypherRef.current.updateWithCypher(query);
+
+        updatedExpandedNodes.add(nodeId);
+        setExpandedNodes(updatedExpandedNodes);
+      } finally {
+        await session.close();
+      }
     }
   };
 
@@ -310,8 +380,17 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           cypherRef.current = viz;
 
           const setupListeners = () => {
-            if (viz.network) {
-              viz.network.on("hoverNode", async (params) => {
+            const network = viz.network;
+
+            if (network) {
+              network.off("hoverNode");
+              network.off("blurNode");
+              network.off("hoverEdge");
+              network.off("blurEdge");
+              network.off("click");
+              network.off("doubleClick");
+
+              network.on("hoverNode", async (params) => {
                 if (!selectedItem) {
                   const nodeId = params.node;
                   console.log("hoverNode", nodeId); // Debug log
@@ -320,11 +399,11 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 }
               });
 
-              viz.network.on("blurNode", () => {
+              network.on("blurNode", () => {
                 setHoveredItem(null);
               });
 
-              viz.network.on("hoverEdge", async (params) => {
+              network.on("hoverEdge", async (params) => {
                 if (!selectedItem) {
                   const edgeId = params.edge;
                   console.log("hoverEdge", edgeId); // Debug log
@@ -333,11 +412,11 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 }
               });
 
-              viz.network.on("blurEdge", () => {
+              network.on("blurEdge", () => {
                 setHoveredItem(null);
               });
 
-              viz.network.on("click", async (params) => {
+              network.on("click", async (params) => {
                 const nodeId = params.nodes[0];
                 const edgeId = params.edges[0];
                 if (nodeId) {
@@ -353,52 +432,14 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
                 }
               });
 
-              viz.network.on("doubleClick", async (params) => {
+              network.on("doubleClick", async (params) => {
                 const nodeId = params.nodes[0];
                 if (nodeId) {
-                  const query = `MATCH (n)-[r]->(m) WHERE ID(n) = ${nodeId} RETURN n, r, m`;
-                  const session = driver.session();
-                  try {
-                    const result = await session.run(query);
-                    const records = result.records;
-                    const nodes = records.map((record) => record.get("n"));
-                    const relationships = records.map((record) =>
-                      record.get("r")
-                    );
-                    const connectedNodes = records.map((record) =>
-                      record.get("m")
-                    );
-
-                    const nodeLabels = nodes.map((node) => node.labels).flat();
-                    const relationshipTypes = relationships.map(
-                      (relationship) => relationship.type
-                    );
-
-                    // Update items with new node labels and relationship types
-                    setItems((prevItems) => ({
-                      ...prevItems,
-                      displayedNodeLabels: Array.from(
-                        new Set([
-                          ...prevItems.displayedNodeLabels,
-                          ...nodeLabels,
-                        ])
-                      ),
-                      displayedEdgeTypes: Array.from(
-                        new Set([
-                          ...prevItems.displayedEdgeTypes,
-                          ...relationshipTypes,
-                        ])
-                      ),
-                    }));
-
-                    cypherRef.current.updateWithCypher(query);
-                  } finally {
-                    await session.close();
-                  }
+                  await expandNode(nodeId);
                 }
               });
 
-              viz.network.on("click", (event) => {
+              network.on("click", (event) => {
                 if (event.nodes.length === 0 && event.edges.length === 0) {
                   setSelectedItem(null);
                 }
@@ -428,20 +469,22 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         displayedEdgeTypes: [],
       });
       runQuery(query).then((result) => {
-        const isTable = checkForTableData(result);
-        setIsTableView(isTable);
+        if (result) {
+          const isTable = checkForTableData(result);
+          setIsTableView(isTable);
 
-        if (isTable) {
-          const tableData = result.records.map((record: any) => {
-            const row: Record<string, any> = {};
-            record.keys.forEach((key: string) => {
-              row[key] = record.get(key);
+          if (isTable) {
+            const tableData = result.records.map((record: any) => {
+              const row: Record<string, any> = {};
+              record.keys.forEach((key: string) => {
+                row[key] = record.get(key);
+              });
+              return row;
             });
-            return row;
-          });
-          setTableData(tableData);
-        } else if (cypherRef.current) {
-          cypherRef.current.render(query);
+            setTableData(tableData);
+          } else if (cypherRef.current) {
+            cypherRef.current.render(query);
+          }
         }
       });
     }
