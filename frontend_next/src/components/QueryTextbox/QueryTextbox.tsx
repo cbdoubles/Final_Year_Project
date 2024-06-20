@@ -17,8 +17,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { split } from "postcss/lib/list";
-import { QueryType } from "@/src/libs/types";
+import { QueryFolderType, QueryType } from "@/src/libs/types";
 import QueryTextboxAdvanced from "../QueryTextboxAdvanced/QueryTextboxAdvanced";
+import SavePopUp from "../QueryTextboxAdvanced/SavePopUp";
+import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { validateParameters } from "@/src/utils/parameterUtils";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
@@ -26,6 +30,8 @@ interface QueryTextboxProps {
   hideButtons?: boolean;
   setQueryToRun?: (query: string) => void;
 }
+
+const folderType = "Favorite";
 
 interface InputValues {
   [key: string]: string;
@@ -51,6 +57,26 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     selectedQuery.cypherQuery
   );
   const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
+  const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
+  const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
+    null
+  );
+
+  const { projectId } = useProjectProps();
+
+  const saveChooseFolder = () => {
+    console.log("clicked save");
+  };
+
+  const [saveQueryName, setSaveQueryName] = useState<string>(
+    selectedQuery.queryName
+  );
+
+  const openSave = async (onOpen: () => void) => {
+    setSelectedFolder(null);
+    setSaveCyphertext(editCyphertext);
+    onOpen();
+  };
 
   const handleShowCypherQuery = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
@@ -59,8 +85,6 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     console.log("selected query");
     console.log(selectedQuery);
   };
-
-  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
@@ -134,6 +158,35 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     }
   };
 
+  const handleSaveFavorite = async (onClose: () => void) => {
+    if (selectedFolder === null) {
+      toast.error("No folder selected");
+      return;
+    } else {
+      if (validateParameters(saveCyphertext, saveNatLang)) {
+        const newQuery = await handleSaveQuery(
+          saveQueryName,
+          saveCyphertext,
+          saveNatLang,
+          selectedFolder,
+          projectId
+        );
+
+        if (newQuery !== null) {
+          setQueryFromQuery(newQuery);
+          setSelectedQuery(newQuery);
+          onClose();
+          toast.success("Query saved successfully");
+        }
+      } else {
+        toast.error(
+          "Not all parameters from cyphertext match in natural language box"
+        );
+        console.log(saveCyphertext, saveNatLang);
+      }
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col">
@@ -162,16 +215,27 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
             </UIButton>
             <UIModal
               button={({ onOpen }) => (
-                <UIButton
-                  className="bg-gray-500"
-                  onClick={() => handleError(onOpen)}
-                >
+                <UIButton className="bg-gray-500" onClick={onOpen}>
                   <FontAwesomeIcon icon={faStar} className="w-6" />
                   <p>Add to Favorites</p>
                 </UIButton>
               )}
               header={<span className="text-primary">Save favorite query</span>}
-              body={<FavouritePopUp></FavouritePopUp>}
+              body={
+                <SavePopUp
+                  saveChooseFolder={saveChooseFolder}
+                  queryName={saveQueryName}
+                  cyphertext={saveCyphertext}
+                  natLang={saveNatLang}
+                  updateQueryName={setSaveQueryName}
+                  updateCyphertext={setSaveCyphertext}
+                  updateNaturalLanguage={setSaveNatLang}
+                  folderType={"Favorite"}
+                  selectedFolder={selectedFolder}
+                  setSelectedFolder={setSelectedFolder}
+                  fav={true}
+                ></SavePopUp>
+              }
               footer={({ onClose }) => (
                 <>
                   <UIButton
@@ -180,12 +244,12 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
                   >
                     Cancel
                   </UIButton>
-                  <FileOpenButt
+                  <UIButton
                     className="bg-success-700 w-full text-lg"
-                    onClick={onClose}
+                    onClick={() => handleSaveFavorite(onClose)}
                   >
                     Save
-                  </FileOpenButt>
+                  </UIButton>
                 </>
               )}
             ></UIModal>
