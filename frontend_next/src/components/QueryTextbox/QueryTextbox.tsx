@@ -1,27 +1,26 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
+import FileOpenButt from "../ui/FileOpenButt";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { split } from "postcss/lib/list";
-import {
-  extractParameters,
-  extractNaturalLanguageParameters,
-  validateParameters,
-} from "@/src/utils/parameterUtils";
-import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
-import SavePopUp from "./SavePopUp";
+import { QueryType } from "@/src/libs/types";
+import SavePopUp from "../QueryTextboxAdvanced/SavePopUp";
 
 interface QueryTextboxProps {
   readOnly?: boolean;
   initialQuery?: string;
   hideButtons?: boolean;
 }
+
+const folderType = "Favorite";
 
 interface InputValues {
   [key: string]: string;
@@ -35,20 +34,47 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
-  const { natLang, cypherQuery, queryName, updatedQuery, setQueryFromQuery } =
-    useQueryProps();
+  const { natLang, cypherQuery, queryName } = useQueryProps();
   const [boxes, setBoxes] = useState(2);
-  const [editCyphertext, setEditCyphertext] = useState<string>(cypherQuery);
-  const [saveQueryName, setSaveQueryName] = useState<string>(queryName);
+  const { getSelectedQuery, setQueryFromQuery } = useQueryProps();
+  const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState<QueryType>(
+    getSelectedQuery()
+  );
+  const [editCyphertext, setEditCyphertext] = useState<string>(
+    selectedQuery.cypherQuery
+  );
   const [saveCyphertext, setSaveCyphertext] = useState<string>(editCyphertext);
-  const [saveNatLang, setSaveNatLang] = useState<string>(natLang);
-  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [saveNatLang, setSaveNatLang] = useState<string>(selectedQuery.natLang);
+  const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
+    null
+  );
+
+  const [saveQueryName, setSaveQueryName] = useState<string>(
+    selectedQuery.queryName
+  );
+
+  const openSave = async (onOpen: () => void) => {
+    setSelectedFolder(null);
+    setSaveCyphertext(editCyphertext);
+    onOpen();
+  };
+
+  const handleShowCypherQuery = () => {
+    setShowReadOnlyTextbox((prevState) => !prevState);
+    console.log("context query");
+    console.log(getSelectedQuery());
+    console.log("selected query");
+    console.log(selectedQuery);
+  };
 
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
   };
 
   const handleError = (onOpen: () => void) => {
+    console.log("There is this many boxes:", boxes);
+    console.log("----", inputValues);
     if (Object.keys(inputValues).length < boxes) {
       toast.error("Fill in the query text before adding to favourites.", {
         position: "bottom-right",
@@ -75,7 +101,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const replaceParametersInQuery = (query: string, params: InputValues) => {
     let resultQuery = query;
     for (const key in params) {
-      const realkey = key.split("{")[0];
+      const realkey = split(key, ["{"], false)[0];
       const regex = new RegExp("\\" + realkey, "g");
       resultQuery = resultQuery.replace(regex, params[key]);
     }
@@ -83,8 +109,12 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   };
 
   const handleRunQuery = () => {
+    // Generate the JSON output
     const parameters: Record<string, string> = {};
+
+    // Iterate through the input values and populate the parameters object
     for (const key in inputValues) {
+      // Extract the part between $ and {
       const match = key.match(/\$(\w+)\{/);
       if (match) {
         const parameterKey = match[1];
@@ -99,55 +129,9 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
 
     console.log("Generated JSON Output:", jsonOutput);
     const finalQuery = replaceParametersInQuery(cypherQuery, inputValues);
-    console.log("Final Cypher Query:", finalQuery);
+    console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
 
     setQueryRunTrue();
-  };
-
-  const handleSaveCustom = async (onClose: () => void) => {
-    if (selectedFolder === null) {
-      toast.error("No folder selected");
-      return;
-    } else {
-      const cypherParams = extractParameters(saveCyphertext);
-      const naturalLanguageParams =
-        extractNaturalLanguageParameters(saveNatLang);
-
-      if (cypherParams.length > naturalLanguageParams.length) {
-        toast.error(
-          "There are fewer parameters in the natural language box than required"
-        );
-        console.log(saveCyphertext, saveNatLang);
-        return;
-      } else if (cypherParams.length < naturalLanguageParams.length) {
-        toast.error(
-          "There are more parameters in the natural language box than required"
-        );
-        console.log(saveCyphertext, saveNatLang);
-        return;
-      }
-
-      if (validateParameters(saveCyphertext, saveNatLang)) {
-        const newQuery = await handleSaveQuery(
-          saveQueryName,
-          saveCyphertext,
-          saveNatLang,
-          selectedFolder,
-          updatedQuery.projectId
-        );
-
-        if (newQuery !== null) {
-          setQueryFromQuery(newQuery);
-          onClose();
-          toast.success("Query saved successfully");
-        }
-      } else {
-        toast.error(
-          "Not all parameters from cyphertext match in natural language box"
-        );
-        console.log(saveCyphertext, saveNatLang);
-      }
-    }
   };
 
   return (
@@ -156,6 +140,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
         <div className="text-md text-black">{"Query: " + queryName}</div>
         <NatLangBox
           dataArray={natLang}
+          readOnly={readOnly}
           inputValues={inputValues}
           onInputChange={handleInputChange}
           onCheckValueChange={(checkValue) => {
@@ -164,13 +149,10 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
         />
         {!hideButtons && (
           <div className="flex justify-end gap-2 mb-2">
-            <UIButton
-              onClick={handleShowQuery}
-              disabled={readOnly}
-              className="bg-primary"
-            >
-              Show Cypher
+            <UIButton onClick={handleShowCypherQuery}>
+              {showReadOnlyTextbox ? "Hide Cypher Query" : "Show Cypher query"}
             </UIButton>
+
             <UIButton
               onClick={handleRunQuery}
               disabled={readOnly}
@@ -198,8 +180,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
                   folderType={"Favorite"}
                   selectedFolder={selectedFolder}
                   setSelectedFolder={setSelectedFolder}
-                  readOnlyCyphertext={true}
-                  readOnlyNatLang={true}
+                  fav={true}
                 ></SavePopUp>
               }
               footer={({ onClose }) => (
@@ -222,6 +203,9 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
           </div>
         )}
       </div>
+      {showReadOnlyTextbox && (
+        <QueryTextbox readOnly={true} initialQuery={"d"} hideButtons={true} />
+      )}
     </div>
   );
 };
