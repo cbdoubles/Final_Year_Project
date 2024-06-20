@@ -1,3 +1,4 @@
+// NeovisComponent.tsx
 import React, { useEffect, useRef, useState } from "react";
 import InfoCard from "./InfoCard";
 import neo4j from "neo4j-driver";
@@ -31,11 +32,13 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     fontSize,
     colorMapState,
     items,
-    setNodeSize, // state update function for nodeSize
-    setEdgeWidth, // state update function for edgeWidth
-    setFontSize, // state update function for fontSize
-    setColorMapState, // state update function for colorMapState
-    setItems, // state update function for items
+    layout,
+    setNodeSize,
+    setEdgeWidth,
+    setFontSize,
+    setColorMapState,
+    setItems,
+    setLayout,
   } = useNeoVisContext();
 
   const [hoveredItem, setHoveredItem] = useState<any>(null);
@@ -83,13 +86,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
     const session = driver.session();
     try {
       const result = await session.run(cypherQuery);
-      if (result) {
-        console.log(" no null");
-        return result;
-      } else {
-        console.log("result is null");
-        return result;
-      }
+      return result;
     } finally {
       await session.close();
     }
@@ -108,7 +105,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   const destroyNeovisInstance = () => {
     if (cypherRef.current) {
       cypherRef.current.clearNetwork();
-      console.log(" destroy neovis set current to null");
       cypherRef.current = null;
     }
   };
@@ -227,6 +223,20 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         const labelsConfig = await getLabels();
         const relationshipsConfig = await getRelationshipTypes();
 
+        const layoutConfig =
+          layout === "hierarchical"
+            ? {
+                hierarchical: {
+                  enabled: true,
+                  direction: "UD", // UD for top-down, LR for left-right, DU for bottom-up, RL for right-left
+                  sortMethod: "directed", // Directed sorting
+                  nodeSpacing: 400,
+                },
+              }
+            : {
+                hierarchical: false,
+              };
+
         const initialConfig = {
           containerId: visRef.current?.id || "",
           neo4j: {
@@ -264,8 +274,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
               },
               labelHighlightBold: true,
             },
+            layout: layoutConfig,
             physics: {
-              enabled: true,
+              enabled: layout !== "hierarchical",
               solver: "forceAtlas2Based",
               stabilization: {
                 enabled: true,
@@ -295,7 +306,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
 
         if (visRef.current) {
           const viz = new NeoVis(initialConfig as any);
-
           viz.render();
 
           cypherRef.current = viz;
@@ -410,7 +420,7 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
         destroyNeovisInstance(); // Ensure cleanup on unmount or query change
       };
     }
-  }, [query, isTableView]); // Add query and isTableView as dependencies here to reset visualization
+  }, [query, isTableView, layout]); // Add layout as a dependency here to re-render the graph
 
   useEffect(() => {
     if (query) {
@@ -439,7 +449,6 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   }, [query]);
 
   const renderTable = () => {
-    console.log("entering renderTable");
     if (tableData.length === 0) {
       return <div>No data to display</div>;
     }
@@ -510,9 +519,9 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
   };
 
   const handleCollapse = () => {
-    console.log(" handle collapse");
     setIsCardCollapsed(!isCardCollapsed);
   };
+
   useEffect(() => {
     const updateGraphConfig = async () => {
       if (typeof window !== "undefined" && cypherRef.current) {
@@ -602,12 +611,12 @@ const NeovisComponent: React.FC<{ query: string }> = ({ query }) => {
           </div>
         </>
       )}
-      {/* <button
+      <button
         onClick={downloadPNG}
         className="absolute top-2 right-2 bg-white rounded shadow p-2"
       >
         Export PNG
-      </button> */}
+      </button>
     </div>
   );
 };
