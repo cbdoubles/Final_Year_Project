@@ -15,6 +15,7 @@ import UIButton from "../ui/UIButton";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import ChooseProject from "../importChain/ChooseProject";
 import ImportIcon from "@/src/utils/sideBar/ImportIcon";
+import NeoVisToolBox from "../neovisGraph/NeoVisToolBox";
 
 export default function SideBar({
   collapsed,
@@ -46,11 +47,13 @@ export default function SideBar({
           <>
             {queryRunClicked && (
               <Card className="bg-gray-50">
-                <GraphToolBoxContainer />
+                {/* <GraphToolBoxContainer /> */}
               </Card>
             )}
           </>
         )}
+        {/* <Settings collapsed={collapsed} />
+        {!collapsed && <>{<NeoVisToolBox title="Whatever" />}</>} */}
       </div>
     </div>
   );

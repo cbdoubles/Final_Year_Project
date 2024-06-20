@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import UIButton from "../ui/UIButton";
 import UIModal from "../ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,11 +33,13 @@ interface QueryTextboxAdvancedProps {
   readOnly?: boolean;
   initialQuery?: string;
   hideButtons?: boolean;
+  setQuery: (query: string) => void;
 }
 const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   readOnly = false,
   initialQuery = "",
   hideButtons = false,
+  setQuery,
 }) => {
   const { updatedQuery, cypherQuery, queryName, setQueryFromQuery } =
   useQueryProps();
@@ -63,6 +65,9 @@ useEffect(() => {
   const saveChooseFolder = () => {
     console.log("clicked save");
   };
+  const [localQuery, setLocalQuery] = useState("");
+  const [queryRunClicked, setQueryRunClicked] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
   const handleShowNaturalLang = () => {
@@ -70,7 +75,11 @@ useEffect(() => {
   };
 
   const handleRunQuery = () => {
-    console.log("Running query:", selectedQuery);
+    const query = inputRef.current?.value || "";
+    console.log("Running query:", query);
+    setLocalQuery(query);
+    setQuery(query);
+    setQueryRunClicked(true); // Initialize the NeovisComponent
   };
 
   const openSave = async (onOpen: () => void) => {
@@ -126,13 +135,16 @@ useEffect(() => {
     }
   };
 
+  //TODO see if we need defaultValue = {localQuery}, or defaultValue = {editCyphertext}, for passing it to NeoVis
   return (
     <div className="flex flex-col h-full w-full">
       <div className="text-md text-black">{"Query: " + queryName}</div>
       <textarea
+        ref={inputRef}
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
         value={editCyphertext}
         onChange={(e) => setEditCyphertext(e.target.value)}
+        defaultValue={localQuery}
         placeholder="Enter your query here"
         readOnly={readOnly}
       />
