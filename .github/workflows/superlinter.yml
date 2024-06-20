@@ -77,6 +77,11 @@ jobs:
           lfs: false
           submodules: false
 
+      - name: Ensure Git is initialized
+        run: |
+          cd $GITHUB_WORKSPACE
+          git status
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
