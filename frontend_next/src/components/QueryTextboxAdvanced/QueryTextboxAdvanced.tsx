@@ -10,7 +10,7 @@ import { useQueryProps } from "@/src/contexts/QueryContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { toast } from "react-toastify";
 import {
-  extractNaturalLanguageParameters,
+  // extractNaturalLanguageParameters,
   extractParameters,
   validateParameters,
 } from "@/src/utils/parameterUtils";
@@ -40,13 +40,15 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   hideButtons = false,
   setQuery,
 }) => {
-  const { updatedQuery, cypherQuery, queryName, setQueryFromQuery } =
+  const { updatedQuery, cypherQuery, queryName, natLang, setQueryFromQuery } =
     useQueryProps();
   const [selectedQuery, setSelectedQuery] = useState<QueryType>(updatedQuery);
 
   useEffect(() => {
     setSelectedQuery(updatedQuery);
     setEditCyphertext(cypherQuery);
+    setSaveQueryName(queryName);
+    setSaveNatLang(natLang);
   }, [updatedQuery]);
 
   const { projectId } = useProjectProps();
@@ -93,57 +95,91 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
     onOpen();
   };
 
+  // const handleSaveCustom = async (onClose: () => void) => {
+  //   if (selectedFolder === null) {
+  //     toast.error("No folder selected");
+  //     return;
+  //   } else {
+  //     const cypherParams = extractParameters(saveCyphertext);
+  //     const naturalLanguageParams =
+  //       extractNaturalLanguageParameters(saveNatLang);
+
+  //     if (cypherParams.length > naturalLanguageParams.length) {
+  //       toast.error(
+  //         "There are fewer parameters in the natural language box than required"
+  //       );
+  //       console.log(saveCyphertext, saveNatLang);
+  //       return;
+  //     } else if (cypherParams.length < naturalLanguageParams.length) {
+  //       toast.error(
+  //         "There are more parameters in the natural language box than required"
+  //       );
+  //       console.log(saveCyphertext, saveNatLang);
+  //       return;
+  //     }
+
+  //     if (validateParameters(saveCyphertext, saveNatLang)) {
+  //       const newQuery = await handleSaveQuery(
+  //         saveQueryName,
+  //         saveCyphertext,
+  //         saveNatLang,
+  //         selectedFolder,
+  //         projectId
+  //       );
+
+  //       if (newQuery !== null) {
+  //         setQueryFromQuery(newQuery);
+  //         setSelectedQuery(newQuery);
+  //         onClose();
+  //         toast.success("Query saved successfully");
+  //       }
+  //     } else {
+  //       toast.error(
+  //         "Not all parameters from cyphertext match in natural language box"
+  //       );
+  //       console.log(saveCyphertext, saveNatLang);
+  //     }
+  //   }
+  // };
+
   const handleSaveCustom = async (onClose: () => void) => {
-    if (selectedFolder === null) {
-      toast.error("No folder selected");
-      return;
+    if (validateParameters(saveCyphertext, saveNatLang)) {
+      if (selectedFolder === null) {
+        toast.error("No folder selected");
+        return;
+      }
+      const newQuery = await handleSaveQuery(
+        saveQueryName,
+        saveCyphertext,
+        saveNatLang,
+        selectedFolder,
+        projectId
+      );
+
+      if (newQuery !== null) {
+        setQueryFromQuery(newQuery);
+        setSelectedQuery(newQuery);
+        onClose();
+        toast.success("Query saved successfully");
+      }
     } else {
-      const cypherParams = extractParameters(saveCyphertext);
-      const naturalLanguageParams =
-        extractNaturalLanguageParameters(saveNatLang);
-
-      if (cypherParams.length > naturalLanguageParams.length) {
-        toast.error(
-          "There are fewer parameters in the natural language box than required"
-        );
-        console.log(saveCyphertext, saveNatLang);
-        return;
-      } else if (cypherParams.length < naturalLanguageParams.length) {
-        toast.error(
-          "There are more parameters in the natural language box than required"
-        );
-        console.log(saveCyphertext, saveNatLang);
-        return;
-      }
-
-      if (validateParameters(saveCyphertext, saveNatLang)) {
-        const newQuery = await handleSaveQuery(
-          saveQueryName,
-          saveCyphertext,
-          saveNatLang,
-          selectedFolder,
-          projectId
-        );
-
-        if (newQuery !== null) {
-          setQueryFromQuery(newQuery);
-          setSelectedQuery(newQuery);
-          onClose();
-          toast.success("Query saved successfully");
-        }
-      } else {
-        toast.error(
-          "Not all parameters from cyphertext match in natural language box"
-        );
-        console.log(saveCyphertext, saveNatLang);
-      }
+      toast.error(
+        "Not all parameters from cyphertext are present in natural language box"
+      );
     }
+  };
+
+  const handleSaveOpen = (opOpen: () => void) => {
+    setSelectedFolder(null);
+    opOpen();
   };
 
   //TODO see if we need defaultValue = {localQuery}, or defaultValue = {editCyphertext}, for passing it to NeoVis
   return (
     <div className="flex flex-col h-50 w-full">
-      <div className="text-md text-black">{"Query: " + queryName}</div>
+      <div className="text-md text-black">
+        {"Ensure that the Project ID is incorported in the query"}
+      </div>
       <textarea
         ref={inputRef}
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
@@ -164,7 +200,10 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
             </UIButton>
             <UIModal
               button={({ onOpen }) => (
-                <UIButton className="bg-gray-500" onClick={onOpen}>
+                <UIButton
+                  className="bg-gray-500"
+                  onClick={() => handleSaveOpen(onOpen)}
+                >
                   <FontAwesomeIcon icon={faStar} className="w-6" />
                   Add to Favorites
                 </UIButton>

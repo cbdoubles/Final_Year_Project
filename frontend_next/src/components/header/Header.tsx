@@ -3,23 +3,22 @@ import Link from "next/link";
 import ProjectInfoCard from "../projectInfoCard/ProjectInfoCard";
 import { useProjectProps } from "../../contexts/ProjectContext";
 import { useQueryProps } from "../../contexts/QueryContext";
-import { useProps } from "../../contexts/PropsContext"; 
+import { useProps } from "../../contexts/PropsContext";
 
 const Header = ({ showProject }: { showProject?: boolean }) => {
-  const { projectId, setProjectId, setProjectName, setGraphName } =
-    useProjectProps();
+  // const { projectId, setProjectId, setProjectName, setGraphName } =
+  //   useProjectProps();
+  const { resetQueryContext } = useQueryProps();
   const { resetProject } = useProjectProps();
   const { resetProps } = useProps();
 
   const resetContext = () => {
-    setProjectId(1); // or any default value
-    setProjectName("");
-    setGraphName("");
-    console.log(" in reset context");
-    console.log(projectId);
-    useQueryProps();
-    useProjectProps();
-    useProps();
+    // setProjectId(1); // or any default value
+    // setProjectName("");
+    // setGraphName("");
+    resetQueryContext();
+    resetProject();
+    resetProps();
   };
 
   return (
