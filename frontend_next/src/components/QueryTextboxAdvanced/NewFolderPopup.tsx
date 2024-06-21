@@ -15,7 +15,7 @@ const NewFolderPopUp: React.FC<NewFolderPopUpProps> = ({ onSave, onClose }) => {
   const handleSave = () => {
     if (folderName.trim()) {
       onSave(folderName);
-      onClose;
+      onClose();
     } else {
       toast.error("Folder name cannot be empty");
     }
