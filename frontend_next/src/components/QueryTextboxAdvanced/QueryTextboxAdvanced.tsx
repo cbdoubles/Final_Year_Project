@@ -172,7 +172,9 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   //TODO see if we need defaultValue = {localQuery}, or defaultValue = {editCyphertext}, for passing it to NeoVis
   return (
     <div className="flex flex-col h-50 w-full">
-      <div className="text-md text-black">{"Query: " + queryName}</div>
+      <div className="text-md text-black">
+        {"Ensure that the Project ID is incorported in the query"}
+      </div>
       <textarea
         ref={inputRef}
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"

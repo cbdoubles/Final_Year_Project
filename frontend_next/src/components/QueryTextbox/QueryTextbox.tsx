@@ -238,7 +238,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   return (
     <div>
       <div className="flex flex-col">
-        <div className="text-md text-black">{"Query: " + queryName}</div>
+        {/* <div className="text-md text-black">{"Query: " + queryName}</div> */}
         <NatLangBox
           dataArray={natLang}
           readOnly={readOnly}
