@@ -112,7 +112,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const handleError = (): boolean => {
     console.log("There is this many boxes:", boxes);
     console.log("----", inputValues);
-    if (query === "") {
+    if (natLang === "") {
       toast.error("No query selected", {
         position: "bottom-right",
         theme: "colored",
