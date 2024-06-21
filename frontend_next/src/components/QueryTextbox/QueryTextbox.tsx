@@ -120,7 +120,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
       return false;
     }
     if (Object.keys(inputValues).length < boxes) {
-      toast.error("Fill in the query text before adding to favourites lol.", {
+      toast.error("Fill in the query text before proceeding.", {
         position: "bottom-right",
         theme: "colored",
       });
@@ -128,7 +128,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
     }
     for (const key in inputValues) {
       if (inputValues[key] === "") {
-        toast.error("Fill in the query text before adding to favourites.", {
+        toast.error("Fill in the query text before proceeding.", {
           position: "bottom-right",
           theme: "colored",
         });

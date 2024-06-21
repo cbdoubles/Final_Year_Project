@@ -106,7 +106,7 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
                   margin: "4px 2px",
                   cursor: "pointer",
                 }}
-                onClick={() => setSelectedButton(label)}
+                // onClick={() => setSelectedButton(label)}
               >
                 {label}
               </button>
@@ -140,7 +140,7 @@ const NeoVisToolBox: React.FC<ToolBoxProps> = ({ title }) => {
                   margin: "4px 2px",
                   cursor: "pointer",
                 }}
-                onClick={() => setSelectedButton(type)}
+                // onClick={() => setSelectedButton(type)}
               >
                 {type}
               </button>
