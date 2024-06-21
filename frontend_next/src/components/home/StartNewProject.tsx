@@ -135,6 +135,10 @@
 import React, { useRef, useState } from "react";
 import UIButton from "../ui/UIButton";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { ProjectType } from "@/src/libs/types";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { use } from "cytoscape";
 
 type SelectFileProps = {};
 
@@ -143,9 +147,10 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
-  const [projectName, setProjectName] = useState<string>("");
+  const [newProjectName, setNewProjectName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const router = useRouter();
+  const { setProject } = useProjectProps();
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -171,16 +176,16 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
   const handleProjectNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setProjectName(event.target.value);
+    setNewProjectName(event.target.value);
   };
 
   const handleSave = async () => {
-    if (!selectedFile || !fileName || !projectName) return;
+    if (!selectedFile || !fileName || !newProjectName) return;
 
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("file_name", fileName);
-    formData.append("name", projectName);
+    formData.append("name", newProjectName);
 
     try {
       const response = await fetch(`http://localhost:8000/api/projects/`, {
@@ -189,19 +194,32 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
       });
 
       const result = await response.json();
-      setMessage(result.message || result.error);
+      // setMessage(result.message || result.error);
 
       if (response.ok) {
-        console.log("File saved:", selectedFileName);
+        console.log("File saved:", result);
+
+        const project: ProjectType = {
+          projectId: Number(result.id),
+          projectName: result.name,
+          graphName: result.file_name,
+        };
+
+        setProject(project);
+
         router.push("/projectpage");
+      } else {
+        console.error("Error in response:", result);
+        // toast.error(result.error || "Error uploading file");
+        toast.error("Project name already in use");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      setMessage("Error uploading file");
+      // setMessage("Error uploading file");
     }
   };
 
-  const isSaveDisabled = !selectedFile || !fileName || !projectName;
+  const isSaveDisabled = !selectedFile || !fileName || !newProjectName;
 
   return (
     <>
@@ -210,7 +228,7 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
           Project Name:
           <input
             type="text"
-            value={projectName}
+            value={newProjectName}
             onChange={handleProjectNameChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />

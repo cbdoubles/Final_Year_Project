@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 
+// Define the ProjectType
+export type ProjectType = {
+  projectId: number;
+  projectName: string;
+  graphName: string;
+};
+
 type ProjectContextType = {
   projectId: number;
   setProjectId: (projectId: number) => void;
@@ -8,6 +15,7 @@ type ProjectContextType = {
   graphName: string;
   setGraphName: (graphName: string) => void;
   resetProject: () => void;
+  setProject: (project: ProjectType) => void; // Add setProject to the context type
 };
 
 export const ProjectContext = createContext<ProjectContextType>({
@@ -18,6 +26,7 @@ export const ProjectContext = createContext<ProjectContextType>({
   graphName: "", // Default value for graphName
   setGraphName: () => {},
   resetProject: () => {},
+  setProject: () => {}, // Default value for setProject
 });
 
 export const ProjectPropsProvider = ({
@@ -35,6 +44,13 @@ export const ProjectPropsProvider = ({
     setGraphName("");
   };
 
+  // Define the setProject function
+  const setProject = (project: ProjectType) => {
+    setProjectId(project.projectId);
+    setProjectName(project.projectName);
+    setGraphName(project.graphName);
+  };
+
   const value = useMemo(
     () => ({
       projectId,
@@ -44,14 +60,13 @@ export const ProjectPropsProvider = ({
       graphName,
       setGraphName,
       resetProject,
+      setProject, // Add setProject to the context value
     }),
     [projectId, projectName, graphName]
   );
 
   return (
-    <ProjectContext.Provider value={value}>
-      {children}
-    </ProjectContext.Provider>
+    <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
   );
 };
 
