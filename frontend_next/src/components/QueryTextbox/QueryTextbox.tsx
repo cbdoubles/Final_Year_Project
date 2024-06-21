@@ -47,7 +47,7 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
   const { updatedQuery, natLang, cypherQuery, queryName } = useQueryProps();
-  const [boxes, setBoxes] = useState(2);
+  const [boxes, setBoxes] = useState(0);
   const { getSelectedQuery, setQueryFromQuery } = useQueryProps();
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
   const [selectedQuery, setSelectedQuery] = useState<QueryType>(
@@ -112,8 +112,15 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   const handleError = (): boolean => {
     console.log("There is this many boxes:", boxes);
     console.log("----", inputValues);
+    if (query === "") {
+      toast.error("No query selected", {
+        position: "bottom-right",
+        theme: "colored",
+      });
+      return false;
+    }
     if (Object.keys(inputValues).length < boxes) {
-      toast.error("Fill in the query text before adding to favourites.", {
+      toast.error("Fill in the query text before adding to favourites lol.", {
         position: "bottom-right",
         theme: "colored",
       });
