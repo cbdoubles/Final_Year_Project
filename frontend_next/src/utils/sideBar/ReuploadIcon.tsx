@@ -4,6 +4,7 @@ import UIButton from "@/src/components/ui/UIButton";
 import UIModal from "@/src/components/ui/UIModal";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { ProjectType } from "@/src/libs/types";
 import Link from "next/link";
 
 const properties = {
@@ -13,11 +14,12 @@ const properties = {
 };
 
 export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
-  const { projectId } = useProjectProps();
+  const { projectId, setGraphName } = useProjectProps();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const { setProject } = useProjectProps();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -48,14 +50,20 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
       );
 
       const result = await response.json();
-      setMessage(result.message || result.error);
 
       if (response.ok) {
         console.log("File saved:", selectedFileName);
+
+        const project: ProjectType = {
+          projectId: Number(result.id),
+          projectName: result.name,
+          graphName: result.file_name,
+        };
+
+        setProject(project);
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      setMessage("Error uploading file");
     }
     onClose();
   };
