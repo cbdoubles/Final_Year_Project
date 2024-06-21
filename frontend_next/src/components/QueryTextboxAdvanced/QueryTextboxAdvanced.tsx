@@ -169,6 +169,11 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
     }
   };
 
+  const handleSaveOpen = (opOpen: () => void) => {
+    setSelectedFolder(null);
+    opOpen();
+  };
+
   //TODO see if we need defaultValue = {localQuery}, or defaultValue = {editCyphertext}, for passing it to NeoVis
   return (
     <div className="flex flex-col h-50 w-full">
@@ -195,7 +200,10 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
             </UIButton>
             <UIModal
               button={({ onOpen }) => (
-                <UIButton className="bg-gray-500" onClick={onOpen}>
+                <UIButton
+                  className="bg-gray-500"
+                  onClick={() => handleSaveOpen(onOpen)}
+                >
                   <FontAwesomeIcon icon={faStar} className="w-6" />
                   Add to Favorites
                 </UIButton>
