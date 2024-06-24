@@ -51,11 +51,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
-          VALIDATE_JSX: true
-          VALIDATE_JAVASCRIPT_STANDARD: true
-          VALIDATE_PYTHON_PYLINT: true
-          VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_TSX: true
+          # VALIDATE_JSX: true
+          # VALIDATE_JAVASCRIPT_STANDARD: true
+          # VALIDATE_PYTHON_PYLINT: true
+          # VALIDATE_TYPESCRIPT_ES: true
+          # VALIDATE_TSX: true
           VALIDATE_PYTHON_BLACK: false
           VALIDATE_TYPESCRIPT_STANDARD: false
           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
