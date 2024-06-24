@@ -57,7 +57,7 @@ jobs:
           # VALIDATE_TYPESCRIPT_ES: true
           # VALIDATE_TSX: true
           VALIDATE_PYTHON_BLACK: false
-          VALIDATE_TYPESCRIPT_STANDARD: false
+          # VALIDATE_TYPESCRIPT_STANDARD: false
           FILTER_REGEX_EXCLUDE: (backend/api/apps.py|backend/api/models.py|backend/api/tests.py|backend/manage.py|backend/api/admin.py)
           REPORT_ERRORS: true
 
