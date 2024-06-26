@@ -27,12 +27,23 @@ export default function SideBar({
   return (
     <div className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start">
       <div className="w-full grid grid-cols-1 gap-2">
-        <QueryIconButton
-          handleClick={() => handlerCollapsed(!collapsed)}
-          collapsed={collapsed}
-          type={"Collapse"}
-          icon={LuAlignJustify}
-        />
+        <button
+          onClick={() => handlerCollapsed(!collapsed)}
+          className="w-full flex h-[48px] relative grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+        >
+          <LuAlignJustify className="w-6" />
+          {!collapsed && (
+            <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
+              {"Collapse"}
+            </p>
+          )}
+          {/* <LinkIcon className="w-6" />
+          {!collapsed && (
+            <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
+              {modeName}
+            </p>
+          )} */}
+        </button>
         <FavouriteIcon collapsed={collapsed} projectId={projectId} />
         <CustomButton collapsed={collapsed} projectId={projectId} />
         <Default collapsed={collapsed} />

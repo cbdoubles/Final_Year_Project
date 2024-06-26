@@ -28,13 +28,16 @@ const NatLangBox: React.FC<NatLangBoxProps> = ({
         indices.push(index);
       }
     });
-    check = data.indices.length;
     return {
       check: check,
       parts: parts,
       indices: indices,
     };
   }, [dataArray]);
+
+  useEffect(() => {
+    onCheckValueChange(data.check); // Call the function with the check value
+  }, [data.check, onCheckValueChange]);
 
   return (
     <Card className="justify-center p-4 rounded-lg w-full mb-2">
