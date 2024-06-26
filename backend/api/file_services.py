@@ -119,20 +119,18 @@ def modify_file(project_id, file_data, reupload):
             with driver.session() as session:
                 if file_format == ".json":
                     session.execute_write(import_json_data, file_path)
-                    session.execute_write(set_project_id, project_id)
-                    session.execute_write(fix_labels, project_id)
                 elif file_format == ".csv":
                     session.execute_write(import_csv_data, file_path)
-                    session.execute_write(set_project_id, project_id)
-                    session.execute_write(fix_labels, project_id)
                 elif file_format == ".graphml":
-                    file_path_in_neo4j = os.path.join(file_path)  
+                    file_path_in_neo4j = os.path.join(file_path)
+                    
                     session.execute_write(import_graphml_data, "file:///" + file_path_in_neo4j.replace('\\', '/'))
-                    session.execute_write(set_project_id, project_id)
-                    session.execute_write(fix_labels, project_id)
                 else:
                     print(f"File path: {file_format}")
                     print("Unsupported file format.")
+
+                session.execute_write(set_project_id, project_id)
+                session.execute_write(fix_labels, project_id)  
         except Exception as e:
             print(f"An error occurred during Neo4j transaction: {e}")
         delete_file(file_path)
