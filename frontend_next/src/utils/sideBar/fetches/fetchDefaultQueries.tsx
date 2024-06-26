@@ -12,8 +12,8 @@ export const fetchDefaultQueries = async (): Promise<QueryType[]> => {
       natLang: query.natural_language_query,
     }));
 
-    if (!data.ok) {
-      throw new Error(`Failed to fetch folders: ${data.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch folders: ${response.statusText}`);
     }
 
     return transformedData;
