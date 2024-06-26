@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { handleEditSubmit } from "@/src/utils/home/selectExistingProject/handleEditSubmit";
-import { Element } from "@/src/libs/types";
+import { Element, ProjectType } from "@/src/libs/types";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { toast } from "react-toastify";
 
 type EditFormProps = {
-  element: Element;
-  setEditingElement: React.Dispatch<React.SetStateAction<Element | null>>;
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>;
-  elements: Element[];
+  element: ProjectType;
+  setEditingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>;
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>;
+  elements: ProjectType[];
 };
 
 const EditForm: React.FC<EditFormProps> = ({
@@ -16,13 +17,12 @@ const EditForm: React.FC<EditFormProps> = ({
   setElements,
   elements,
 }) => {
-  const [prevElementState] = useState<Element>(element);
+  const [prevElementState] = useState<ProjectType>(element);
   const { setProjectName } = useProjectProps();
+  const [inputValue, setInputValue] = useState(element.projectName);
 
-  const handleEditChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    element: Element
-  ) => {
+  const handleEditChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
     const updatedElements = elements.map((el) =>
       el.projectId === element.projectId
         ? { ...el, projectName: event.target.value }
@@ -31,35 +31,40 @@ const EditForm: React.FC<EditFormProps> = ({
     setElements(updatedElements);
   };
 
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement> | React.FocusEvent<HTMLInputElement>
+  ) => {
+    event.preventDefault();
+    setEditingElement(null);
+
+    try {
+      const updatedElement = await handleEditSubmit(
+        element.projectId,
+        inputValue
+      );
+      setProjectName(updatedElement.projectName);
+    } catch (error) {
+      console.error("Error updating project name:", error);
+
+      const updatedElements = elements.map((el) =>
+        el.projectId === prevElementState.projectId ? prevElementState : el
+      );
+      toast.error("This name already exists", {
+        position: "top-right",
+        theme: "colored",
+      });
+      setElements(updatedElements);
+      setProjectName(prevElementState.projectName);
+    }
+  };
+
   return (
-    <form
-      onSubmit={(event) =>
-        handleEditSubmit(
-          event,
-          element,
-          setEditingElement,
-          setElements,
-          elements,
-          prevElementState,
-          setProjectName
-        )
-      }
-    >
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={element.projectName}
-        onChange={(event) => handleEditChange(event, element)}
-        onBlur={(event) =>
-          handleEditSubmit(
-            event,
-            element,
-            setEditingElement,
-            setElements,
-            elements,
-            prevElementState,
-            setProjectName
-          )
-        }
+        value={inputValue}
+        onChange={handleEditChange}
+        onBlur={handleSubmit}
         autoFocus
         className="focus:outline-none"
       />

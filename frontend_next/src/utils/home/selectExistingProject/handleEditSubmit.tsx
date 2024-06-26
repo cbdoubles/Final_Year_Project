@@ -2,48 +2,25 @@ import { ProjectType } from "@/src/libs/types";
 import { toast } from "react-toastify";
 
 export const handleEditSubmit = async (
-  event:
-    | React.FormEvent<HTMLFormElement>
-    | React.FocusEvent<HTMLInputElement, Element>,
-  element: ProjectType,
-  setEditingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>,
-  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>,
-  elements: ProjectType[],
-  prevElementState: ProjectType,
-  setProjectName: (name: string) => void
-): Promise<void> => {
-  event.preventDefault();
-  setEditingElement(null);
+  projectId: number,
+  projectName: string
+): Promise<ProjectType> => {
+  const formData = new FormData();
+  formData.append("name", projectName);
 
-  try {
-    const formData = new FormData();
-    formData.append("name", element.projectName);
-
-    const response = await fetch(
-      `http://localhost:8000/api/projects/${element.projectId}/`,
-      {
-        method: "PATCH",
-        body: formData,
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Unknown error");
-    } else {
-      setProjectName(element.projectName);
+  const response = await fetch(
+    `http://localhost:8000/api/projects/${projectId}/`,
+    {
+      method: "PATCH",
+      body: formData,
     }
-  } catch (error) {
-    console.error("Error updating project name:", error);
+  );
 
-    const updatedElements = elements.map((el) =>
-      el.projectId === prevElementState.projectId ? prevElementState : el
-    );
-    toast.error("This name already exists", {
-      position: "top-right",
-      theme: "colored",
-    });
-    setElements(updatedElements);
-    setProjectName(prevElementState.projectName); // Set project name to the previous name
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Unknown error");
   }
+
+  const updatedProject: ProjectType = await response.json();
+  return updatedProject;
 };
