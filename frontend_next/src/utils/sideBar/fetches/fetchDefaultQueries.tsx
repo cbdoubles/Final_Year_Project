@@ -1,6 +1,6 @@
 import { QueryType } from "@/src/libs/types";
 
-export const fetchDefaultQueries = async (): Promise<QueryType[] | void> => {
+export const fetchDefaultQueries = async (): Promise<QueryType[]> => {
   try {
     const response = await fetch("http://localhost:8000/api/default-queries/");
     const data = await response.json();
@@ -12,8 +12,13 @@ export const fetchDefaultQueries = async (): Promise<QueryType[] | void> => {
       natLang: query.natural_language_query,
     }));
 
+    if (!data.ok) {
+      throw new Error(`Failed to fetch folders: ${data.statusText}`);
+    }
+
     return transformedData;
   } catch (error) {
     console.error("Error fetching default queries:", error);
+    throw error;
   }
 };
