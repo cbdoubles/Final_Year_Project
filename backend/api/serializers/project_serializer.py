@@ -14,7 +14,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         # Create default folders
         Folder.objects.create(
-            project=project, name='Project Custom Queires', type='Custom')
+            project=project, name='Project Custom Queries', type='Custom')
         Folder.objects.create(
             project=project, name='Project Favorite Queries', type='Favorite')
 

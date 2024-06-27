@@ -694,7 +694,7 @@ const NeovisComponent: React.FC<{
       {!isTableView && (
         <button
           onClick={downloadPNG}
-          className="absolute top-2 right-2 bg-white rounded shadow p-2"
+          className="absolute top-2 left-2 bg-white rounded shadow p-2"
         >
           Export PNG
         </button>
