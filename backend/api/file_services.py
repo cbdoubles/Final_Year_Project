@@ -23,7 +23,7 @@ def import_csv_data(tx, file_path):
     tx.run(query, file_path=file_path)
 
 # Function to import JSON data into Neo4j
-def import_json_data(tx, file_path):
+def import_json_data(tx, json_file_path):
     query = """
     CALL apoc.load.json($json_file_path) YIELD value
     UNWIND value.nodes AS node
@@ -33,7 +33,8 @@ def import_json_data(tx, file_path):
     MATCH (a:Data {id: edge.source}), (b:Data {id: edge.target})
     CREATE (a)-[:CONNECTS_TO]->(b)
     """
-    tx.run(query, file_path=file_path)
+    tx.run(query, json_file_path=json_file_path)
+
 
 # Function to import GraphML data into Neo4j, currently works only for graphid = directed
 def import_graphml_data(tx, file_path):
@@ -117,14 +118,14 @@ def modify_file(project_id, file_data, reupload):
         # Import data into Neo4j based on file format
         try:
             with driver.session() as session:
+                file_path_in_neo4j = os.path.join(file_path)
+                modified_file_path = "file:///" + file_path_in_neo4j.replace('\\', '/')
                 if file_format == ".json":
-                    session.execute_write(import_json_data, file_path)
+                    session.execute_write(import_json_data, modified_file_path)
                 elif file_format == ".csv":
-                    session.execute_write(import_csv_data, file_path)
-                elif file_format == ".graphml":
-                    file_path_in_neo4j = os.path.join(file_path)
-                    
-                    session.execute_write(import_graphml_data, "file:///" + file_path_in_neo4j.replace('\\', '/'))
+                    session.execute_write(import_csv_data, modified_file_path)
+                elif file_format == ".graphml": 
+                    session.execute_write(import_graphml_data, modified_file_path)
                 else:
                     print(f"File path: {file_format}")
                     print("Unsupported file format.")
