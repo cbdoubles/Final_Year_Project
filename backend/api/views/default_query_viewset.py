@@ -1,3 +1,11 @@
+"""
+This module defines the DefaultQueryViewSet for handling read-only operations on DefaultQuery instances.
+
+The DefaultQueryViewSet provides the standard actions:
+- list: Returns a list of all DefaultQuery instances.
+- retrieve: Returns a specific DefaultQuery instance by ID.
+"""
+
 from rest_framework import viewsets
 from ..models import DefaultQuery
 from ..serializers.default_query_serializer import DefaultQuerySerializer
