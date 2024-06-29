@@ -7,19 +7,28 @@ from rest_framework.decorators import action
 
 
 class CustomQueryViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for handling CRUD operations on CustomQuery instances.
+
+    Provides an additional action 'by_folder' to retrieve custom queries in a specific folder.
+    """
     queryset = CustomQuery.objects.all()
     serializer_class = CustomQuerySerializer
 
-    # An action that allows you to get all custom queries in a specific folder.
-    # Example usage: http://127.0.0.1:8000/api/custom-queries/by-folder/?folder_id=6
     @action(detail=False, methods=['get'], url_path='by-folder')
     def by_folder(self, request):
-        ''' 
-        This does not check if the id of the folder provided is one of a folder that
-        belongs to Custom folder. So if the folder_id provided is one of a Favorite folder,
-        the response will be an empty list.
-        '''
+        """
+        Retrieve all custom queries in a specific folder.
 
+        This action does not verify if the folder belongs to the Custom folder category.
+        If the folder_id provided corresponds to a Favorite folder, the response will be an empty list.
+
+        Args:
+            request (Request): The request object containing query parameters.
+
+        Returns:
+            Response: A response containing the serialized custom queries for the specified folder.
+        """
         folder_id = request.query_params.get('folder_id')
 
         try:
@@ -27,11 +36,12 @@ class CustomQueryViewSet(viewsets.ModelViewSet):
         except ValueError:
             raise ValidationError("Error: Folder ID must be an integer.")
 
-        # check if a folder with this id exists
+        # Check if a folder with the provided ID exists
         if not Folder.objects.filter(id=folder_id).exists():
             raise ValidationError(
                 "Error: A Folder with this ID does not exist.")
 
+        # Retrieve custom queries for the specified folder
         custom_queries = CustomQuery.objects.filter(folder_id=folder_id)
         serializer = self.get_serializer(custom_queries, many=True)
         return Response(serializer.data)
