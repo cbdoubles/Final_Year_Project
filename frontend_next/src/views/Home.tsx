@@ -1,5 +1,5 @@
 import React from "react";
-import SelectExistingProject from "@/src/components/home/SelectExistingProject";
+import SelectExistingProject from "@/src/components/home/selectExistingProject/SelectExistingProject";
 import StartNewProject from "@/src/components/home/StartNewProject";
 import { Card, CardBody } from "@nextui-org/card";
 import UIButton from "@/src/utils/ui/UIButton";

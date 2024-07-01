@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ProjectItem from "./selectExistingProject/ProjectItem";
+import ProjectItem from "./ProjectItem";
 import { Element } from "@/src/libs/types";
-import { fetchProjects } from "@/src/utils/home/selectExistingProject/fetchProjects";
+import { fetchProjects } from "@/src/utils/apiCalls/project/fetchProjects";
 
 type SelectExistingProjectProps = {};
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import UIModal from "@/src/utils/ui/UIModal";
 import { ProjectType } from "@/src/libs/types";
-import { fetchProjects } from "@/utils/home/selectExistingProject/fetchProjects";
+import { fetchProjects } from "@/utils/apiCalls/project/fetchProjects";
 import { toast } from "react-toastify";
 import ChooseProject from "@/src/components/sideBar/icons/importQuery/ChooseProject";
 import SelectFolderType from "@/src/components/sideBar/icons/importQuery/SelectFolderType";
