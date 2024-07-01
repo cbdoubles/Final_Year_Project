@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import UIButton from "../../utils/ui/UIButton";
-import UIModal from "../../utils/ui/UIModal";
+import UIButton from "../../../utils/ui/UIButton";
+import UIModal from "../../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 // import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
 import QueryTextbox from "../queryTextboxBasic/QueryTextbox";
-import SavePopUp from "./SavePopUp";
+import SavePopUp from "../../../utils/queryTextbox/SavePopUp";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ import {
 import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
 import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
 import { select } from "@nextui-org/theme";
-import NewFolderPopUp from "./NewFolderPopup";
+// import NewFolderPopUp from "./NewFolderPopup";
 import { Textarea } from "@nextui-org/react";
 
 // const queryFolder: QueryFolderType = {
