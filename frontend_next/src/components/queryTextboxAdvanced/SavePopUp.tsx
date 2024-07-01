@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import InputField from "@/src/components/popUps/InputField";
+import InputField from "@/src/utils/popUps/InputField";
 import UIButton from "../../utils/ui/UIButton";
 import SelectFolder from "./SelectFolder";
 import { QueryFolderType, FolderType } from "@/src/libs/types";

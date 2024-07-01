@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InputField from "@/src/components/popUps/InputField";
+import InputField from "@/src/utils/popUps/InputField";
 import UIButton from "../../utils/ui/UIButton";
 import { toast } from "react-toastify";
 import { QueryFolderType } from "@/src/libs/types";

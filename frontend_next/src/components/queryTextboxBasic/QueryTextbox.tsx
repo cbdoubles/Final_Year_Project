@@ -8,7 +8,7 @@ import React, {
 import UIButton from "../../utils/ui/UIButton";
 import UIModal from "../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
+// import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";

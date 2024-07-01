@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InputField from "@/src/components/popUps/InputField";
+import InputField from "@/src/utils/popUps/InputField";
 import { FolderType, QueryType } from "@/src/libs/types";
 
 const EditQueryBody = ({

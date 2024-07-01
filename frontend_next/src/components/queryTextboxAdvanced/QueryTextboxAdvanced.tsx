@@ -3,7 +3,7 @@ import UIButton from "../../utils/ui/UIButton";
 import UIModal from "../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
+// import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
 import QueryTextbox from "../queryTextboxBasic/QueryTextbox";
 import SavePopUp from "./SavePopUp";
 import { useQueryProps } from "@/src/contexts/QueryContext";
