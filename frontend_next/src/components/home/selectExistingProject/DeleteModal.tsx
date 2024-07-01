@@ -1,9 +1,9 @@
 // DeleteModal.tsx
 import React from "react";
-import UIModal from "@/components/ui/UIModal";
-import UIButton from "@/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import { LuTrash2 } from "react-icons/lu";
-import { handleDeleteConfirm } from "@/src/utils/home/selectExistingProject/handleDeleteConfirm";
+import { handleDeleteConfirm } from "@/src/utils/apiCalls/project/handleDeleteProject";
 import { Element } from "@/src/libs/types";
 
 type DeleteModalProps = {

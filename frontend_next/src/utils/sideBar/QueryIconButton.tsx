@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FolderType } from "@/src/libs/types";
-import UIButton, { UIButtonProps } from "@/src/components/ui/UIButton";
+import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
 
 interface SelectProps {
   handleClick: () => void;
@@ -36,9 +36,7 @@ const QueryIconButton: React.FC<SelectProps> = ({
           </div>
         </button>
       ) : (
-        <Icon onClick={handleClick}>
-          Select type
-        </Icon>
+        <Icon onClick={handleClick}>Select type</Icon>
       )}
     </>
   );

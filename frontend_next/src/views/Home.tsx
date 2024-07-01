@@ -1,10 +1,10 @@
 import React from "react";
-import SelectExistingProject from "@/src/components/home/SelectExistingProject";
+import SelectExistingProject from "@/src/components/home/selectExistingProject/SelectExistingProject";
 import StartNewProject from "@/src/components/home/StartNewProject";
 import { Card, CardBody } from "@nextui-org/card";
-import UIButton from "@/src/components/ui/UIButton";
-import UIModal from "@/src/components/ui/UIModal";
-import Header from "../components/header/Header";
+import UIButton from "@/src/utils/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import Header from "../components/projectPage/header/Header";
 import { useRouter } from "next/router";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 

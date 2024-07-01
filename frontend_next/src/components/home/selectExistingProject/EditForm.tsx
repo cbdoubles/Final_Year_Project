@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { handleEditSubmit } from "@/src/utils/home/selectExistingProject/handleEditSubmit";
+import { handleEditSubmit } from "@/src/utils/apiCalls/project/handleEditProject";
 import { Element, ProjectType } from "@/src/libs/types";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { toast } from "react-toastify";

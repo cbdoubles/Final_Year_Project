@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
-import UIButton from "../ui/UIButton";
+import UIButton from "../../utils/ui/UIButton";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { ProjectType } from "@/src/libs/types";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { use } from "cytoscape";
-import handleSaveProject from "@/utils/home/selectExistingProject/handleSaveProject";
+import handleSaveProject from "@/src/utils/apiCalls/project/handleSaveProject";
 
 type SelectFileProps = {};
 

@@ -1,13 +1,13 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import Header from "@/src/components/header/Header";
-import QueryTextboxAdvanced from "@/components/QueryTextboxAdvanced/QueryTextboxAdvanced";
-import SideBar from "../components/sideBar/SideBar";
+import Header from "@/src/components/projectPage/header/Header";
+import QueryTextboxAdvanced from "@/src/components/projectPage/queryTextbox/QueryTextboxAdvanced";
+import SideBar from "../components/projectPage/sideBar/SideBar";
 import { useProps } from "../contexts/PropsContext";
-import QueryTextbox from "../components/queryTextbox/QueryTextbox";
+import QueryTextboxBasic from "@/src/components/projectPage/queryTextbox/QueryTextboxBasic";
 import { Card } from "@nextui-org/react";
 import { useProjectProps } from "../contexts/ProjectContext";
-import { NeoVisProvider } from "@/components/neovisGraph/NeoVisContext";
-import NeovisComponent from "@/components/neovisGraph/NeovisComponent";
+import { NeoVisProvider } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
+import NeovisComponent from "@/src/components/projectPage/visualization/neovisGraph/NeovisComponent";
 
 interface ProjectPageViewProps {
   children: ReactNode;
@@ -52,7 +52,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             {advancedMode ? (
               <QueryTextboxAdvanced setQuery={handleRunQuery} />
             ) : (
-              <QueryTextbox setQueryToRun={handleRunQuery} />
+              <QueryTextboxBasic setQueryToRun={handleRunQuery} />
             )}
             <div className="flex-grow overflow-auto">{children}</div>
             {queryRunClicked && (
