@@ -4,7 +4,7 @@ import { GlobeAsiaAustraliaIcon } from "@heroicons/react/24/outline";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton from "@/src/utils/ui/UIButton";
 import { QueryType } from "@/src/libs/types";
-import DefaultPopUp from "@/src/components/sideBar/icons/defaultQuery/DefaultPopUp";
+import DefaultPopUp from "@/src/components/projectPage/sideBar/icons/defaultQuery/DefaultPopUp";
 import { fetchDefaultQueries } from "@/utils/apiCalls/query/fetchDefaultQueries";
 import { toast } from "react-toastify";
 import { useQueryProps } from "@/src/contexts/QueryContext";

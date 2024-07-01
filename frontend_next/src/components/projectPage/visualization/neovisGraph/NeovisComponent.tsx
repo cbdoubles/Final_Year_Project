@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { useNeoVisContext } from "@/components/visualization/neovisGraph/NeoVisContext";
+import { useNeoVisContext } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";

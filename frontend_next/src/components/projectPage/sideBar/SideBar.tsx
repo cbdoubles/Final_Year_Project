@@ -1,16 +1,16 @@
 import React from "react";
-import SwitchMode from "@/src/components/sideBar/icons/SwitchModeIcon";
-import CustomButton from "@/components/sideBar/icons/CustomIcon";
-import FavouriteIcon from "@/components/sideBar/icons/FavouriteIcon";
-import Default from "@/src/components/sideBar/icons/defaultQuery/DefaultIcon";
-import Reupload from "@/src/components/sideBar/icons/reupload/ReuploadIcon";
+import SwitchMode from "@/src/components/projectPage/sideBar/icons/SwitchModeIcon";
+import CustomButton from "@/src/components/projectPage/sideBar/icons/CustomIcon";
+import FavouriteIcon from "@/src/components/projectPage/sideBar/icons/FavouriteIcon";
+import Default from "@/src/components/projectPage/sideBar/icons/defaultQuery/DefaultIcon";
+import Reupload from "@/src/components/projectPage/sideBar/icons/reupload/ReuploadIcon";
 import { LuAlignJustify } from "react-icons/lu";
 import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
 import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
-import ImportIcon from "@/src/components/sideBar/icons/importQuery/ImportIcon";
-import NeoVisToolBox from "@/components/visualization/neovisGraph/NeoVisToolBox";
+import ImportIcon from "@/src/components/projectPage/sideBar/icons/importQuery/ImportIcon";
+import NeoVisToolBox from "@/src/components/projectPage/visualization/neovisGraph/NeoVisToolBox";
 
 export default function SideBar({
   collapsed,

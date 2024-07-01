@@ -9,7 +9,7 @@ import { ProjectPropsProvider } from "@/src/contexts/ProjectContext";
 import { QueryPropsProvider } from "@/src/contexts/QueryContext";
 import { Slide, ToastContainer } from "react-toastify";
 import { NextUIProvider } from "@nextui-org/react";
-import { NeoVisProvider } from "@/src/components/visualization/neovisGraph/NeoVisContext";
+import { NeoVisProvider } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (

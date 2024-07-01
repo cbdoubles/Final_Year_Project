@@ -4,8 +4,8 @@ import UIModal from "@/src/utils/ui/UIModal";
 import { ProjectType } from "@/src/libs/types";
 import { fetchProjects } from "@/utils/apiCalls/project/fetchProjects";
 import { toast } from "react-toastify";
-import ChooseProject from "@/src/components/sideBar/icons/importQuery/ChooseProject";
-import SelectFolderType from "@/src/components/sideBar/icons/importQuery/SelectFolderType";
+import ChooseProject from "@/src/components/projectPage/sideBar/icons/importQuery/ChooseProject";
+import SelectFolderType from "@/src/components/projectPage/sideBar/icons/importQuery/SelectFolderType";
 
 export default function ImportIcon({ collapsed }: { collapsed: boolean }) {
   const [projects, setProjects] = useState<ProjectType[] | null>(null);

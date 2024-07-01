@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReuploadFile from "@/src/components/sideBar/icons/reupload/ReuploadFile";
+import ReuploadFile from "@/src/components/projectPage/sideBar/icons/reupload/ReuploadFile";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";

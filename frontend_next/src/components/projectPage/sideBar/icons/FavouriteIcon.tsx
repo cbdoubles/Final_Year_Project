@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StarIcon } from "@heroicons/react/24/outline";
-import QueryIcon from "../../../utils/sideBar/QueryIcon";
+import QueryIcon from "../../../../utils/sideBar/QueryIcon";
 
 export default function FavoriteIcon({
   collapsed,

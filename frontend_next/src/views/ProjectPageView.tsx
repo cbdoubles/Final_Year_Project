@@ -1,13 +1,13 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import Header from "@/src/components/header/Header";
-import QueryTextboxAdvanced from "@/src/components/queryTextbox/QueryTextboxAdvanced";
-import SideBar from "../components/sideBar/SideBar";
+import Header from "@/src/components/projectPage/header/Header";
+import QueryTextboxAdvanced from "@/src/components/projectPage/queryTextbox/QueryTextboxAdvanced";
+import SideBar from "../components/projectPage/sideBar/SideBar";
 import { useProps } from "../contexts/PropsContext";
-import QueryTextboxBasic from "@/src/components/queryTextbox/QueryTextboxBasic";
+import QueryTextboxBasic from "@/src/components/projectPage/queryTextbox/QueryTextboxBasic";
 import { Card } from "@nextui-org/react";
 import { useProjectProps } from "../contexts/ProjectContext";
-import { NeoVisProvider } from "@/components/visualization/neovisGraph/NeoVisContext";
-import NeovisComponent from "@/components/visualization/neovisGraph/NeovisComponent";
+import { NeoVisProvider } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
+import NeovisComponent from "@/src/components/projectPage/visualization/neovisGraph/NeovisComponent";
 
 interface ProjectPageViewProps {
   children: ReactNode;

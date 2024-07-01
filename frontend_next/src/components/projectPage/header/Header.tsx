@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import ProjectInfoCard from "./ProjectInfoCard";
-import { useProjectProps } from "../../contexts/ProjectContext";
-import { useQueryProps } from "../../contexts/QueryContext";
-import { useProps } from "../../contexts/PropsContext";
+import { useProjectProps } from "../../../contexts/ProjectContext";
+import { useQueryProps } from "../../../contexts/QueryContext";
+import { useProps } from "../../../contexts/PropsContext";
 
 const Header = ({ showProject }: { showProject?: boolean }) => {
   // const { projectId, setProjectId, setProjectName, setGraphName } =

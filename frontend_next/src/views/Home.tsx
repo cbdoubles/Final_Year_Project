@@ -4,7 +4,7 @@ import StartNewProject from "@/src/components/home/StartNewProject";
 import { Card, CardBody } from "@nextui-org/card";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
-import Header from "../components/header/Header";
+import Header from "../components/projectPage/header/Header";
 import { useRouter } from "next/router";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 
