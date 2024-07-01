@@ -9,7 +9,7 @@ import { ProjectPropsProvider } from "@/src/contexts/ProjectContext";
 import { QueryPropsProvider } from "@/src/contexts/QueryContext";
 import { Slide, ToastContainer } from "react-toastify";
 import { NextUIProvider } from "@nextui-org/react";
-import { NeoVisProvider } from "@/src/components/neovisGraph/NeoVisContext";
+import { NeoVisProvider } from "@/src/components/visualization/neovisGraph/NeoVisContext";
 
 const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
   return (
@@ -22,16 +22,16 @@ const MyApp = ({ Component, pageProps }: AppProps<{}>) => {
         />
       </Head>
       <NeoVisProvider>
-      <NextUIProvider>
-        <PropsProvider>
-          <QueryPropsProvider>
-            <ProjectPropsProvider>
-              <Component {...pageProps} />
-              <ToastContainer transition={Slide} />
-            </ProjectPropsProvider>
-          </QueryPropsProvider>
-        </PropsProvider>
-      </NextUIProvider>
+        <NextUIProvider>
+          <PropsProvider>
+            <QueryPropsProvider>
+              <ProjectPropsProvider>
+                <Component {...pageProps} />
+                <ToastContainer transition={Slide} />
+              </ProjectPropsProvider>
+            </QueryPropsProvider>
+          </PropsProvider>
+        </NextUIProvider>
       </NeoVisProvider>
     </>
   );
