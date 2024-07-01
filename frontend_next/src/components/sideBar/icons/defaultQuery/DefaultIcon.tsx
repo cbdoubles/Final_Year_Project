@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import QueryIcon from "@/utils/sideBar/QueryIcon";
 import { GlobeAsiaAustraliaIcon } from "@heroicons/react/24/outline";
-import UIModal from "@/src/components/ui/UIModal";
-import UIButton from "@/src/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import { QueryType } from "@/src/libs/types";
-import DefaultPopUp from "@/src/components/sideBar/DefaultPopUp";
+import DefaultPopUp from "@/src/components/sideBar/icons/defaultQuery/DefaultPopUp";
 import { fetchDefaultQueries } from "@/utils/sideBar/fetches/fetchDefaultQueries";
 import { toast } from "react-toastify";
 import { useQueryProps } from "@/src/contexts/QueryContext";

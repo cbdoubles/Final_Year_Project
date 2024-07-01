@@ -2,14 +2,14 @@ import React from "react";
 import SwitchMode from "@/src/components/sideBar/icons/SwitchModeIcon";
 import CustomButton from "@/components/sideBar/icons/CustomIcon";
 import FavouriteIcon from "@/components/sideBar/icons/FavouriteIcon";
-import Default from "@/components/sideBar/icons/DefaultIcon";
-import Reupload from "@/src/components/sideBar/icons/ReuploadIcon";
+import Default from "@/src/components/sideBar/icons/defaultQuery/DefaultIcon";
+import Reupload from "@/src/components/sideBar/icons/reupload/ReuploadIcon";
 import { LuAlignJustify } from "react-icons/lu";
 import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
 import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
-import ImportIcon from "@/src/components/sideBar/icons/ImportIcon";
+import ImportIcon from "@/src/components/sideBar/icons/importQuery/ImportIcon";
 import NeoVisToolBox from "../neovisGraph/NeoVisToolBox";
 
 export default function SideBar({

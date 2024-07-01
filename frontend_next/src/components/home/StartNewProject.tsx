@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import UIButton from "../ui/UIButton";
+import UIButton from "../../utils/ui/UIButton";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { ProjectType } from "@/src/libs/types";

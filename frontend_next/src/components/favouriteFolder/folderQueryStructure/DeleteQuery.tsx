@@ -1,5 +1,5 @@
-import UIModal from "@/components/ui/UIModal";
-import UIButton from "@/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import { FolderType, QueryType } from "@/src/libs/types";
 import { LuTrash2 } from "react-icons/lu";
 import { handleDeleteQuery } from "@/src/utils/sideBar/fetches/handleDeleteQuery";

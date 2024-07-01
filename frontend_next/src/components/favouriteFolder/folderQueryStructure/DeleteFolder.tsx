@@ -1,6 +1,6 @@
 import { LuTrash2 } from "react-icons/lu";
-import UIModal from "@/components/ui/UIModal";
-import UIButton from "@/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import { QueryFolderType } from "@/src/libs/types";
 import { handleDeleteFolder } from "@/src/utils/sideBar/fetches/handleDeleteFolder";
 

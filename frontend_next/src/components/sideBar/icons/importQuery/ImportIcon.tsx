@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import UIModal from "@/src/components/ui/UIModal";
+import UIModal from "@/src/utils/ui/UIModal";
 import { ProjectType } from "@/src/libs/types";
 import { fetchProjects } from "@/utils/home/selectExistingProject/fetchProjects";
 import { toast } from "react-toastify";
-import ChooseProject from "@/src/components/importChain/ChooseProject";
-import SelectFolderType from "@/src/components/importChain/SelectFolderType";
+import ChooseProject from "@/src/components/sideBar/icons/importQuery/ChooseProject";
+import SelectFolderType from "@/src/components/sideBar/icons/importQuery/SelectFolderType";
 
 export default function ImportIcon({ collapsed }: { collapsed: boolean }) {
   const [projects, setProjects] = useState<ProjectType[] | null>(null);

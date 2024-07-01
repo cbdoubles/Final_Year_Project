@@ -5,21 +5,21 @@ import React, {
   useState,
   useRef,
 } from "react";
-import UIButton from "../ui/UIButton";
-import UIModal from "../ui/UIModal";
+import UIButton from "../../utils/ui/UIButton";
+import UIModal from "../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
-import FileOpenButt from "../ui/FileOpenButt";
+import FileOpenButt from "../../utils/ui/FileOpenButt";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { split } from "postcss/lib/list";
 import { QueryFolderType, QueryType } from "@/src/libs/types";
-import QueryTextboxAdvanced from "../QueryTextboxAdvanced/QueryTextboxAdvanced";
-import SavePopUp from "../QueryTextboxAdvanced/SavePopUp";
+import QueryTextboxAdvanced from "../queryTextboxAdvanced222/QueryTextboxAdvanced";
+import SavePopUp from "../queryTextboxAdvanced222/SavePopUp";
 import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { validateParameters } from "@/src/utils/parameterUtils";

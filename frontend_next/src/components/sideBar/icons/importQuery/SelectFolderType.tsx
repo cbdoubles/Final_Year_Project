@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import UIModal from "@/src/components/ui/UIModal";
-import UIButton from "@/src/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import { FolderType, ProjectType } from "@/src/libs/types";
 import ImportQueryFolders from "./ImportQueryFolders";
 import { toast } from "react-toastify";

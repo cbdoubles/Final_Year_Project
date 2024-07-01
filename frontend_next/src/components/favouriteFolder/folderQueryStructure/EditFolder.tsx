@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LuPenSquare } from "react-icons/lu";
-import UIModal from "@/components/ui/UIModal";
-import UIButton from "@/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import { QueryFolderType } from "@/src/libs/types";
 import { handleEditFolder } from "@/src/utils/sideBar/fetches/handleEditFolder";
 

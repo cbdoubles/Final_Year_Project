@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import InputField from "@/src/components/popUps/InputField";
-import UIButton from "../ui/UIButton";
+import UIButton from "../../utils/ui/UIButton";
 import SelectFolder from "./SelectFolder";
 import { QueryFolderType, FolderType } from "@/src/libs/types";
-import UIModal from "../ui/UIModal";
+import UIModal from "../../utils/ui/UIModal";
 import { toast } from "react-toastify";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { fetchFolders } from "@/src/utils/queryTextbox/fetches/fetchFolders";

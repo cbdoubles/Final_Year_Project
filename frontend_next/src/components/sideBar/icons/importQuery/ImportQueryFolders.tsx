@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UIButton from "@/src/components/ui/UIButton";
+import UIButton from "@/src/utils/ui/UIButton";
 import QueryIcon from "@/src/utils/sideBar/QueryIcon";
 import { FolderType } from "@/src/libs/types";
 

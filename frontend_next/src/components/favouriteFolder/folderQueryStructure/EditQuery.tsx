@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import UIModal from "@/components/ui/UIModal";
-import UIButton from "@/components/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
+import UIButton from "@/src/utils/ui/UIButton";
 import EditQueryBody from "./EditQueryBody";
 import { LuPenSquare } from "react-icons/lu";
 import { FolderType, QueryType } from "@/src/libs/types";

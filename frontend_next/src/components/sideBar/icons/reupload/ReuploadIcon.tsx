@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import ReuploadFile from "@/src/components/sideBar/ReuploadFile";
-import UIButton from "@/src/components/ui/UIButton";
-import UIModal from "@/src/components/ui/UIModal";
+import ReuploadFile from "@/src/components/sideBar/icons/reupload/ReuploadFile";
+import UIButton from "@/src/utils/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { ProjectType } from "@/src/libs/types";

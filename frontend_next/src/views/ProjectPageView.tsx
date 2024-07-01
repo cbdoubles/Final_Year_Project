@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect } from "react";
 import Header from "@/src/components/header/Header";
-import QueryTextboxAdvanced from "@/components/QueryTextboxAdvanced/QueryTextboxAdvanced";
+import QueryTextboxAdvanced from "@/src/components/queryTextboxAdvanced222/QueryTextboxAdvanced";
 import SideBar from "../components/sideBar/SideBar";
 import { useProps } from "../contexts/PropsContext";
 import QueryTextbox from "../components/queryTextboxBasic/QueryTextbox";

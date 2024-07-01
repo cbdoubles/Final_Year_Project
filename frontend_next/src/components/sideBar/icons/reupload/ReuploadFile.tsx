@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import UIButton from "../ui/UIButton";
+import UIButton from "@/utils/ui/UIButton";
 
 type ReuploadFileProps = {
   fileName: string;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import UIButton from "../ui/UIButton";
-import UIModal from "../ui/UIModal";
+import UIButton from "../../utils/ui/UIButton";
+import UIModal from "../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
