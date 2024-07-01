@@ -1,5 +1,3 @@
-from backend.api.serializers.custom_query_serializer import CustomQuerySerializer
-from backend.api.serializers.favorite_query_serializer import FavoriteQuerySerializer
 from rest_framework import serializers
 from ..models import Folder, Project
 from rest_framework.exceptions import ValidationError
