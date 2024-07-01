@@ -3,7 +3,7 @@ import Header from "@/src/components/header/Header";
 import QueryTextboxAdvanced from "@/components/QueryTextboxAdvanced/QueryTextboxAdvanced";
 import SideBar from "../components/sideBar/SideBar";
 import { useProps } from "../contexts/PropsContext";
-import QueryTextbox from "../components/queryTextbox/QueryTextbox";
+import QueryTextbox from "../components/queryTextboxBasic/QueryTextbox";
 import { Card } from "@nextui-org/react";
 import { useProjectProps } from "../contexts/ProjectContext";
 import { NeoVisProvider } from "@/components/neovisGraph/NeoVisContext";
