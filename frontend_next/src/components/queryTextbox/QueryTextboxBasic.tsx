@@ -5,8 +5,8 @@ import React, {
   useState,
   useRef,
 } from "react";
-import UIButton from "../../../utils/ui/UIButton";
-import UIModal from "../../../utils/ui/UIModal";
+import UIButton from "../../utils/ui/UIButton";
+import UIModal from "../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -18,13 +18,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { split } from "postcss/lib/list";
 import { QueryFolderType, QueryType } from "@/src/libs/types";
-import QueryTextboxAdvanced from "../../queryTextbox/queryTextboxAdvanced/QueryTextboxAdvanced";
-import SavePopUp from "../../../utils/queryTextbox/SavePopUp";
+import QueryTextboxAdvanced from "./QueryTextboxAdvanced";
+import SavePopUp from "../../utils/queryTextbox/SavePopUp";
 import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { validateParameters } from "@/src/utils/parameterUtils";
 
-interface QueryTextboxProps {
+interface QueryTextboxBasicProps {
   readOnly?: boolean;
   initialQuery?: string;
   hideButtons?: boolean;
@@ -37,7 +37,7 @@ interface InputValues {
   [key: string]: string;
 }
 
-const QueryTextbox: React.FC<QueryTextboxProps> = ({
+const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
   readOnly = false,
   initialQuery = "",
   hideButtons = false,
@@ -318,4 +318,4 @@ const QueryTextbox: React.FC<QueryTextboxProps> = ({
   );
 };
 
-export default QueryTextbox;
+export default QueryTextboxBasic;

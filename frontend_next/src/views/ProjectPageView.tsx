@@ -1,9 +1,9 @@
 import React, { ReactNode, useState, useEffect } from "react";
 import Header from "@/src/components/header/Header";
-import QueryTextboxAdvanced from "@/src/components/queryTextbox/queryTextboxAdvanced/QueryTextboxAdvanced";
+import QueryTextboxAdvanced from "@/src/components/queryTextbox/QueryTextboxAdvanced";
 import SideBar from "../components/sideBar/SideBar";
 import { useProps } from "../contexts/PropsContext";
-import QueryTextbox from "@/src/components/queryTextbox/queryTextboxBasic/QueryTextbox";
+import QueryTextboxBasic from "@/src/components/queryTextbox/QueryTextboxBasic";
 import { Card } from "@nextui-org/react";
 import { useProjectProps } from "../contexts/ProjectContext";
 import { NeoVisProvider } from "@/components/neovisGraph/NeoVisContext";
@@ -52,7 +52,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             {advancedMode ? (
               <QueryTextboxAdvanced setQuery={handleRunQuery} />
             ) : (
-              <QueryTextbox setQueryToRun={handleRunQuery} />
+              <QueryTextboxBasic setQueryToRun={handleRunQuery} />
             )}
             <div className="flex-grow overflow-auto">{children}</div>
             {queryRunClicked && (
