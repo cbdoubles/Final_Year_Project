@@ -21,13 +21,15 @@ class FavoriteQueryViewSet(viewsets.ModelViewSet):
         Retrieve all favorite queries in a specific folder.
 
         This action does not verify if the folder belongs to the Favorite folder category.
-        If the folder_id provided corresponds to a Custom folder, the response will be an empty list.
+        If the folder_id provided corresponds to a Custom folder, the response will be an 
+        empty list.
 
         Args:
             request (Request): The request object containing query parameters.
 
         Returns:
-            Response: A response containing the serialized favorite queries for the specified folder.
+            Response: A response containing the serialized favorite queries for the specified 
+            folder.
         """
         folder_id = request.query_params.get('folder_id')
 

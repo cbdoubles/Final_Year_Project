@@ -1,5 +1,6 @@
 """
-This module defines the DefaultQueryViewSet for handling read-only operations on DefaultQuery instances.
+This module defines the DefaultQueryViewSet for handling read-only operations on 
+DefaultQuery instances.
 
 The DefaultQueryViewSet provides the standard actions:
 - list: Returns a list of all DefaultQuery instances.
