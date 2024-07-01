@@ -2,7 +2,7 @@ import { LuTrash2 } from "react-icons/lu";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton from "@/src/utils/ui/UIButton";
 import { QueryFolderType } from "@/src/libs/types";
-import { handleDeleteFolder } from "@/src/utils/sideBar/fetches/handleDeleteFolder";
+import { handleDeleteFolder } from "@/src/utils/apiCalls/folder/handleDeleteFolder";
 
 const DeleteFolder = ({
   folder,

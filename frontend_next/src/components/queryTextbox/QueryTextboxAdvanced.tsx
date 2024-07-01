@@ -15,7 +15,7 @@ import {
   validateParameters,
 } from "@/src/utils/parameterUtils";
 import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
-import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
+import { handleSaveQuery } from "@/utils/apiCalls/query/handleSaveQuery";
 import { select } from "@nextui-org/theme";
 // import NewFolderPopUp from "./NewFolderPopup";
 import { Textarea } from "@nextui-org/react";

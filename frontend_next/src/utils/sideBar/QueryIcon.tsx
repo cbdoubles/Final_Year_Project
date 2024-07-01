@@ -4,7 +4,7 @@ import QueryIconButton from "./QueryIconButton";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
 import { FolderType, QueryType, QueryFolderListType } from "@/src/libs/types";
-import { fetchFoldersQueries } from "@/src/utils/sideBar/fetches/fetchFoldersQueries";
+import { fetchFoldersQueries } from "@/src/utils/apiCalls/foldersQueries/fetchFoldersQueries";
 // import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { toast } from "react-toastify";

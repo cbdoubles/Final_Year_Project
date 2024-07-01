@@ -10,7 +10,7 @@ import UIModal from "../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-import NatLangBox from "@/src/utils/NatLangBox";
+import NatLangBox from "@/src/utils/queryTextbox/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
 // import FileOpenButt from "../../utils/ui/FileOpenButt";
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ import { split } from "postcss/lib/list";
 import { QueryFolderType, QueryType } from "@/src/libs/types";
 import QueryTextboxAdvanced from "./QueryTextboxAdvanced";
 import SavePopUp from "../../utils/queryTextbox/SavePopUp";
-import { handleSaveQuery } from "@/utils/queryTextbox/fetches/handleSaveQuery";
+import { handleSaveQuery } from "@/utils/apiCalls/query/handleSaveQuery";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { validateParameters } from "@/src/utils/parameterUtils";
 

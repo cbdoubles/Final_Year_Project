@@ -3,7 +3,7 @@ import { LuPenSquare } from "react-icons/lu";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton from "@/src/utils/ui/UIButton";
 import { QueryFolderType } from "@/src/libs/types";
-import { handleEditFolder } from "@/src/utils/sideBar/fetches/handleEditFolder";
+import { handleEditFolder } from "@/src/utils/apiCalls/folder/handleEditFolder";
 
 const EditFolder = ({
   folder,

@@ -6,8 +6,8 @@ import { QueryFolderType, FolderType } from "@/src/libs/types";
 import UIModal from "../ui/UIModal";
 import { toast } from "react-toastify";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
-import { fetchFolders } from "@/src/utils/queryTextbox/fetches/fetchFolders";
-import { handleSaveFolder } from "@/utils/queryTextbox/fetches/handleSaveFolder";
+import { fetchFolders } from "@/src/utils/apiCalls/folder/fetchFolders";
+import { handleSaveFolder } from "@/src/utils/apiCalls/folder/handleSaveFolder";
 import NewFolderPopUp from "./NewFolderPopup";
 
 type SavePopUpProps = {

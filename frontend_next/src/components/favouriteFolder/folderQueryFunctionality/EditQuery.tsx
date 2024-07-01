@@ -4,7 +4,7 @@ import UIButton from "@/src/utils/ui/UIButton";
 import EditQueryBody from "./EditQueryBody";
 import { LuPenSquare } from "react-icons/lu";
 import { FolderType, QueryType } from "@/src/libs/types";
-import { handleEditQuery } from "@/src/utils/sideBar/fetches/handleEditQuery";
+import { handleEditQuery } from "@/src/utils/apiCalls/query/handleEditQuery";
 
 const EditQuery = ({
   query,
