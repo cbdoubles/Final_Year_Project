@@ -10,7 +10,7 @@ import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import ImportIcon from "@/src/components/sideBar/icons/importQuery/ImportIcon";
-import NeoVisToolBox from "../neovisGraph/NeoVisToolBox";
+import NeoVisToolBox from "@/components/visualization/neovisGraph/NeoVisToolBox";
 
 export default function SideBar({
   collapsed,

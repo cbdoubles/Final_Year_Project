@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FolderTest from "@/src/components/favouriteFolder/FolderTest";
+import FolderTest from "@/src/components/favouriteFolder/DisplayFoldersQueries";
 import QueryIconButton from "./QueryIconButton";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";

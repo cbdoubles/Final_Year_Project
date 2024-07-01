@@ -6,8 +6,8 @@ import { useProps } from "../contexts/PropsContext";
 import QueryTextboxBasic from "@/src/components/queryTextbox/QueryTextboxBasic";
 import { Card } from "@nextui-org/react";
 import { useProjectProps } from "../contexts/ProjectContext";
-import { NeoVisProvider } from "@/components/neovisGraph/NeoVisContext";
-import NeovisComponent from "@/components/neovisGraph/NeovisComponent";
+import { NeoVisProvider } from "@/components/visualization/neovisGraph/NeoVisContext";
+import NeovisComponent from "@/components/visualization/neovisGraph/NeovisComponent";
 
 interface ProjectPageViewProps {
   children: ReactNode;
