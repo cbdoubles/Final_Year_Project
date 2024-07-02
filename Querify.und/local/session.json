@@ -1,0 +1,155 @@
+{
+    "Session": "default",
+    "Sessions": {
+        "default": {
+            "SessionData": {
+                "2_1536x864_1920x1080": {
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00IssueBrowser": {
+                                "height": 241,
+                                "width": 821
+                            },
+                            "01ProjectOverviewWidget": {
+                                "height": 440,
+                                "width": 250
+                            },
+                            "02SuggestionsBrowser": {
+                                "height": 659,
+                                "width": 250
+                            },
+                            "03EntityFilter": {
+                                "height": 463,
+                                "width": 250
+                            },
+                            "04Locator": {
+                                "height": 241,
+                                "width": 821
+                            },
+                            "05InfoBrowserWidget_0": {
+                                "height": 460,
+                                "width": 270
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
+                "CodeCheckFiles": {
+                    "lastSelectedFilterInt": 0
+                },
+                "EntityFilter": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "GraphicFilterSettings": {
+                    "Enabled": false
+                },
+                "IBExpansions": {
+                    "InfoBrowserWidget": [
+                        "Jovial References",
+                        "Python References",
+                        "WEB References",
+                        "WEB Possible References",
+                        "Asm References",
+                        "Ada References",
+                        "Ftn References",
+                        "VHDL References",
+                        "c# References",
+                        "C++ References",
+                        "Java References",
+                        "basic References",
+                        "Pascal References"
+                    ]
+                },
+                "IBOptions": {
+                },
+                "InfoBrowserWindowManager": {
+                    "InfoBrowserFileSyncInst": -1,
+                    "InfoBrowserSyncInst": [
+                        "0"
+                    ]
+                },
+                "LastAccessedPid": "1880",
+                "LastDisplayGroup": "2_1536x864_1920x1080",
+                "Locator": {
+                    "LastEntityFilterUsed": "Functions"
+                },
+                "MaintainEditorHistory": {
+                    "FileRanges": {
+                        "size": 0
+                    },
+                    "index": -1
+                },
+                "MiscSaveStates": {
+                    "entitySelected": "@lFolderTest.deleteFolder.updatedItems.(unnamed_function_1)@p@lFolderTest.deleteFolder.updatedItems@p@lFolderTest.deleteFolder@kw15foldertest.deletefolder:./frontend_next/src/utils/displayFolderQueries/DisplayFoldersQueries.tsx@f./frontend_next/src/utils/displayFolderQueries/DisplayFoldersQueries.tsx",
+                    "ib": "entity:||:@lInfoCard@kw15infocard:./frontend_next/src/components/projectPage/visualization/neovisGraph/InfoCard.tsx@f./frontend_next/src/components/projectPage/visualization/neovisGraph/InfoCard.tsx",
+                    "projectOverviewCharts": "true",
+                    "projectOverviewChartsPosition": 1,
+                    "projectOverviewChartsSelected": "true",
+                    "projectOverviewChartsWorkspace": 0,
+                    "selection": "InfoCard"
+                },
+                "SplittableWorkspace": {
+                    "active workspace": 0,
+                    "primary ws size": 1392,
+                    "split orientation": -1
+                },
+                "analysis": {
+                    "background": {
+                        "started": true
+                    }
+                },
+                "projectconfigure": {
+                    "last config panel": "Web"
+                }
+            }
+        }
+    }
+}
