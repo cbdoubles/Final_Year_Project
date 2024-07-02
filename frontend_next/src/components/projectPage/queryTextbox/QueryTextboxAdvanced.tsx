@@ -13,7 +13,7 @@ import {
   // extractNaturalLanguageParameters,
   extractParameters,
   validateParameters,
-} from "@/src/utils/parameterUtils";
+} from "@/src/utils/queryTextbox/parameterUtils";
 import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
 import { handleSaveQuery } from "@/utils/apiCalls/query/handleSaveQuery";
 import { select } from "@nextui-org/theme";

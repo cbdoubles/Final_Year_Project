@@ -22,7 +22,7 @@ import QueryTextboxAdvanced from "./QueryTextboxAdvanced";
 import SavePopUp from "../../../utils/queryTextbox/SavePopUp";
 import { handleSaveQuery } from "@/utils/apiCalls/query/handleSaveQuery";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
-import { validateParameters } from "@/src/utils/parameterUtils";
+import { validateParameters } from "@/src/utils/queryTextbox/parameterUtils";
 
 interface QueryTextboxBasicProps {
   readOnly?: boolean;
