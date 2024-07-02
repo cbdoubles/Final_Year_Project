@@ -26,6 +26,7 @@ const NatLangBox: React.FC<NatLangBoxProps> = ({
     parts.forEach((part, index) => {
       if (regex.test(part)) {
         indices.push(index);
+        check++;
       }
     });
     return {

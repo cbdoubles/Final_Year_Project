@@ -1,18 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from "react";
+import React, { useEffect, useState } from "react";
 import UIButton from "../../../utils/ui/UIButton";
 import UIModal from "../../../utils/ui/UIModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import FavouritePopUp from "@/src/views/PopUps/FavoritePopUp";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import NatLangBox from "@/src/utils/queryTextbox/NatLangBox";
 import { useProps } from "@/src/contexts/PropsContext";
-// import FileOpenButt from "../../utils/ui/FileOpenButt";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryProps } from "@/src/contexts/QueryContext";
@@ -24,6 +16,7 @@ import { handleSaveQuery } from "@/utils/apiCalls/query/handleSaveQuery";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { validateParameters } from "@/src/utils/queryTextbox/parameterUtils";
 
+// Define interface for component props
 interface QueryTextboxBasicProps {
   readOnly?: boolean;
   initialQuery?: string;
@@ -33,6 +26,7 @@ interface QueryTextboxBasicProps {
 
 const folderType = "Favorite";
 
+// Define interface for input values
 interface InputValues {
   [key: string]: string;
 }
@@ -43,6 +37,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
   hideButtons = false,
   setQueryToRun,
 }) => {
+  // Component state and Prop variables
   const [query, setQuery] = useState(initialQuery);
   const { queryRunClicked, setQueryRunTrue } = useProps();
   const [inputValues, setInputValues] = useState<InputValues>({});
@@ -53,8 +48,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
   const [selectedQuery, setSelectedQuery] = useState<QueryType>(
     getSelectedQuery()
   );
-  // const [editCyphertext] = useState<string>(selectedQuery.cypherQuery);
-  // const [saveNatLang] = useState<string>(selectedQuery.natLang);
+
   const [saveCyphertext, setSaveCyphertext] = useState<string>(
     selectedQuery.cypherQuery
   );
@@ -63,6 +57,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
     null
   );
 
+  // Update state when the query changes
   useEffect(() => {
     setSelectedQuery(updatedQuery);
     setSaveCyphertext(cypherQuery);
@@ -72,6 +67,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
 
   const { projectId } = useProjectProps();
 
+  // Save folder selection handler
   const saveChooseFolder = () => {
     console.log("clicked save");
   };
@@ -80,20 +76,17 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
     selectedQuery.queryName
   );
 
-  // const openSave = async (onOpen: () => void) => {
-  //   setSelectedFolder(null);
-  //   setSaveCyphertext(editCyphertext);
-  //   onOpen();
-  // };
-
+  // Toggle showing the Cypher query (Show Cipher Button)
   const handleShowCypherQuery = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
   };
 
+  // Handle input changes in the natural language box
   const handleInputChange = (placeholder: string, value: string) => {
     setInputValues((prev) => ({ ...prev, [placeholder]: value }));
   };
 
+  // Save the query to favorites with validations
   const handleSaveFavorites = (onOpen: () => void) => {
     if (handleError()) {
       setSaveCyphertext(
@@ -105,13 +98,14 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
       console.log(saveCyphertext);
       console.log(saveNatLang);
       onOpen();
-      onOpen();
     }
   };
 
+  // Error handling for empty or incomplete queries
   const handleError = (): boolean => {
-    console.log("There is this many boxes:", boxes);
-    console.log("----", inputValues);
+    console.log("NatLang:", natLang);
+    console.log("InputValues:", inputValues);
+    console.log("Boxes:", boxes);
     if (natLang === "") {
       toast.error("No query selected", {
         position: "bottom-right",
@@ -138,6 +132,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
     return true;
   };
 
+  // Replace placeholders in the natural language query
   const replaceNaturalLanguageParameters = (
     query: string,
     params: InputValues
@@ -156,6 +151,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
     return resultQuery;
   };
 
+  // Replace placeholders in the Cypher query
   const replaceParametersInCypherQuery = (
     query: string,
     params: InputValues
@@ -169,12 +165,10 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
     return resultQuery;
   };
 
+  // Run the query after validating and replacing parameters
   const handleRunQuery = () => {
-    // Generate the JSON output
     if (handleError()) {
       const parameters: Record<string, string> = {};
-
-      // Iterate through the input values and populate the parameters object
       for (const key in inputValues) {
         // Extract the part between $ and {
         const match = key.match(/\$(\w+)\{/);
@@ -189,23 +183,21 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
         Query: cypherQuery,
       };
 
-      console.log("Generated JSON Output:", jsonOutput);
       const finalQuery = replaceParametersInCypherQuery(
         cypherQuery,
         inputValues
       );
 
       if (finalQuery !== "") {
-        ///what they do
         if (setQueryToRun) {
           setQueryToRun(finalQuery);
         }
-        console.log("Final Cypher Query:", finalQuery); // print the final query with replaced parameters
         setQueryRunTrue();
       }
     }
   };
 
+  // Save the query as a favorite after validating and replacing parameters
   const handleSaveFavorite = async (onClose: () => void) => {
     if (selectedFolder === null) {
       toast.error("No folder selected");
@@ -238,7 +230,6 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
   return (
     <div>
       <div className="flex flex-col">
-        {/* <div className="text-md text-black">{"Query: " + queryName}</div> */}
         <NatLangBox
           dataArray={natLang}
           readOnly={readOnly}
