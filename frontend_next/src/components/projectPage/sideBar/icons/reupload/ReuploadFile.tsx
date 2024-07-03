@@ -43,7 +43,7 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
   };
 
   return (
-    <div data-testid="start-new-project-modal">
+    <div data-testid="reupload-data-modal">
       <label className="block mb-2 text-lg text-black">
         File Name:
         <input
@@ -51,6 +51,7 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
           type="text"
           value={fileName}
           onChange={onFileNameChange}
+          data-testid="reupload-file-name-text-field"
         />
       </label>
       {selectedFileName && (
@@ -59,7 +60,12 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
         </div>
       )}
       <div className="mt-4 flex gap-2">
-        <UIButton onClick={handleButtonClick}>Select File</UIButton>
+        <UIButton
+          data-testid="select-file-reupload"
+          onClick={handleButtonClick}
+        >
+          Select File
+        </UIButton>
         <input
           ref={fileInputRef}
           accept=".json, .graphml"

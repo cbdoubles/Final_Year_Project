@@ -108,7 +108,7 @@ const NatLangBox: React.FC<NatLangBoxProps> = ({
               </span>
             );
           } else {
-            return <span>{item}</span>;
+            return <span key={index}>{item}</span>;
           }
         })}
       </div>

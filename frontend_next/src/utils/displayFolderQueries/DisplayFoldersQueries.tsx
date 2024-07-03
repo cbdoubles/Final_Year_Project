@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+
 import FolderDisplay from "./folderQueryFunctionality/FolderDisplay";
+
 import {
   QueryType,
   QueryFolderListType,

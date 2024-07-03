@@ -48,7 +48,10 @@ export default function SideBar({
    * @returns {JSX.Element} The rendered sidebar component.
    */
   return (
-    <div className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start">
+    <div
+      data-testid="side-bar"
+      className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start"
+    >
       <div className="w-full grid grid-cols-1 gap-2">
         <button
           className="w-full flex h-[48px] relative grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"

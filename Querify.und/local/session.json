@@ -8,24 +8,24 @@
                         "FloatingWidgetOrder": [
                         ],
                         "OpenWindows": {
-                            "00SuggestionsBrowser": {
-                                "height": 711,
-                                "width": 250
-                            },
-                            "01ProjectOverviewWidget": {
-                                "height": 356,
-                                "width": 224
-                            },
-                            "02EntityFilter": {
-                                "height": 333,
-                                "width": 224
-                            },
-                            "03IssueBrowser": {
-                                "height": 300,
+                            "00IssueBrowser": {
+                                "height": 634,
                                 "width": 1288
                             },
+                            "01SuggestionsBrowser": {
+                                "height": 50,
+                                "width": 250
+                            },
+                            "02ProjectOverviewWidget": {
+                                "height": 357,
+                                "width": 224
+                            },
+                            "03EntityFilter": {
+                                "height": 334,
+                                "width": 224
+                            },
                             "04InfoBrowserWidget_0": {
-                                "height": 351,
+                                "height": 350,
                                 "width": 244
                             }
                         },
@@ -174,11 +174,6 @@
                 "CodeCheckFiles": {
                     "lastSelectedFilterInt": 0
                 },
-                "EditorWindowList": [
-                    "./frontend_next/src/components/home/StartNewProject.tsx",
-                    "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
-                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx"
-                ],
                 "EditorWindowSetting": {
                     "18e366278e943769af70ada2d21fd08d": {
                         "anchor": {
@@ -218,37 +213,37 @@
                     },
                     "a70d31de3088f42f87bf3d3ac24b228a": {
                         "anchor": {
-                            "line": 76,
-                            "offset": 4
+                            "line": 21,
+                            "offset": 0
                         },
                         "caret": {
-                            "line": 76,
-                            "offset": 4
+                            "line": 21,
+                            "offset": 0
                         },
                         "container": 1,
                         "height": 384,
                         "hscroll": 0,
                         "isMaximized": false,
-                        "vscroll": 67,
-                        "width": 1034,
+                        "vscroll": 26,
+                        "width": 983,
                         "x": 0,
                         "y": 0
                     },
                     "d62fb69db94a267a35508155beec6418": {
                         "anchor": {
-                            "line": 7,
-                            "offset": 0
+                            "line": 10,
+                            "offset": 29
                         },
                         "caret": {
-                            "line": 7,
-                            "offset": 0
+                            "line": 10,
+                            "offset": 29
                         },
                         "container": 1,
-                        "height": 711,
+                        "height": 384,
                         "hscroll": 0,
                         "isMaximized": false,
                         "vscroll": 0,
-                        "width": 1034,
+                        "width": 983,
                         "x": 0,
                         "y": 0
                     }
@@ -365,12 +360,6 @@
                         "src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx"
                     ]
                 },
-                "SplitWorkspace1SelectedTab": "",
-                "SplitWorkspace1Tabs": [
-                    "./frontend_next/src/components/home/StartNewProject.tsx",
-                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
-                    "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx"
-                ],
                 "SplittableWorkspace": {
                     "active workspace": 0,
                     "primary ws size": 1034,

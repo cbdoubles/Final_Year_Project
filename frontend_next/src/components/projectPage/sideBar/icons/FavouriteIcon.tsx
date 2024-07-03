@@ -23,11 +23,13 @@ export default function FavoriteIcon({
   projectId: number;
 }) {
   return (
-    <QueryIcon
-      collapsed={collapsed}
-      icon={StarIcon}
-      projectId={projectId}
-      type="Favorite"
-    />
+    <div data-testid="favorite-button">
+      <QueryIcon
+        type="Favorite"
+        icon={StarIcon}
+        collapsed={collapsed}
+        projectId={projectId}
+      />
+    </div>
   );
 }

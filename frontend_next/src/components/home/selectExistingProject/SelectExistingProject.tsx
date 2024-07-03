@@ -57,7 +57,10 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({
   };
 
   return (
-    <div className="h-auto overflow-auto">
+    <div
+      className="h-auto overflow-auto"
+      data-testid="select-exising-project-modal"
+    >
       {elements.map((element) => (
         <ProjectItem
           key={element.projectId}

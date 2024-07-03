@@ -92,7 +92,7 @@ const QueryIcon: React.FC<SelectProps> = ({
   };
 
   return (
-    <>
+    <div data-testid="queries-modal">
       <UIModal
         body={
           isLoading ? (
@@ -133,7 +133,7 @@ const QueryIcon: React.FC<SelectProps> = ({
         }
         bodyNoPadding
       ></UIModal>
-    </>
+    </div>
   );
 };
 

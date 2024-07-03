@@ -1,9 +1,11 @@
-import { LuCornerDownRight, LuShare } from "react-icons/lu";
-import { FolderType, QueryType } from "@/src/libs/types";
-import EditQuery from "./EditQuery";
-import DeleteQuery from "./DeleteQuery";
 import { Button } from "@nextui-org/button";
-import { useState } from "react";
+import React, { useState } from "react";
+import { LuCornerDownRight, LuShare } from "react-icons/lu";
+
+import DeleteQuery from "./DeleteQuery";
+import EditQuery from "./EditQuery";
+
+import { FolderType, QueryType } from "@/src/libs/types";
 
 /**
  * @description

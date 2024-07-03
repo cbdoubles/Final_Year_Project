@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import InputField from "@/src/utils/popUps/InputField";
+import React from "react";
+
 import { FolderType, QueryType } from "@/src/libs/types";
+import InputField from "@/src/utils/popUps/InputField";
 
 /**
  * @description
@@ -25,13 +26,11 @@ import { FolderType, QueryType } from "@/src/libs/types";
 
 const EditQueryBody = ({
   query,
-  type,
   updateQueryName,
   updateCyphertext,
   updateNaturalLanguage,
 }: {
   query: QueryType;
-  type: FolderType;
   updateQueryName: (newFolderName: string) => void;
   updateCyphertext: (newCyphertext: string) => void;
   updateNaturalLanguage: (newNaturalLanguage: string) => void;

@@ -24,11 +24,13 @@ export default function CustomIcon({
   projectId: number;
 }) {
   return (
-    <QueryIcon
-      collapsed={collapsed}
-      icon={ClipboardDocumentCheckIcon}
-      projectId={projectId}
-      type="Custom"
-    />
+    <div data-testid="custom-button">
+      <QueryIcon
+        type="Custom"
+        icon={ClipboardDocumentCheckIcon}
+        collapsed={collapsed}
+        projectId={projectId}
+      />
+    </div>
   );
 }

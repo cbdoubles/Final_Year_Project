@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { LuFolder } from "react-icons/lu";
-import QueryDisplay from "./QueryDisplay";
-import EditFolder from "./EditFolder";
+
 import DeleteFolder from "./DeleteFolder";
+import EditFolder from "./EditFolder";
+import QueryDisplay from "./QueryDisplay";
+
 import {
   QueryType,
   QueryFolderType,
