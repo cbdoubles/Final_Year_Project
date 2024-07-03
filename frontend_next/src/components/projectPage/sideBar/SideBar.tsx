@@ -1,8 +1,7 @@
 import { Card } from "@nextui-org/react";
 import React from "react";
 import { LuAlignJustify } from "react-icons/lu";
-
-import CustomButton from "@/src/components/projectPage/sideBar/icons/CustomIcon";
+import CustomIcon from "@/src/components/projectPage/sideBar/icons/CustomIcon";
 import Default from "@/src/components/projectPage/sideBar/icons/defaultQuery/DefaultIcon";
 import FavouriteIcon from "@/src/components/projectPage/sideBar/icons/FavouriteIcon";
 import ImportIcon from "@/src/components/projectPage/sideBar/icons/importQuery/ImportIcon";
@@ -62,7 +61,7 @@ export default function SideBar({
           )}
         </button>
         <FavouriteIcon collapsed={collapsed} projectId={projectId} />
-        <CustomButton collapsed={collapsed} projectId={projectId} />
+        <CustomIcon collapsed={collapsed} projectId={projectId} />
         <Default collapsed={collapsed} />
         <Reupload collapsed={collapsed} />
         <SwitchMode collapsed={collapsed} />

@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+
 import UIButton from "@/utils/ui/UIButton";
 
 type ReuploadFileProps = {
@@ -25,10 +26,10 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
       <label className="block mb-2 text-lg text-black">
         File Name:
         <input
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           type="text"
           value={fileName}
           onChange={onFileNameChange}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </label>
       {selectedFileName && (
@@ -39,10 +40,10 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
       <div className="mt-4 flex gap-2">
         <UIButton onClick={handleButtonClick}>Select File</UIButton>
         <input
-          type="file"
           ref={fileInputRef}
-          style={{ display: "none" }}
           accept=".json, .graphml"
+          style={{ display: "none" }}
+          type="file"
           onChange={onFileChange}
         />
       </div>

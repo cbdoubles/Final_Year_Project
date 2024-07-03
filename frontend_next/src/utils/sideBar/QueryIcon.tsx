@@ -5,10 +5,10 @@ import UIModal from "@/src/utils/ui/UIModal";
 import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
 import { FolderType, QueryType, QueryFolderListType } from "@/src/libs/types";
 import { fetchFoldersQueries } from "@/src/utils/apiCalls/foldersQueries/fetchFoldersQueries";
-// import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 import { toast } from "react-toastify";
 
+// Interface that defines the props expected by the QueryIcon component
 interface SelectProps {
   onCloseSelectFolder?: () => void;
   onCloseChooseProject?: () => void;
@@ -20,6 +20,7 @@ interface SelectProps {
   projectId: number;
 }
 
+//Define the component - its variables and methods
 const QueryIcon: React.FC<SelectProps> = ({
   onCloseSelectFolder,
   onCloseChooseProject,
@@ -28,20 +29,24 @@ const QueryIcon: React.FC<SelectProps> = ({
   icon: Icon,
   projectId,
 }) => {
+  // State for managing the list of items (queries or folders)
   const [items, setItems] = useState<QueryFolderListType[]>([]);
+  // State to indicate if data is being loaded
   const [isLoading, setIsLoading] = useState(false);
+  // State to hold the currently selected query
   const [selectedQuery, setSelectedQuery] = useState<QueryType | null>(null);
-  // const { projectId } = useProjectProps();
+  // Context hook to set the selected query globally
   const { setQueryFromQuery } = useQueryProps();
 
+  // Function to simulate loading delay and return the fetched items
   const loadItems = async (queryFolderList: Promise<QueryFolderListType[]>) => {
     await new Promise((r) => setTimeout(r, 200));
     return queryFolderList;
   };
 
+  // Function to fetch items from the database and update the state
   const fetchItems = () => {
     setIsLoading(true);
-    //fetchItems from database, then put in the queryFolderList
     const queryFolderList: Promise<QueryFolderListType[]> = fetchFoldersQueries(
       type,
       projectId
@@ -53,11 +58,12 @@ const QueryIcon: React.FC<SelectProps> = ({
     });
   };
 
+  // Event handler for selecting a query from the list
   const handleSelectQuery = (query: QueryType) => {
     setSelectedQuery(query);
   };
 
-  // Button click handler
+  // Handler for the button click event to select a query
   const handleSelectQueryButtonClick = (onClose: () => void) => {
     console.log("Select Query button clicked");
     if (selectedQuery) {
@@ -74,6 +80,7 @@ const QueryIcon: React.FC<SelectProps> = ({
     }
   };
 
+  // Rendering the component
   return (
     <>
       <UIModal

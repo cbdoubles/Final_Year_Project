@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+
 import { ProjectType } from "@/src/libs/types";
 
 const handleSaveProject = async (
