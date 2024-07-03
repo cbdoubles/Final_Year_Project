@@ -1,6 +1,17 @@
-import { QueryFolderType } from "@/src/libs/types";
 import { toast } from "react-toastify";
 
+import { QueryFolderType } from "@/src/libs/types";
+
+/**
+ * Handle folder editing
+ *
+ * @description
+ * This function updates the name of a specified folder on the server. If the update fails, it returns the previous state of the folder.
+ *
+ * @param {QueryFolderType} folder - The folder object with updated information.
+ * @param {QueryFolderType} prevElementState - The previous state of the folder before the update.
+ * @returns {Promise<QueryFolderType>} A promise that resolves to the updated folder object if the update is successful, or the previous state if it fails.
+ */
 export const handleEditFolder = async (
   folder: QueryFolderType,
   prevElementState: QueryFolderType
@@ -21,8 +32,6 @@ export const handleEditFolder = async (
       const errorData = await response.json();
       throw new Error(errorData.error || "Unknown error");
     } else {
-      console.log("update sent and fine");
-      console.log(folder);
       return folder;
     }
   } catch (error) {
