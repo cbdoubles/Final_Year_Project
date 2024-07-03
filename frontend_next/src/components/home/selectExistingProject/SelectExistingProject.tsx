@@ -5,7 +5,10 @@ import ProjectItem from "./ProjectItem";
 import { ProjectType } from "@/src/libs/types";
 import { fetchProjects } from "@/src/utils/apiCalls/project/fetchProjects";
 
-type SelectExistingProjectProps = {};
+type SelectExistingProjectProps = {
+  selectedElement: ProjectType | null;
+  setSelectedElement: React.Dispatch<React.SetStateAction<ProjectType | null>>;
+};
 
 /**
  * SelectExistingProject Component
@@ -24,11 +27,11 @@ type SelectExistingProjectProps = {};
  * @typedef {ProjectType | null} editingElement - State to store the project element currently being edited (null if no editing in progress).
  * @typedef {ProjectType | null} deletingElement - State to store the project element currently being deleted (null if no deletion in progress).
  */
-const SelectExistingProject: React.FC<SelectExistingProjectProps> = () => {
+const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({
+  selectedElement,
+  setSelectedElement,
+}) => {
   const [elements, setElements] = useState<ProjectType[]>([]);
-  const [selectedElement, setSelectedElement] = useState<ProjectType | null>(
-    null
-  );
   const [editingElement, setEditingElement] = useState<ProjectType | null>(
     null
   );
@@ -54,7 +57,10 @@ const SelectExistingProject: React.FC<SelectExistingProjectProps> = () => {
   };
 
   return (
-    <div className="h-auto overflow-auto">
+    <div
+      className="h-auto overflow-auto"
+      data-testid="select-exising-project-modal"
+    >
       {elements.map((element) => (
         <ProjectItem
           key={element.projectId}

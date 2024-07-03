@@ -116,6 +116,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
             type="text"
             value={newProjectName}
             onChange={handleProjectNameChange}
+            
           />
         </label>
         <label className="block mb-2 text-lg text-black">
@@ -125,7 +126,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
             type="text"
             value={fileName}
             onChange={handleFileNameChange}
-          />
+            data-testid="file-name-text-field"/>
         </label>
         {selectedFileName && (
           <div className="mt-4 text-gray-700">
@@ -133,7 +134,12 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
           </div>
         )}
         <div className="mt-4 flex gap-2">
-          <UIButton onClick={handleButtonClick}>Select File</UIButton>
+          <UIButton
+            onClick={handleButtonClick}
+            data-testid="select-file-upload"
+          >
+            Select File
+          </UIButton>
           <input
             ref={fileInputRef}
             accept=".json, .graphml"

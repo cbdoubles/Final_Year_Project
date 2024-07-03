@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
 import { QueryFolderType, FolderType, QueryType } from "@/src/libs/types";
+import { DB_URL } from "@/src/libs/constants";
 
 /**
  * Handle query saving
@@ -32,8 +33,8 @@ export const handleSaveQuery = async (
      */
     const getQueriesUrl = (folder: FolderType): string => {
       return folder === "Favorite"
-        ? `http://localhost:8000/api/favorite-queries/`
-        : `http://localhost:8000/api/custom-queries/`;
+        ? `${DB_URL}/api/favorite-queries/`
+        : `${DB_URL}/api/custom-queries/`;
     };
 
     try {

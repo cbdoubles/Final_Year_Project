@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { QueryType, FolderType } from "@/src/libs/types";
 
 /**
@@ -24,8 +25,8 @@ export const handleDeleteQuery = async (
      */
     const getQueriesUrl = (folderType: FolderType): string => {
       return folderType === "Favorite"
-        ? `http://localhost:8000/api/favorite-queries/${deletingQuery.queryId}/`
-        : `http://localhost:8000/api/custom-queries/${deletingQuery.queryId}/`;
+        ? `${DB_URL}/api/favorite-queries/${deletingQuery.queryId}/`
+        : `${DB_URL}/api/custom-queries/${deletingQuery.queryId}/`;
     };
 
     try {

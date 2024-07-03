@@ -14,7 +14,7 @@
 }
 
 body {
-  background-image: url(/images/cp_bg.jpg);
+  background-image: url(https://querify-frontend.vercel.app/images/cp_bg.jpg);
   /* background-color: #12abdb; */
   background-size: cover;
   background-repeat: no-repeat;

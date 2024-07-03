@@ -1,7 +1,21 @@
 import { toast } from "react-toastify";
 
+import { DB_URL } from "@/src/libs/constants";
 import { ProjectType } from "@/src/libs/types";
 
+/**
+ * Handle save project
+ *
+ * @description
+ * This function creates a new project on the server. It uploads a file, assigns a name to the file, and sets the project name.
+ * It returns the created project object if successful, or throws an error if it fails.
+ *
+ * @param {File} selectedFile - The file to be uploaded.
+ * @param {string} fileName - The name of the file to be saved.
+ * @param {string} newProjectName - The name of the new project.
+ * @returns {Promise<ProjectType>} A promise that resolves to the created project object if the upload is successful.
+ * @throws {Error} Throws an error if the upload fails.
+ */
 const handleSaveProject = async (
   selectedFile: File,
   fileName: string,
@@ -13,7 +27,7 @@ const handleSaveProject = async (
   formData.append("name", newProjectName);
 
   try {
-    const response = await fetch(`http://localhost:8000/api/projects/`, {
+    const response = await fetch(`${DB_URL}/api/projects/`, {
       method: "POST",
       body: formData,
     });
@@ -21,8 +35,6 @@ const handleSaveProject = async (
     const result = await response.json();
 
     if (response.ok) {
-      console.log("File saved:", result);
-
       const project: ProjectType = {
         projectId: Number(result.id),
         projectName: result.name,

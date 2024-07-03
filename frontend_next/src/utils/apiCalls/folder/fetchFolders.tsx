@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { FolderType, QueryFolderType } from "@/src/libs/types";
 
 /**
@@ -17,7 +18,7 @@ export const fetchFolders = async (
 ): Promise<QueryFolderType[] | null> => {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/folders/by-project/?project=${projectId}&type=${folderType}`,
+      `${DB_URL}/api/folders/by-project/?project=${projectId}&type=${folderType}`,
       {
         method: "GET",
       }

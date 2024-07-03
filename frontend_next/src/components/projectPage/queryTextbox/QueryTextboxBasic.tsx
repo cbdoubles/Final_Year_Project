@@ -210,7 +210,7 @@ const QueryTextboxBasic: React.FC<QueryTextboxBasicProps> = ({
   };
 
   return (
-    <div>
+    <div data-testid="basic-query-text-box">
       <div className="flex flex-col">
         <NatLangBox
           dataArray={natLang}

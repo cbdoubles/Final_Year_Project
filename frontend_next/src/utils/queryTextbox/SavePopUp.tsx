@@ -161,8 +161,9 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
    * as well as options to select or create folders for organizing saved queries.
    */
   return (
-    <div>
+    <div data-testid="save-pop-up-modal">
       <InputField
+        data-testid="query-name-text-field"
         label="Query name"
         placeholder="Type here"
         rows={2}
@@ -170,6 +171,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
         onChange={handleChangeName}
       />
       <InputField
+        data-testid="cypher-trepresentation-text-field"
         label="Cyphertext representation"
         placeholder="Type here"
         readOnly={fav ? true : false}
