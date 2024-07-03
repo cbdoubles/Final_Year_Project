@@ -157,9 +157,9 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
         {"Ensure that the Project ID is incorported in the query"}
       </div>
       <textarea
-        data-testid="advanced-query-text-box"
         ref={inputRef}
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
+        data-testid="advanced-query-text-box"
         defaultValue={localQuery}
         placeholder="Enter your query here"
         readOnly={readOnly}
@@ -170,15 +170,15 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
         <>
           <div className="flex justify-end gap-2 mb-2">
             <UIButton
-              onClick={handleShowNaturalLang}
               data-testid="hide-show-naural-lang-button"
+              onClick={handleShowNaturalLang}
             >
               {showReadOnlyTextbox ? "Hide Natural Lang" : "Show Natural Lang"}
             </UIButton>
             <UIButton
               className="bg-success-700"
-              onClick={handleRunQuery}
               data-testid="run-button"
+              onClick={handleRunQuery}
             >
               Run
             </UIButton>
@@ -199,8 +199,8 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
               button={({ onOpen }) => (
                 <UIButton
                   className="bg-gray-500"
-                  onClick={() => handleSaveOpen(onOpen)}
                   data-testid="add-favorite-button"
+                  onClick={() => handleSaveOpen(onOpen)}
                 >
                   <FontAwesomeIcon className="w-6" icon={faStar} />
                   Add to Favorites
@@ -241,8 +241,8 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
               button={({ onOpen }) => (
                 <UIButton
                   className="bg-gray-500"
-                  onClick={() => openSave(onOpen)}
                   data-testid="add-custom-button"
+                  onClick={() => openSave(onOpen)}
                 >
                   <FontAwesomeIcon className="w-6" icon={faStar} />
                   Add to Customs

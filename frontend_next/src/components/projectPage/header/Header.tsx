@@ -42,11 +42,11 @@ const Header = ({ showProject }: { showProject?: boolean }) => {
       <Link href="/" legacyBehavior>
         <a onClick={() => resetContext()}>
           <img
-            src="https://querify-frontend.vercel.app/images/blackminiNG.png"
             alt="Capgemini Logo"
             className="cursor-pointer"
             data-testid="capgemini-logo"
             height={400}
+            src="https://querify-frontend.vercel.app/images/blackminiNG.png"
             width={200}
           />
         </a>
