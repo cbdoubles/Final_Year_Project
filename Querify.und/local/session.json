@@ -8,25 +8,25 @@
                         "FloatingWidgetOrder": [
                         ],
                         "OpenWindows": {
-                            "00IssueBrowser": {
-                                "height": 300,
-                                "width": 1237
-                            },
-                            "01SuggestionsBrowser": {
-                                "height": 384,
+                            "00SuggestionsBrowser": {
+                                "height": 711,
                                 "width": 250
                             },
-                            "02ProjectOverviewWidget": {
+                            "01ProjectOverviewWidget": {
                                 "height": 356,
-                                "width": 275
+                                "width": 224
                             },
-                            "03EntityFilter": {
+                            "02EntityFilter": {
                                 "height": 333,
-                                "width": 275
+                                "width": 224
+                            },
+                            "03IssueBrowser": {
+                                "height": 300,
+                                "width": 1288
                             },
                             "04InfoBrowserWidget_0": {
                                 "height": 351,
-                                "width": 295
+                                "width": 244
                             }
                         },
                         "TabGroupFrontWidgets": [
@@ -175,8 +175,9 @@
                     "lastSelectedFilterInt": 0
                 },
                 "EditorWindowList": [
-                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
-                    "./frontend_next/src/components/home/StartNewProject.tsx"
+                    "./frontend_next/src/components/home/StartNewProject.tsx",
+                    "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
+                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx"
                 ],
                 "EditorWindowSetting": {
                     "18e366278e943769af70ada2d21fd08d": {
@@ -197,39 +198,57 @@
                         "x": 0,
                         "y": 0
                     },
-                    "a70d31de3088f42f87bf3d3ac24b228a": {
+                    "8e8dc9fd8140e9126fac2a268ff6f36c": {
                         "anchor": {
-                            "line": 21,
-                            "offset": 0
+                            "line": 7,
+                            "offset": 2
                         },
                         "caret": {
-                            "line": 21,
-                            "offset": 0
+                            "line": 9,
+                            "offset": 76
+                        },
+                        "container": 1,
+                        "height": 711,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 1034,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "a70d31de3088f42f87bf3d3ac24b228a": {
+                        "anchor": {
+                            "line": 76,
+                            "offset": 4
+                        },
+                        "caret": {
+                            "line": 76,
+                            "offset": 4
                         },
                         "container": 1,
                         "height": 384,
                         "hscroll": 0,
                         "isMaximized": false,
-                        "vscroll": 0,
-                        "width": 983,
+                        "vscroll": 67,
+                        "width": 1034,
                         "x": 0,
                         "y": 0
                     },
                     "d62fb69db94a267a35508155beec6418": {
                         "anchor": {
-                            "line": 9,
-                            "offset": 77
+                            "line": 7,
+                            "offset": 0
                         },
                         "caret": {
-                            "line": 9,
-                            "offset": 77
+                            "line": 7,
+                            "offset": 0
                         },
                         "container": 1,
-                        "height": 384,
+                        "height": 711,
                         "hscroll": 0,
                         "isMaximized": false,
                         "vscroll": 0,
-                        "width": 983,
+                        "width": 1034,
                         "x": 0,
                         "y": 0
                     }
@@ -265,7 +284,7 @@
                         "0"
                     ]
                 },
-                "LastAccessedPid": "17052",
+                "LastAccessedPid": "14176",
                 "LastDisplayGroup": "1_1536x864",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
@@ -275,18 +294,52 @@
                         "0": {
                             "ColumnBegin": 0,
                             "ColumnEnd": 0,
-                            "FilePath": "./frontend_next/src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
-                            "LineBegin": 226,
-                            "LineEnd": 226
+                            "FilePath": "./frontend_next/src/components/home/StartNewProject.tsx",
+                            "LineBegin": 80,
+                            "LineEnd": 80
                         },
-                        "size": 1
+                        "1": {
+                            "ColumnBegin": 4,
+                            "ColumnEnd": 4,
+                            "FilePath": "./frontend_next/src/components/home/StartNewProject.tsx",
+                            "LineBegin": 77,
+                            "LineEnd": 77
+                        },
+                        "2": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                            "LineBegin": 8,
+                            "LineEnd": 8
+                        },
+                        "3": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
+                            "LineBegin": 11,
+                            "LineEnd": 11
+                        },
+                        "4": {
+                            "ColumnBegin": 2,
+                            "ColumnEnd": 76,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
+                            "LineBegin": 8,
+                            "LineEnd": 10
+                        },
+                        "5": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                            "LineBegin": 8,
+                            "LineEnd": 8
+                        },
+                        "size": 6
                     },
-                    "index": 0
+                    "index": 5
                 },
                 "MiscSaveStates": {
                     "entitySelected": "@lFolderTest.deleteFolder.updatedItems.(unnamed_function_1)@p@lFolderTest.deleteFolder.updatedItems@p@lFolderTest.deleteFolder@kw15foldertest.deletefolder:./frontend_next/src/utils/displayFolderQueries/DisplayFoldersQueries.tsx@f./frontend_next/src/utils/displayFolderQueries/DisplayFoldersQueries.tsx",
                     "ib": "issue",
-                    "metricsBrowser": true,
                     "metricsBrowserExpansionAddresses": "",
                     "metricsBrowserSelectionAddress": "",
                     "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
@@ -294,7 +347,7 @@
                     "projectOverviewChartsPosition": 0,
                     "projectOverviewChartsSelected": "false",
                     "projectOverviewChartsWorkspace": 0,
-                    "selection": "QueryTextboxAdvanced.tsx"
+                    "selection": "handleDeleteFolder.tsx"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,
@@ -312,14 +365,15 @@
                         "src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx"
                     ]
                 },
-                "SplitWorkspace1SelectedTab": "./frontend_next/src/components/home/StartNewProject.tsx",
+                "SplitWorkspace1SelectedTab": "",
                 "SplitWorkspace1Tabs": [
+                    "./frontend_next/src/components/home/StartNewProject.tsx",
                     "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
-                    "./frontend_next/src/components/home/StartNewProject.tsx"
+                    "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx"
                 ],
                 "SplittableWorkspace": {
                     "active workspace": 0,
-                    "primary ws size": 1245,
+                    "primary ws size": 1034,
                     "split orientation": -1
                 },
                 "analysis": {
