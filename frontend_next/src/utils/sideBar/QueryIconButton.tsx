@@ -14,14 +14,6 @@ import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
  * @param {FolderType} type - The type of folder, used as the label next to the icon when not collapsed.
  * @param {React.ComponentType<React.SVGProps<SVGSVGElement>> | React.FunctionComponent<UIButtonProps>} icon - The icon to be displayed on the button. Can be a standard SVG icon or a UIButton.
  *
- * @component
- * @example
- * <QueryIconButton
- *   handleClick={() => console.log('Clicked')}
- *   collapsed={false}
- *   type="Folder"
- *   icon={FolderIcon}
- * />
  */
 
 interface SelectProps {
