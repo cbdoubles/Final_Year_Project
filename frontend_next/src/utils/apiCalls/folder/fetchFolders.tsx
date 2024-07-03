@@ -1,5 +1,16 @@
 import { FolderType, QueryFolderType } from "@/src/libs/types";
 
+/**
+ * Fetch folders by project ID and folder type
+ *
+ * @description
+ * This function fetches folders for a given project ID and folder type from the server. It returns
+ * a transformed array of QueryFolderType objects or null if an error occurs.
+ *
+ * @param {number} projectId - The ID of the project to fetch folders for.
+ * @param {FolderType} folderType - The type of folders to fetch.
+ * @returns {Promise<QueryFolderType[] | null>} A promise that resolves to an array of QueryFolderType objects or null if an error occurs.
+ */
 export const fetchFolders = async (
   projectId: number,
   folderType: FolderType
@@ -17,10 +28,7 @@ export const fetchFolders = async (
     }
 
     const folders = await response.json();
-    console.log("print folders after call");
-    console.log(folders);
 
-    // Transform the data if necessary
     const transformedData: QueryFolderType[] = folders.map((folder: any) => ({
       folderId: folder.id,
       folderName: folder.name,
