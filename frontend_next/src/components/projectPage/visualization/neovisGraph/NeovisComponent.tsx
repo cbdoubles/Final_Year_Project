@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { useNeoVisContext } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
+import { useNeoVisContext } from "@/src/contexts/NeoVisContext";
 import html2canvas from "html2canvas";
 import { ENV, NEO_URL } from "@/src/libs/constants";
 

@@ -5,24 +5,33 @@
             "SessionData": {
                 "1_1536x864": {
                     "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
                         "OpenWindows": {
-                            "00ProjectOverviewWidget": {
-                                "height": 332,
-                                "width": 397
+                            "00IssueBrowser": {
+                                "height": 300,
+                                "width": 1237
                             },
-                            "01EntityFilter": {
-                                "height": 355,
-                                "width": 397
-                            },
-                            "02InfoBrowserWidget_0": {
-                                "height": 352,
-                                "width": 417
-                            },
-                            "03SuggestionsBrowser": {
-                                "height": 711,
+                            "01SuggestionsBrowser": {
+                                "height": 384,
                                 "width": 250
+                            },
+                            "02ProjectOverviewWidget": {
+                                "height": 356,
+                                "width": 275
+                            },
+                            "03EntityFilter": {
+                                "height": 333,
+                                "width": 275
+                            },
+                            "04InfoBrowserWidget_0": {
+                                "height": 351,
+                                "width": 295
                             }
-                        }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "EntityFilter"
+                        ]
                     },
                     "EntityFilter": {
                         "Dock Area": 1,
@@ -34,6 +43,13 @@
                     },
                     "InfoBrowserWidget_0": {
                         "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
@@ -159,7 +175,8 @@
                     "lastSelectedFilterInt": 0
                 },
                 "EditorWindowList": [
-                    "./frontend_next/src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx"
+                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                    "./frontend_next/src/components/home/StartNewProject.tsx"
                 ],
                 "EditorWindowSetting": {
                     "18e366278e943769af70ada2d21fd08d": {
@@ -175,8 +192,44 @@
                         "height": 711,
                         "hscroll": 0,
                         "isMaximized": false,
-                        "vscroll": 220,
+                        "vscroll": 182,
                         "width": 861,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "a70d31de3088f42f87bf3d3ac24b228a": {
+                        "anchor": {
+                            "line": 21,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 21,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 384,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 983,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "d62fb69db94a267a35508155beec6418": {
+                        "anchor": {
+                            "line": 9,
+                            "offset": 77
+                        },
+                        "caret": {
+                            "line": 9,
+                            "offset": 77
+                        },
+                        "container": 1,
+                        "height": 384,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 983,
                         "x": 0,
                         "y": 0
                     }
@@ -213,7 +266,7 @@
                     ]
                 },
                 "LastAccessedPid": "17052",
-                "LastDisplayGroup": "2_1536x864_1920x1080",
+                "LastDisplayGroup": "1_1536x864",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
                 },
@@ -259,9 +312,10 @@
                         "src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx"
                     ]
                 },
-                "SplitWorkspace1SelectedTab": "./frontend_next/src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
+                "SplitWorkspace1SelectedTab": "./frontend_next/src/components/home/StartNewProject.tsx",
                 "SplitWorkspace1Tabs": [
-                    "./frontend_next/src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx"
+                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                    "./frontend_next/src/components/home/StartNewProject.tsx"
                 ],
                 "SplittableWorkspace": {
                     "active workspace": 0,
