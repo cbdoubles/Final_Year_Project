@@ -11,12 +11,27 @@ import { ProjectType } from "@/src/libs/types";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
 
+/**
+ * Home Component
+ *
+ * @description
+ * This component renders the home page with options to select an existing project or start a new project.
+ * It includes modals for selecting projects and starting new projects, and handles navigation to the project page.
+ *
+ * @returns {JSX.Element} The rendered home page component.
+ */
 export default function Home() {
   const router = useRouter();
   const [selectedElement, setSelectedElement] = useState<ProjectType | null>(
     null
   );
 
+  /**
+   * Handle project selection
+   *
+   * @description
+   * Navigates to the project page if a project is selected, otherwise shows an error toast.
+   */
   const handleSelect = () => {
     if (selectedElement) {
       router.push("/projectpage");
@@ -25,6 +40,15 @@ export default function Home() {
     }
   };
 
+  /**
+   * Render the component
+   *
+   * @description
+   * Renders the home page with a header, and two main options: select an existing project or start a new project.
+   * Each option is wrapped in a modal for further actions.
+   *
+   * @returns {JSX.Element} The rendered home page component.
+   */
   return (
     <div className="h-[100vh] flex flex-col">
       <Header />
