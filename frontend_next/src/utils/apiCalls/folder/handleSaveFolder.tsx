@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 
-import { QueryFolderType, FolderType } from "@/src/libs/types";
 import { DB_URL } from "@/src/libs/constants";
+import { QueryFolderType, FolderType } from "@/src/libs/types";
 
 /**
  * Handle folder saving

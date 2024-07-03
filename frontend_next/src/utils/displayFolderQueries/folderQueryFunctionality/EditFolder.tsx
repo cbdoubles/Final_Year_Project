@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { LuPenSquare } from "react-icons/lu";
-import UIModal from "@/src/utils/ui/UIModal";
-import UIButton from "@/src/utils/ui/UIButton";
+
 import { QueryFolderType } from "@/src/libs/types";
 import { handleEditFolder } from "@/src/utils/apiCalls/folder/handleEditFolder";
+import UIButton from "@/src/utils/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
 
 /**
  * @description
@@ -75,6 +76,13 @@ const EditFolder = ({
 
   return (
     <UIModal
+      body={
+        <input
+          className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
+          value={folderName}
+          onChange={handleChange}
+        />
+      }
       button={({ onOpen }) => (
         <button
           onClick={() => {
@@ -85,14 +93,6 @@ const EditFolder = ({
           <LuPenSquare className="text-black" />
         </button>
       )}
-      header={<span className="text-primary">Edit folder name</span>}
-      body={
-        <input
-          className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 mt-5 resize-none text-black"
-          value={folderName}
-          onChange={handleChange}
-        />
-      }
       footer={({ onClose }) => (
         <UIButton
           onClick={() => {
@@ -103,6 +103,7 @@ const EditFolder = ({
           Save
         </UIButton>
       )}
+      header={<span className="text-primary">Edit folder name</span>}
     ></UIModal>
   );
 };

@@ -26,10 +26,10 @@ export default function CustomIcon({
   return (
     <div data-testid="custom-button">
       <QueryIcon
-        type="Custom"
-        icon={ClipboardDocumentCheckIcon}
         collapsed={collapsed}
+        icon={ClipboardDocumentCheckIcon}
         projectId={projectId}
+        type="Custom"
       />
     </div>
   );

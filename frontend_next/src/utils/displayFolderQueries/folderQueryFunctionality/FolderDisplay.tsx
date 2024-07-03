@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { LuFolder } from "react-icons/lu";
 
 import DeleteFolder from "./DeleteFolder";
