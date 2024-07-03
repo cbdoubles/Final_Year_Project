@@ -69,6 +69,7 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
             value={newProjectName}
             onChange={handleProjectNameChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            data-testid="project-name-text-field"
           />
         </label>
         <label className="block mb-2 text-lg text-black">
@@ -78,6 +79,7 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
             value={fileName}
             onChange={handleFileNameChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            data-testid="file-name-text-field"
           />
         </label>
         {selectedFileName && (
@@ -86,7 +88,12 @@ const SelectFile: React.FC<SelectFileProps> = ({}) => {
           </div>
         )}
         <div className="mt-4 flex gap-2">
-          <UIButton onClick={handleButtonClick}>Select File</UIButton>
+          <UIButton
+            onClick={handleButtonClick}
+            data-testid="select-file-upload"
+          >
+            Select File
+          </UIButton>
           <input
             type="file"
             ref={fileInputRef}

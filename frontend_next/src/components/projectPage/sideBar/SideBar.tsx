@@ -25,7 +25,10 @@ export default function SideBar({
   const { projectId } = useProjectProps();
 
   return (
-    <div className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start">
+    <div
+      data-testid="side-bar"
+      className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start"
+    >
       <div className="w-full grid grid-cols-1 gap-2">
         <button
           onClick={() => handlerCollapsed(!collapsed)}

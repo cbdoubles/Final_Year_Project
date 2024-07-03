@@ -1,8 +1,6 @@
-// cypress/e2e/home.spec.ts
+import { existsSync } from "fs";
 
-/// <reference types="cypress" />
-
-describe("Home Page Components Are Visable When No Buttons Are Clicked", () => {
+describe("Home Page Components Are Rendered", () => {
   beforeEach(() => {
     cy.visit("/"); // Visit the home page
   });
@@ -12,7 +10,7 @@ describe("Home Page Components Are Visable When No Buttons Are Clicked", () => {
     cy.get('[data-testid="header"]').should("exist").and("be.visible");
   });
 
-  it("should display the Capgemini logo", () => {
+  it("should render the Capgemini logo", () => {
     // Check if the logo image is rendered
     cy.get('[data-testid="capgemini-logo"]')
       .should("exist")
@@ -26,7 +24,7 @@ describe("Home Page Components Are Visable When No Buttons Are Clicked", () => {
     cy.get('[data-testid="main-card"]').should("exist").and("be.visible");
   });
 
-  it("should display the card with buttons", () => {
+  it("should render the card with buttons", () => {
     // Check if the buttons inside the main card are rendered
     cy.contains("Select existing project").should("exist").and("be.visible");
     cy.contains("Start new project").should("exist").and("be.visible");
@@ -44,14 +42,12 @@ describe("Select Existing Project", () => {
     cy.get('[data-testid="select-exising-project-modal"]')
       .should("exist")
       .and("be.visible");
-    cy.contains("Close").should("exist").and("be.visible");
+    cy.contains("Close").scrollIntoView().should("exist").and("be.visible");
     cy.contains("Select").should("exist").and("be.visible");
-    cy.contains("Close").click;
-
-    // Look into this error
-    // cy.get('[data-testid="select-exising-project-modal"]')
-    //   .should("exist")
-    //   .and("not.be.visible");
+    cy.contains("Close").click();
+    cy.get('[data-testid="select-exising-project-modal"]').should(
+      "not.be.visible"
+    );
   });
 });
 
@@ -62,16 +58,29 @@ describe("Start New Project", () => {
 
   it('should open and close the "Select Existing Project" modal', () => {
     // Click the "Select existing project" button - Modal should Open
+    const fileName = "test-file.json";
+    const fileContent = '{"name": "test"}';
+    const fileType = "application/json";
+    const testFile = new Blob([fileContent], { type: fileType });
+
     cy.contains("Start new project").click();
     cy.get('[data-testid="start-new-project-modal"]')
       .should("exist")
       .and("be.visible");
     cy.contains("Select File").should("exist").and("be.visible");
-    cy.contains("Select").should("exist").and("be.visible");
-
-    // Look into this error
-    // cy.get('[data-testid="start-new-project-modal"]')
-    //   .should("exist")
-    //   .and("not.be.visible");
+    cy.get('[data-testid = "select-file"]').should("exist").and("be.visible");
+    cy.get('[data-testid="project-name-text-field"]')
+      .should("exist")
+      .and("be.visible");
+    cy.get('[data-testid="file-name-text-field"]')
+      .should("exist")
+      .and("be.visible");
+    cy.get('[data-testid="project-name-text-field"]')
+      .type("TestProject")
+      .should("have.value", "TestProject");
+    cy.get('[data-testid="file-name-text-field"]')
+      .type("TestFile")
+      .should("have.value", "TestFile");
+    cy.get('[data-testid="select-file-upload"]').click();
   });
 });

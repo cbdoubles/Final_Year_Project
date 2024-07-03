@@ -10,11 +10,13 @@ export default function CustomIcon({
   projectId: number;
 }) {
   return (
-    <QueryIcon
-      type="Custom"
-      icon={ClipboardDocumentCheckIcon}
-      collapsed={collapsed}
-      projectId={projectId}
-    />
+    <div data-testid="custom-button">
+      <QueryIcon
+        type="Custom"
+        icon={ClipboardDocumentCheckIcon}
+        collapsed={collapsed}
+        projectId={projectId}
+      />
+    </div>
   );
 }

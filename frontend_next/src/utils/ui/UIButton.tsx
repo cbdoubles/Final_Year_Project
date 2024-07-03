@@ -1,13 +1,13 @@
-import React, { ReactNode } from "react"
-import { Button, ButtonProps } from "@nextui-org/button"
+import React, { ReactNode } from "react";
+import { Button, ButtonProps } from "@nextui-org/button";
 
 export type UIButtonProps = {
-  onClick?: () => void
-  children?: ReactNode
-  color?: string
-  collapsed?:boolean
-  name?: string
-} & ButtonProps
+  onClick?: () => void;
+  children?: ReactNode;
+  color?: string;
+  collapsed?: boolean;
+  name?: string;
+} & ButtonProps;
 
 const UIButton: React.FC<UIButtonProps> = ({
   onClick,
@@ -21,13 +21,12 @@ const UIButton: React.FC<UIButtonProps> = ({
     <Button size="lg" color="primary" onClick={onClick} {...props}>
       {children}
       {!collapsed && (
-      <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
-        {name}
-      </p>
-    )}
+        <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
+          {name}
+        </p>
+      )}
     </Button>
-    
-  )
-}
+  );
+};
 
-export default UIButton
+export default UIButton;

@@ -24,7 +24,6 @@ const DefaultPopUp: React.FC<DefaultPopUpProps> = ({
         defaultQueries.map((query) => (
           <div
             key={query.queryId}
-            data-testid="select-existing-project-modal"
             className={`flex justify-between items-center text-black p-2 cursor-pointer ${
               selectedDefaultQuery === query ? "bg-gray-200" : ""
             }`}

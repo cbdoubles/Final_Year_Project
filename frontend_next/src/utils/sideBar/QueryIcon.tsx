@@ -75,7 +75,7 @@ const QueryIcon: React.FC<SelectProps> = ({
   };
 
   return (
-    <>
+    <div data-testid="queries-modal">
       <UIModal
         button={({ onOpen }) => (
           <QueryIconButton
@@ -116,7 +116,7 @@ const QueryIcon: React.FC<SelectProps> = ({
         )}
         bodyNoPadding
       ></UIModal>
-    </>
+    </div>
   );
 };
 

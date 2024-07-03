@@ -34,9 +34,9 @@ export default function ImportIcon({ collapsed }: { collapsed: boolean }) {
       <UIModal
         button={({ onOpen }) => (
           <button
-            data-testid="ui-button"
             className="w-full flex relative h-[48px] grow items-center justify-start gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:justify-start md:p-2 md:px-3"
             onClick={() => openSelectProject(onOpen)}
+            data-testid="import-button"
           >
             <ArrowDownTrayIcon className="w-6" />
             {!collapsed && (

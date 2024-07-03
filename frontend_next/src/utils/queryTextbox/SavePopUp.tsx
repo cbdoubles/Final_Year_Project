@@ -89,8 +89,9 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
   };
 
   return (
-    <div>
+    <div data-testid="save-pop-up-modal">
       <InputField
+        data-testid="query-name-text-field"
         rows={2}
         label="Query name"
         placeholder="Type here"
@@ -98,6 +99,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
         onChange={handleChangeName}
       />
       <InputField
+        data-testid="cypher-trepresentation-text-field"
         readOnly={fav ? true : false}
         rows={4}
         label="Cyphertext representation"
