@@ -13,5 +13,6 @@ export default defineConfig({
       framework: "next",
       bundler: "webpack",
     },
+    specPattern: "cypress/integration/**/*.spec.tsx",
   },
 });
