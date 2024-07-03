@@ -1,7 +1,7 @@
 // NeoVisToolBox.tsx
 import React, { useState } from "react";
 import { Card, CardHeader, CardBody } from "@nextui-org/card";
-import { useNeoVisContext } from "./NeoVisContext";
+import { useNeoVisContext } from "../../../../contexts/NeoVisContext";
 
 interface ToolBoxProps {
   title: string;

@@ -1,6 +1,22 @@
-import { QueryFolderType, FolderType, QueryType } from "@/src/libs/types";
 import { toast } from "react-toastify";
 
+import { QueryFolderType, FolderType, QueryType } from "@/src/libs/types";
+import { DB_URL } from "@/src/libs/constants";
+
+/**
+ * Handle query saving
+ *
+ * @description
+ * This function saves a new query to the server. It returns the created query object if successful,
+ * or null if an error occurs.
+ *
+ * @param {string} queryName - The name of the query to be saved.
+ * @param {string} cyphertext - The cypher query to be saved.
+ * @param {string} natLang - The natural language representation of the query.
+ * @param {QueryFolderType} folder - The folder where the query will be saved.
+ * @param {number} projectId - The ID of the project the query belongs to.
+ * @returns {Promise<QueryType | null>} A promise that resolves to the created query object if successful, or null if an error occurs.
+ */
 export const handleSaveQuery = async (
   queryName: string,
   cyphertext: string,
@@ -9,10 +25,16 @@ export const handleSaveQuery = async (
   projectId: number
 ): Promise<QueryType | null> => {
   if (folder.folderType) {
+    /**
+     * Get the queries URL based on folder type
+     *
+     * @param {FolderType} folder - The type of folder the query belongs to.
+     * @returns {string} The URL to save the query for the given folder type.
+     */
     const getQueriesUrl = (folder: FolderType): string => {
       return folder === "Favorite"
-        ? `http://localhost:8000/api/favorite-queries/`
-        : `http://localhost:8000/api/custom-queries/`;
+        ? `${DB_URL}/api/favorite-queries/`
+        : `${DB_URL}/api/custom-queries/`;
     };
 
     try {

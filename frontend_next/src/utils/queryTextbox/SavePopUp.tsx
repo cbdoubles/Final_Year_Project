@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from "react";
-import InputField from "@/src/utils/popUps/InputField";
-import UIButton from "../ui/UIButton";
-import SelectFolder from "./SelectFolder";
-import { QueryFolderType, FolderType } from "@/src/libs/types";
-import UIModal from "../ui/UIModal";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+
+import UIButton from "../ui/UIButton";
+import UIModal from "../ui/UIModal";
+
+import NewFolderPopUp from "./NewFolderPopup";
+import SelectFolder from "./SelectFolder";
+
 import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { QueryFolderType, FolderType } from "@/src/libs/types";
 import { fetchFolders } from "@/src/utils/apiCalls/folder/fetchFolders";
 import { handleSaveFolder } from "@/src/utils/apiCalls/folder/handleSaveFolder";
-import NewFolderPopUp from "./NewFolderPopup";
+import InputField from "@/src/utils/popUps/InputField";
 
+// Define the props for the SavePopUp component
 type SavePopUpProps = {
   fav?: boolean;
-  saveChooseFolder: () => void;
   queryName: string;
   cyphertext: string;
   natLang: string;
@@ -24,6 +27,28 @@ type SavePopUpProps = {
   setSelectedFolder: (folder: QueryFolderType | null) => void;
 };
 
+/**
+ * SavePopUp Component
+ *
+ * @description
+ * This component provides a popup interface for saving queries. It includes input fields for query name, cyphertext,
+ * and natural language, as well as options to select or create folders for organizing saved queries.
+ *
+ * @props
+ * @param {boolean} [fav] - Flag indicating whether the popup is for saving to favorites.
+ * @param {string} queryName - Current query name displayed in the input field.
+ * @param {string} cyphertext - Current cyphertext displayed in the input field.
+ * @param {string} natLang - Current natural language representation displayed in the input field.
+ * @param {QueryFolderType | null} selectedFolder - Currently selected folder for saving the query.
+ * @param {FolderType} folderType - Type of folder (e.g., Favorite, Regular).
+ * @param {(newFolderName: string) => void} updateQueryName - Function to update the query name.
+ * @param {(newCyphertext: string) => void} updateCyphertext - Function to update the cyphertext.
+ * @param {(newNaturalLanguage: string) => void} updateNaturalLanguage - Function to update the natural language representation.
+ * @param {(folder: QueryFolderType | null) => void} setSelectedFolder - Function to set the selected folder.
+ *
+ * @state
+ * @typedef {QueryFolderType[] | null} folders - State to store fetched folders from the API.
+ */
 const SavePopUp: React.FC<SavePopUpProps> = ({
   fav,
   queryName,
@@ -40,23 +65,50 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
 
   const [folders, setFolders] = useState<QueryFolderType[] | null>(null);
 
-  const [showNewFolderPopup, setShowNewFolderPopup] = useState(false);
-
+  /**
+   * Handle change in query name input
+   *
+   * @description
+   * Updates the query name state with the new value from the input field.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Event object containing the new value.
+   */
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateQueryName(e.target.value);
   };
 
+  /**
+   * Handle change in cyphertext input
+   *
+   * @description
+   * Updates the cyphertext state with the new value from the input field.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Event object containing the new value.
+   */
   const handleCyphertext = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // updateCyphertext(e.target.value);
     updateCyphertext(e.target.value);
-    console.log(cyphertext);
   };
 
+  /**
+   * Handle change in natural language representation input
+   *
+   * @description
+   * Updates the natural language representation state with the new value from the input field.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Event object containing the new value.
+   */
   const handleNatLang = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateNaturalLanguage(e.target.value);
-    console.log(natLang);
   };
 
+  /**
+   * Handle select folder action
+   *
+   * @description
+   * Closes the modal if a folder is already selected. Otherwise, displays an error message.
+   *
+   * @param {() => void} onClose - Callback function to close the modal.
+   */
   const handleSelectFolder = async (onClose: () => void) => {
     if (selectedFolder) {
       onClose();
@@ -64,22 +116,35 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
       toast.error("No folder selected");
     }
   };
+
+  /**
+   * Open select folder modal
+   *
+   * @description
+   * Fetches folders from the API based on the project ID and folder type. If successful, updates the folders state
+   * and opens the select folder modal. Otherwise, displays an error message.
+   *
+   * @param {() => void} onOpen - Callback function to open the modal.
+   */
   const openSelectFolder = async (onOpen: () => void) => {
     const result = await fetchFolders(projectId, folderType);
-    console.log("Fetched folders:", result);
     if (result) {
-      console.log("setting result value");
-      console.log(result);
       setFolders(result);
-      console.log(folders);
       onOpen();
     } else {
       toast.error("No folder selected");
     }
   };
 
+  /**
+   * Handle create new folder action
+   *
+   * @description
+   * Calls the API to create a new folder with the given name and updates the folders state with the new folder.
+   *
+   * @param {string} folderName - Name of the new folder to be created.
+   */
   const handleCreateNewFolder = async (folderName: string) => {
-    // Logic to create a new folder and update the folders state
     const newFolder = await handleSaveFolder(folderName, folderType, projectId);
 
     if (newFolder) {
@@ -88,45 +153,42 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
     }
   };
 
+  /**
+   * Render the component
+   *
+   * @description
+   * Renders the popup interface with input fields for query name, cyphertext, and natural language representation,
+   * as well as options to select or create folders for organizing saved queries.
+   */
   return (
     <div data-testid="save-pop-up-modal">
       <InputField
-        data-testid="query-name-text-field"
-        rows={2}
         label="Query name"
         placeholder="Type here"
+        rows={2}
         value={queryName}
         onChange={handleChangeName}
+        data-testid="query-name-text-field"
       />
       <InputField
-        data-testid="cypher-trepresentation-text-field"
-        readOnly={fav ? true : false}
-        rows={4}
         label="Cyphertext representation"
         placeholder="Type here"
+        readOnly={fav ? true : false}
+        rows={4}
         value={cyphertext}
         onChange={handleCyphertext}
+        data-testid="cypher-trepresentation-text-field"
       />
       <InputField
         // readOnly={fav ? true : false}
-        rows={4}
         label="Natural language representation"
         placeholder="Type here"
+        rows={4}
         value={natLang}
         onChange={handleNatLang}
       />
-      {/* Title for selecting a folder */}
       <label className="text-black text-sm block mb-2">Select folder</label>
       <UIModal
-        button={({ onOpen }) => (
-          <UIButton
-            data-testid="ui-button"
-            onClick={() => openSelectFolder(onOpen)}
-          >
-            {selectedFolder ? selectedFolder.folderName : "Select folder"}
-          </UIButton>
-        )}
-        header={<p className="text-primary">select folder</p>}
         body={
           <div>
             <SelectFolder
@@ -136,22 +198,29 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
             />
           </div>
         }
+        button={({ onOpen }) => (
+          <UIButton
+            data-testid="ui-button"
+            onClick={() => openSelectFolder(onOpen)}
+          >
+            {selectedFolder ? selectedFolder.folderName : "Select folder"}
+          </UIButton>
+        )}
         footer={({ onClose }) => (
           <>
             <div className="w-full flex justify-between mt-4 text-black">
               <UIModal
+                body={
+                  <NewFolderPopUp
+                    onClose={onClose}
+                    onSave={handleCreateNewFolder}
+                  />
+                }
                 button={({ onOpen }) => (
                   <UIButton className="bg-success-700" onClick={onOpen}>
                     Create New Folder
                   </UIButton>
                 )}
-                header={<span className="text-primary">Create New Folder</span>}
-                body={
-                  <NewFolderPopUp
-                    onSave={handleCreateNewFolder}
-                    onClose={onClose}
-                  />
-                }
                 footer={({ onClose }) => (
                   <>
                     <div className="w-full h-full flex flex-col justify-end items-start ">
@@ -164,6 +233,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
                     </div>
                   </>
                 )}
+                header={<span className="text-primary">Create New Folder</span>}
               />
               <UIButton
                 color="primary"
@@ -174,6 +244,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
             </div>
           </>
         )}
+        header={<p className="text-primary">select folder</p>}
       />
     </div>
   );

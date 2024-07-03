@@ -1,4 +1,3 @@
-import { ReactNode, FC } from "react";
 import {
   Modal,
   ModalContent,
@@ -8,6 +7,7 @@ import {
   useDisclosure,
   Divider,
 } from "@nextui-org/react";
+import React, { ReactNode, FC } from "react";
 
 type UIModalProps = {
   button: ({ onOpen }: { onOpen: () => void }) => ReactNode;
@@ -29,11 +29,11 @@ const UIModal: FC<UIModalProps> = ({
   return (
     <>
       {button({ onOpen })}
-      <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+      <Modal isOpen={isOpen} size="5xl" onClose={onClose}>
         <ModalContent>
           {header && (
             <>
-              <ModalHeader data-testid="modal-header" className="flex flex-col">
+              <ModalHeader className="flex flex-col" data-testid="modal-header">
                 {header}
               </ModalHeader>
               <Divider></Divider>

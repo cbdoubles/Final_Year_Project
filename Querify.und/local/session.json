@@ -3,38 +3,111 @@
     "Sessions": {
         "default": {
             "SessionData": {
+                "1_1536x864": {
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00SuggestionsBrowser": {
+                                "height": 711,
+                                "width": 250
+                            },
+                            "01ProjectOverviewWidget": {
+                                "height": 356,
+                                "width": 224
+                            },
+                            "02EntityFilter": {
+                                "height": 333,
+                                "width": 224
+                            },
+                            "03IssueBrowser": {
+                                "height": 300,
+                                "width": 1288
+                            },
+                            "04InfoBrowserWidget_0": {
+                                "height": 351,
+                                "width": 244
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
                 "2_1536x864_1920x1080": {
                     "DockWidgets": {
                         "FloatingWidgetOrder": [
                         ],
                         "OpenWindows": {
-                            "00IssueBrowser": {
-                                "height": 241,
-                                "width": 821
+                            "00ProjectOverviewWidget": {
+                                "height": 609,
+                                "width": 397
                             },
-                            "01ProjectOverviewWidget": {
-                                "height": 440,
+                            "01SuggestionsBrowser": {
+                                "height": 178,
                                 "width": 250
                             },
-                            "02SuggestionsBrowser": {
-                                "height": 659,
-                                "width": 250
+                            "02EntityFilter": {
+                                "height": 632,
+                                "width": 397
                             },
-                            "03EntityFilter": {
-                                "height": 463,
-                                "width": 250
+                            "03Locator": {
+                                "height": 725,
+                                "width": 234
                             },
-                            "04Locator": {
-                                "height": 241,
-                                "width": 821
+                            "04ProjectMetricsWidget": {
+                                "height": 702,
+                                "width": 234
                             },
-                            "05InfoBrowserWidget_0": {
-                                "height": 460,
-                                "width": 270
+                            "05IssueBrowser": {
+                                "height": 722,
+                                "width": 1261
+                            },
+                            "06InfoBrowserWidget_0": {
+                                "height": 291,
+                                "width": 417
                             }
                         },
                         "TabGroupFrontWidgets": [
-                            "ProjectOverviewWidget"
+                            "ProjectOverviewWidget",
+                            "ProjectMetricsWidget"
                         ]
                     },
                     "EntityFilter": {
@@ -64,6 +137,15 @@
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
                         ]
                     },
                     "ProjectOverviewWidget": {
@@ -72,6 +154,13 @@
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
                             "EntityFilter"
+                        ]
+                    },
+                    "STI::IReports::IReportWindow": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
                         ]
                     },
                     "SuggestionsBrowser": {
@@ -84,6 +173,85 @@
                 },
                 "CodeCheckFiles": {
                     "lastSelectedFilterInt": 0
+                },
+                "EditorWindowList": [
+                    "./frontend_next/src/components/home/StartNewProject.tsx",
+                    "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
+                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx"
+                ],
+                "EditorWindowSetting": {
+                    "18e366278e943769af70ada2d21fd08d": {
+                        "anchor": {
+                            "line": 225,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 225,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 711,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 182,
+                        "width": 861,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "8e8dc9fd8140e9126fac2a268ff6f36c": {
+                        "anchor": {
+                            "line": 7,
+                            "offset": 2
+                        },
+                        "caret": {
+                            "line": 9,
+                            "offset": 76
+                        },
+                        "container": 1,
+                        "height": 711,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 1034,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "a70d31de3088f42f87bf3d3ac24b228a": {
+                        "anchor": {
+                            "line": 76,
+                            "offset": 4
+                        },
+                        "caret": {
+                            "line": 76,
+                            "offset": 4
+                        },
+                        "container": 1,
+                        "height": 384,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 67,
+                        "width": 1034,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "d62fb69db94a267a35508155beec6418": {
+                        "anchor": {
+                            "line": 7,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 7,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 711,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 1034,
+                        "x": 0,
+                        "y": 0
+                    }
                 },
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"
@@ -116,29 +284,96 @@
                         "0"
                     ]
                 },
-                "LastAccessedPid": "1880",
-                "LastDisplayGroup": "2_1536x864_1920x1080",
+                "LastAccessedPid": "14176",
+                "LastDisplayGroup": "1_1536x864",
                 "Locator": {
-                    "LastEntityFilterUsed": "Functions"
+                    "LastEntityFilterUsed": "All Entities"
                 },
                 "MaintainEditorHistory": {
                     "FileRanges": {
-                        "size": 0
+                        "0": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/components/home/StartNewProject.tsx",
+                            "LineBegin": 80,
+                            "LineEnd": 80
+                        },
+                        "1": {
+                            "ColumnBegin": 4,
+                            "ColumnEnd": 4,
+                            "FilePath": "./frontend_next/src/components/home/StartNewProject.tsx",
+                            "LineBegin": 77,
+                            "LineEnd": 77
+                        },
+                        "2": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                            "LineBegin": 8,
+                            "LineEnd": 8
+                        },
+                        "3": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
+                            "LineBegin": 11,
+                            "LineEnd": 11
+                        },
+                        "4": {
+                            "ColumnBegin": 2,
+                            "ColumnEnd": 76,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx",
+                            "LineBegin": 8,
+                            "LineEnd": 10
+                        },
+                        "5": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                            "LineBegin": 8,
+                            "LineEnd": 8
+                        },
+                        "size": 6
                     },
-                    "index": -1
+                    "index": 5
                 },
                 "MiscSaveStates": {
                     "entitySelected": "@lFolderTest.deleteFolder.updatedItems.(unnamed_function_1)@p@lFolderTest.deleteFolder.updatedItems@p@lFolderTest.deleteFolder@kw15foldertest.deletefolder:./frontend_next/src/utils/displayFolderQueries/DisplayFoldersQueries.tsx@f./frontend_next/src/utils/displayFolderQueries/DisplayFoldersQueries.tsx",
-                    "ib": "entity:||:@lInfoCard@kw15infocard:./frontend_next/src/components/projectPage/visualization/neovisGraph/InfoCard.tsx@f./frontend_next/src/components/projectPage/visualization/neovisGraph/InfoCard.tsx",
+                    "ib": "issue",
+                    "metricsBrowserExpansionAddresses": "",
+                    "metricsBrowserSelectionAddress": "",
+                    "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
                     "projectOverviewCharts": "true",
-                    "projectOverviewChartsPosition": 1,
-                    "projectOverviewChartsSelected": "true",
+                    "projectOverviewChartsPosition": 0,
+                    "projectOverviewChartsSelected": "false",
                     "projectOverviewChartsWorkspace": 0,
-                    "selection": "InfoCard"
+                    "selection": "handleDeleteFolder.tsx"
                 },
+                "ProjectMetricsBrowser": {
+                    "Overwrite": false,
+                    "SaveDirectory": "./."
+                },
+                "ProjectUI": {
+                    "projectview": [
+                        "src",
+                        "src/components",
+                        "src/components/projectPage",
+                        "src/components/projectPage/queryTextbox"
+                    ],
+                    "projectviewcuritem": "src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
+                    "projectviewselection": [
+                        "src/components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx"
+                    ]
+                },
+                "SplitWorkspace1SelectedTab": "",
+                "SplitWorkspace1Tabs": [
+                    "./frontend_next/src/components/home/StartNewProject.tsx",
+                    "./frontend_next/src/utils/apiCalls/folder/handleDeleteFolder.tsx",
+                    "./frontend_next/src/utils/apiCalls/project/handleDeleteProject.tsx"
+                ],
                 "SplittableWorkspace": {
                     "active workspace": 0,
-                    "primary ws size": 1392,
+                    "primary ws size": 1034,
                     "split orientation": -1
                 },
                 "analysis": {

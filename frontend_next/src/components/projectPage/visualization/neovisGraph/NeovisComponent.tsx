@@ -9,9 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { useNeoVisContext } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
+import { useNeoVisContext } from "@/src/contexts/NeoVisContext";
+import html2canvas from "html2canvas";
+import { ENV, NEO_URL } from "@/src/libs/constants";
 
-const NEO4J_URL = "bolt://localhost:7687";
+const NEO4J_URL = NEO_URL ?? "";
 const NEO4J_USER = "neo4j";
 const NEO4J_PASSWORD = "letmein";
 
@@ -386,6 +388,7 @@ const NeovisComponent: React.FC<{
           },
           initialCypher: query,
           nonFlat: false,
+          encrypted: ENV === "production" ? "ENCRYPTION_ON" : "ENCRYPTION_OFF",
         };
 
         setConfig(initialConfig);
@@ -633,34 +636,63 @@ const NeovisComponent: React.FC<{
     );
   };
 
-  const downloadPNG = () => {
-    const scale = 4; // Scale factor for higher resolution
+  const downloadPNG = async () => {
+    const scale = 2; // Scale factor for higher resolution
 
-    // Get the canvas and its context
+    // Get the canvas element
     const canvas = visRef.current?.querySelector("canvas");
-    if (canvas) {
-      const width = canvas.width * scale;
-      const height = canvas.height * scale;
-      const largeCanvas = document.createElement("canvas");
-      largeCanvas.width = width;
-      largeCanvas.height = height;
-      const context = largeCanvas.getContext("2d");
 
-      // Clear the canvas for transparency
-      context?.clearRect(0, 0, width, height);
+    if (!canvas) {
+      console.error("Canvas element not found");
+      return;
+    }
 
-      // Draw the original canvas on the larger canvas
-      context?.scale(scale, scale);
-      context?.drawImage(canvas, 0, 0);
+    // Calculate the scaled dimensions
+    const originalWidth = canvas.width;
+    const originalHeight = canvas.height;
+    const scaledWidth = (originalWidth * scale) / 2;
+    const scaledHeight = (originalHeight * scale) / 2;
 
-      // Create the download link
-      const image = largeCanvas
+    try {
+      // Use html2canvas to capture the canvas with adjusted capture dimensions
+      const canvasData = await html2canvas(canvas, {
+        scale: scale,
+        x: 0, // Start capturing from x = 0
+        y: 0, // Start capturing from y = 0
+        width: scaledWidth, // Capture width scaled up
+        height: scaledHeight, // Capture height scaled up
+        useCORS: true, // Enable CORS support if required
+        logging: true, // Enable logging for debugging
+      });
+
+      // Convert canvasData to PNG image data URL
+      const image = canvasData
         .toDataURL("image/png")
         .replace("image/png", "image/octet-stream");
+
+      // Create a temporary canvas element for display and resizing
+      const downloadCanvas = document.createElement("canvas");
+      downloadCanvas.width = scaledWidth;
+      downloadCanvas.height = scaledHeight;
+      const context = downloadCanvas.getContext("2d");
+
+      if (!context) {
+        console.error("Failed to get canvas context");
+        return;
+      }
+
+      // Draw the captured image onto the temporary canvas
+      context.drawImage(canvasData, 0, 0);
+
+      // Create a link element to trigger download
       const link = document.createElement("a");
       link.download = "neovis-graph.png";
-      link.href = image;
+      link.href = downloadCanvas.toDataURL(); // Use the temporary canvas data URL
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link); // Clean up
+    } catch (error) {
+      console.error("Error generating PNG:", error);
     }
   };
 

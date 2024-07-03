@@ -9,6 +9,7 @@
     ],
     "name": "Background",
     "parents": [
+        "SciTools"
     ],
     "tags": [
     ]

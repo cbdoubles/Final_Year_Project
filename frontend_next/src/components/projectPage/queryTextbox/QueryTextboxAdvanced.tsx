@@ -1,32 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import UIButton from "../../../utils/ui/UIButton";
-import UIModal from "../../../utils/ui/UIModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-// import CustomPopUp from "@/src/views/PopUps/CustomPopUp";
-import QueryTextbox from "./QueryTextboxBasic";
-import SavePopUp from "../../../utils/queryTextbox/SavePopUp";
-import { useQueryProps } from "@/src/contexts/QueryContext";
-import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-import {
-  // extractNaturalLanguageParameters,
-  extractParameters,
-  validateParameters,
-} from "@/src/utils/queryTextbox/parameterUtils";
-import { QueryType, QueryFolderType, FolderType } from "@/src/libs/types";
+
+import QueryTextbox from "./QueryTextboxBasic";
+
+import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { useQueryProps } from "@/src/contexts/QueryContext";
+import { QueryType, QueryFolderType } from "@/src/libs/types";
+import { validateParameters } from "@/src/utils/queryTextbox/helpers/parameterUtils";
 import { handleSaveQuery } from "@/utils/apiCalls/query/handleSaveQuery";
-import { select } from "@nextui-org/theme";
-// import NewFolderPopUp from "./NewFolderPopup";
-import { Textarea } from "@nextui-org/react";
-
-// const queryFolder: QueryFolderType = {
-//   folderId: 6,
-//   folderName: "My Folder",
-//   folderType: "Custom", // Assigning a valid FolderType
-// };
-
-// const folderType = "Custom";
+import SavePopUp from "@/utils/queryTextbox/SavePopUp";
+import UIButton from "@/utils/ui/UIButton";
+import UIModal from "@/utils/ui/UIModal";
 
 interface QueryTextboxAdvancedProps {
   readOnly?: boolean;
@@ -36,7 +22,6 @@ interface QueryTextboxAdvancedProps {
 }
 const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   readOnly = false,
-  initialQuery = "",
   hideButtons = false,
   setQuery,
 }) => {
@@ -63,11 +48,8 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   const [selectedFolder, setSelectedFolder] = useState<QueryFolderType | null>(
     null
   );
-  const saveChooseFolder = () => {
-    console.log("clicked save");
-  };
+
   const [localQuery, setLocalQuery] = useState("");
-  const [queryRunClicked, setQueryRunClicked] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
@@ -79,13 +61,10 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
     const query = inputRef.current?.value || "";
     if (query === "") {
     } else {
-      console.log("Running query:", query);
       setLocalQuery(query);
       if (setQuery) {
         setQuery(query);
       }
-      setQueryRunClicked(true); // Initialize the NeovisComponent
-      console.log("set query run clicked to true");
     }
   };
 
@@ -94,53 +73,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
     setSaveCyphertext(editCyphertext);
     onOpen();
   };
-
-  // const handleSaveCustom = async (onClose: () => void) => {
-  //   if (selectedFolder === null) {
-  //     toast.error("No folder selected");
-  //     return;
-  //   } else {
-  //     const cypherParams = extractParameters(saveCyphertext);
-  //     const naturalLanguageParams =
-  //       extractNaturalLanguageParameters(saveNatLang);
-
-  //     if (cypherParams.length > naturalLanguageParams.length) {
-  //       toast.error(
-  //         "There are fewer parameters in the natural language box than required"
-  //       );
-  //       console.log(saveCyphertext, saveNatLang);
-  //       return;
-  //     } else if (cypherParams.length < naturalLanguageParams.length) {
-  //       toast.error(
-  //         "There are more parameters in the natural language box than required"
-  //       );
-  //       console.log(saveCyphertext, saveNatLang);
-  //       return;
-  //     }
-
-  //     if (validateParameters(saveCyphertext, saveNatLang)) {
-  //       const newQuery = await handleSaveQuery(
-  //         saveQueryName,
-  //         saveCyphertext,
-  //         saveNatLang,
-  //         selectedFolder,
-  //         projectId
-  //       );
-
-  //       if (newQuery !== null) {
-  //         setQueryFromQuery(newQuery);
-  //         setSelectedQuery(newQuery);
-  //         onClose();
-  //         toast.success("Query saved successfully");
-  //       }
-  //     } else {
-  //       toast.error(
-  //         "Not all parameters from cyphertext match in natural language box"
-  //       );
-  //       console.log(saveCyphertext, saveNatLang);
-  //     }
-  //   }
-  // };
 
   const handleSaveCustom = async (onClose: () => void) => {
     if (validateParameters(saveCyphertext, saveNatLang)) {
@@ -174,7 +106,6 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
     opOpen();
   };
 
-  //TODO see if we need defaultValue = {localQuery}, or defaultValue = {editCyphertext}, for passing it to NeoVis
   return (
     <div className="flex flex-col h-50 w-full">
       <div className="text-md text-black">
@@ -184,11 +115,11 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
         data-testid="advanced-query-text-box"
         ref={inputRef}
         className="w-full h-20 p-2 text-lg border rounded border-gray-300 mb-2 resize-none text-black"
-        value={editCyphertext}
-        onChange={(e) => setEditCyphertext(e.target.value)}
         defaultValue={localQuery}
         placeholder="Enter your query here"
         readOnly={readOnly}
+        value={editCyphertext}
+        onChange={(e) => setEditCyphertext(e.target.value)}
       />
       {!hideButtons && (
         <>
@@ -207,31 +138,29 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
               Run
             </UIButton>
             <UIModal
+              body={
+                <SavePopUp
+                  cyphertext={saveCyphertext}
+                  folderType={"Favorite"}
+                  natLang={saveNatLang}
+                  queryName={saveQueryName}
+                  selectedFolder={selectedFolder}
+                  setSelectedFolder={setSelectedFolder}
+                  updateCyphertext={setSaveCyphertext}
+                  updateNaturalLanguage={setSaveNatLang}
+                  updateQueryName={setSaveQueryName}
+                />
+              }
               button={({ onOpen }) => (
                 <UIButton
                   className="bg-gray-500"
                   onClick={() => handleSaveOpen(onOpen)}
                   data-testid="add-favorite-button"
                 >
-                  <FontAwesomeIcon icon={faStar} className="w-6" />
+                  <FontAwesomeIcon className="w-6" icon={faStar} />
                   Add to Favorites
                 </UIButton>
               )}
-              header={<span className="text-primary">Save favorite query</span>}
-              body={
-                <SavePopUp
-                  saveChooseFolder={saveChooseFolder}
-                  queryName={saveQueryName}
-                  cyphertext={saveCyphertext}
-                  natLang={saveNatLang}
-                  updateQueryName={setSaveQueryName}
-                  updateCyphertext={setSaveCyphertext}
-                  updateNaturalLanguage={setSaveNatLang}
-                  folderType={"Favorite"}
-                  selectedFolder={selectedFolder}
-                  setSelectedFolder={setSelectedFolder}
-                />
-              }
               footer={({ onClose }) => (
                 <>
                   <UIButton
@@ -248,33 +177,32 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
                   </UIButton>
                 </>
               )}
+              header={<span className="text-primary">Save favorite query</span>}
             />
             <UIModal
+              body={
+                <SavePopUp
+                  cyphertext={saveCyphertext}
+                  folderType={"Custom"}
+                  natLang={saveNatLang}
+                  queryName={saveQueryName}
+                  selectedFolder={selectedFolder}
+                  setSelectedFolder={setSelectedFolder}
+                  updateCyphertext={setSaveCyphertext}
+                  updateNaturalLanguage={setSaveNatLang}
+                  updateQueryName={setSaveQueryName}
+                />
+              }
               button={({ onOpen }) => (
                 <UIButton
                   className="bg-gray-500"
                   onClick={() => openSave(onOpen)}
                   data-testid="add-custom-button"
                 >
-                  <FontAwesomeIcon icon={faStar} className="w-6" />
+                  <FontAwesomeIcon className="w-6" icon={faStar} />
                   Add to Customs
                 </UIButton>
               )}
-              header={<span className="text-primary">Save custom query</span>}
-              body={
-                <SavePopUp
-                  saveChooseFolder={saveChooseFolder}
-                  queryName={saveQueryName}
-                  cyphertext={saveCyphertext}
-                  natLang={saveNatLang}
-                  updateQueryName={setSaveQueryName}
-                  updateCyphertext={setSaveCyphertext}
-                  updateNaturalLanguage={setSaveNatLang}
-                  folderType={"Custom"}
-                  selectedFolder={selectedFolder}
-                  setSelectedFolder={setSelectedFolder}
-                />
-              }
               footer={({ onClose }) => (
                 <>
                   <UIButton
@@ -291,13 +219,14 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
                   </UIButton>
                 </>
               )}
+              header={<span className="text-primary">Save custom query</span>}
             />
           </div>
           {showReadOnlyTextbox && (
             <QueryTextbox
-              readOnly={true}
-              initialQuery={saveNatLang}
               hideButtons={true}
+              initialQuery={saveNatLang}
+              readOnly={true}
             />
           )}
         </>

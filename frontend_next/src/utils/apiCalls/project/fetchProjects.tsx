@@ -1,11 +1,20 @@
+import { DB_URL } from "@/src/libs/constants";
 import { ProjectType, ProjectTypeFetch } from "@/src/libs/types";
 
+/**
+ * Fetch projects
+ *
+ * @description
+ * This function fetches the list of projects from the server. It transforms the fetched data
+ * into an array of ProjectType objects.
+ *
+ * @returns {Promise<ProjectType[]>} A promise that resolves to an array of ProjectType objects.
+ */
 export const fetchProjects = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/projects/");
+    const response = await fetch(`${DB_URL}/api/projects/`);
     const data: ProjectTypeFetch[] = await response.json();
 
-    // Transform data from ProjectType[] to Element[]
     const transformedData: ProjectType[] = data.map((project) => ({
       projectId: Number(project.id),
       projectName: project.name,

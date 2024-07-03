@@ -1,8 +1,18 @@
+import { DB_URL } from "@/src/libs/constants";
 import { QueryType } from "@/src/libs/types";
 
+/**
+ * Fetch default queries
+ *
+ * @description
+ * This function fetches the list of default queries from the server. It transforms the fetched data
+ * into an array of QueryType objects.
+ *
+ * @returns {Promise<QueryType[]>} A promise that resolves to an array of QueryType objects.
+ */
 export const fetchDefaultQueries = async (): Promise<QueryType[]> => {
   try {
-    const response = await fetch("http://localhost:8000/api/default-queries/");
+    const response = await fetch(`${DB_URL}/api/default-queries/`);
     const data = await response.json();
 
     const transformedData: QueryType[] = data.map((query: any) => ({
