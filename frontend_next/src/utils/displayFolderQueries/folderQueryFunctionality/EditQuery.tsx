@@ -96,28 +96,19 @@ const EditQuery = ({
 
   return (
     <UIModal
-      button={({ onOpen }) => (
-        <button onClick={onOpen}>
-          <LuPenSquare className="text-black" />
-        </button>
-      )}
-      header={
-        <>
-          <span className="text-primary">Edit chosen query</span>
-          <span className="text-sm text-gray-400 font-light leading-none">
-            {type}
-          </span>
-        </>
-      }
       body={
         <EditQueryBody
           query={editedQuery}
-          type={type}
           updateCyphertext={updateCyphertext}
           updateNaturalLanguage={updateNaturalLanguage}
           updateQueryName={updateQueryName}
         />
       }
+      button={({ onOpen }) => (
+        <button onClick={onOpen}>
+          <LuPenSquare className="text-black" />
+        </button>
+      )}
       footer={({ onClose }) => (
         <UIButton
           onClick={() => {
@@ -128,6 +119,14 @@ const EditQuery = ({
           Save
         </UIButton>
       )}
+      header={
+        <>
+          <span className="text-primary">Edit chosen query</span>
+          <span className="text-sm text-gray-400 font-light leading-none">
+            {type}
+          </span>
+        </>
+      }
     ></UIModal>
   );
 };

@@ -25,10 +25,10 @@ export default function FavoriteIcon({
   return (
     <div data-testid="favorite-button">
       <QueryIcon
-        type="Favorite"
-        icon={StarIcon}
         collapsed={collapsed}
+        icon={StarIcon}
         projectId={projectId}
+        type="Favorite"
       />
     </div>
   );

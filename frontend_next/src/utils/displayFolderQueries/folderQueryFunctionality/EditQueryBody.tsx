@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FolderType, QueryType } from "@/src/libs/types";
+import { QueryType } from "@/src/libs/types";
 import InputField from "@/src/utils/popUps/InputField";
 
 /**

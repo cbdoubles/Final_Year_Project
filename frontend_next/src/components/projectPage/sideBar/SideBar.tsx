@@ -49,8 +49,8 @@ export default function SideBar({
    */
   return (
     <div
-      data-testid="side-bar"
       className="bg-white border-r-1 grid grid-cols-1 h-full p-4 items-start"
+      data-testid="side-bar"
     >
       <div className="w-full grid grid-cols-1 gap-2">
         <button

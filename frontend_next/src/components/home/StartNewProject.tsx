@@ -116,17 +116,17 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
             type="text"
             value={newProjectName}
             onChange={handleProjectNameChange}
-            
           />
         </label>
         <label className="block mb-2 text-lg text-black">
           File Name:
           <input
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            data-testid="file-name-text-field"
             type="text"
             value={fileName}
             onChange={handleFileNameChange}
-            data-testid="file-name-text-field"/>
+          />
         </label>
         {selectedFileName && (
           <div className="mt-4 text-gray-700">
@@ -135,8 +135,8 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
         )}
         <div className="mt-4 flex gap-2">
           <UIButton
-            onClick={handleButtonClick}
             data-testid="select-file-upload"
+            onClick={handleButtonClick}
           >
             Select File
           </UIButton>
