@@ -1,5 +1,6 @@
-import React from "react";
 import { StarIcon } from "@heroicons/react/24/outline";
+import React from "react";
+
 import QueryIcon from "../../../../utils/sideBar/QueryIcon";
 
 /**
@@ -23,10 +24,10 @@ export default function FavoriteIcon({
 }) {
   return (
     <QueryIcon
-      type="Favorite"
-      icon={StarIcon}
       collapsed={collapsed}
+      icon={StarIcon}
       projectId={projectId}
+      type="Favorite"
     />
   );
 }

@@ -1,6 +1,7 @@
 import { Card } from "@nextui-org/react";
 import React from "react";
 import { LuAlignJustify } from "react-icons/lu";
+
 import CustomIcon from "@/src/components/projectPage/sideBar/icons/CustomIcon";
 import Default from "@/src/components/projectPage/sideBar/icons/defaultQuery/DefaultIcon";
 import FavouriteIcon from "@/src/components/projectPage/sideBar/icons/FavouriteIcon";
