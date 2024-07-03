@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { ProjectType, ProjectTypeFetch } from "@/src/libs/types";
 
 /**
@@ -11,7 +12,7 @@ import { ProjectType, ProjectTypeFetch } from "@/src/libs/types";
  */
 export const fetchProjects = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/projects/");
+    const response = await fetch(`${DB_URL}/api/projects/`);
     const data: ProjectTypeFetch[] = await response.json();
 
     const transformedData: ProjectType[] = data.map((project) => ({

@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { FolderType, QueryFolderListType, QueryType } from "@/src/libs/types";
 
 /**
@@ -17,7 +18,7 @@ export const fetchFoldersQueries = async (
 ): Promise<QueryFolderListType[]> => {
   try {
     const folderResponse = await fetch(
-      `http://localhost:8000/api/folders/by-project/?project=${projectId}&type=${selectedFolderType}`,
+      `${DB_URL}/api/folders/by-project/?project=${projectId}&type=${selectedFolderType}`,
       {
         method: "GET",
       }
@@ -40,8 +41,8 @@ export const fetchFoldersQueries = async (
      */
     const getQueriesUrl = (folderId: number): string => {
       return selectedFolderType === "Favorite"
-        ? `http://localhost:8000/api/favorite-queries/by-folder/?folder_id=${folderId}`
-        : `http://localhost:8000/api/custom-queries/by-folder/?folder_id=${folderId}`;
+        ? `${DB_URL}/api/favorite-queries/by-folder/?folder_id=${folderId}`
+        : `${DB_URL}/api/custom-queries/by-folder/?folder_id=${folderId}`;
     };
 
     // Iterate through each folder to fetch its queries
