@@ -6,7 +6,7 @@ import "../public/styles/globals.css";
 import "../public/styles/style.css";
 import { Slide, ToastContainer } from "react-toastify";
 
-import { NeoVisProvider } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
+import { NeoVisProvider } from "@/src/contexts/NeoVisContext";
 import { ProjectPropsProvider } from "@/src/contexts/ProjectContext";
 import { PropsProvider } from "@/src/contexts/PropsContext";
 import { QueryPropsProvider } from "@/src/contexts/QueryContext";
