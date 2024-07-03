@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import FolderTest from "@/src/utils/displayFolderQueries/DisplayFoldersQueries";
+import { toast } from "react-toastify";
+
 import QueryIconButton from "./QueryIconButton";
-import UIModal from "@/src/utils/ui/UIModal";
-import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
+
+import { useQueryProps } from "@/src/contexts/QueryContext";
 import { FolderType, QueryType, QueryFolderListType } from "@/src/libs/types";
 import { fetchFoldersQueries } from "@/src/utils/apiCalls/foldersQueries/fetchFoldersQueries";
-import { useQueryProps } from "@/src/contexts/QueryContext";
-import { toast } from "react-toastify";
+import FolderTest from "@/src/utils/displayFolderQueries/DisplayFoldersQueries";
+import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
 
 /**
  * QueryIcon Component
@@ -92,6 +94,19 @@ const QueryIcon: React.FC<SelectProps> = ({
   return (
     <>
       <UIModal
+        body={
+          isLoading ? (
+            <p className="text-black">Loading</p>
+          ) : (
+            <FolderTest
+              canBeShared={false}
+              handleSelectQuery={handleSelectQuery}
+              items={items}
+              title={`Select a ${type} query`}
+              type="Default"
+            />
+          )
+        }
         button={({ onOpen }) => (
           <QueryIconButton
             handleClick={() => {
@@ -99,9 +114,14 @@ const QueryIcon: React.FC<SelectProps> = ({
               onOpen();
             }}
             collapsed={collapsed}
-            type={type}
             icon={Icon}
+            type={type}
           />
+        )}
+        footer={({ onClose }) => (
+          <UIButton onClick={() => handleSelectQueryButtonClick(onClose)}>
+            Select query
+          </UIButton>
         )}
         header={
           <>
@@ -111,24 +131,6 @@ const QueryIcon: React.FC<SelectProps> = ({
             </span>
           </>
         }
-        body={
-          isLoading ? (
-            <p className="text-black">Loading</p>
-          ) : (
-            <FolderTest
-              title={`Select a ${type} query`}
-              items={items}
-              canBeShared={false}
-              handleSelectQuery={handleSelectQuery}
-              type="Default"
-            />
-          )
-        }
-        footer={({ onClose }) => (
-          <UIButton onClick={() => handleSelectQueryButtonClick(onClose)}>
-            Select query
-          </UIButton>
-        )}
         bodyNoPadding
       ></UIModal>
     </>
