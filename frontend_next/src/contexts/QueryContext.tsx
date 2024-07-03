@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
+
 import { QueryType } from "../libs/types";
 
 type QueryContextType = {
@@ -16,6 +17,12 @@ type QueryContextType = {
   updatedQuery: QueryType;
 };
 
+/**
+ * QueryContext
+ *
+ * @description
+ * Context object to manage query-related data such as cypherQuery, queryId, queryName, and natLang.
+ */
 export const QueryContext = createContext<QueryContextType>({
   cypherQuery: "",
   setCypherQuery: () => {},
@@ -32,17 +39,24 @@ export const QueryContext = createContext<QueryContextType>({
     queryName: "",
     cypherQuery: "",
     natLang: "",
-    // You can add other properties here if needed
   }),
   updatedQuery: {
     queryId: 0,
     queryName: "",
     cypherQuery: "",
     natLang: "",
-    // You can add other properties here if needed
   },
 });
 
+/**
+ * QueryPropsProvider
+ *
+ * @description
+ * Provider component that wraps the application with QueryContext, allowing components to
+ * consume and update query data using the useQueryProps hook.
+ *
+ * @param {React.ReactNode} children - The child components wrapped by QueryPropsProvider.
+ */
 export const QueryPropsProvider = ({
   children,
 }: {
@@ -53,6 +67,12 @@ export const QueryPropsProvider = ({
   const [queryName, setQueryName] = useState<string>("");
   const [natLang, setNaturalLanguageQuery] = useState<string>("");
 
+  /**
+   * resetQueryContext
+   *
+   * @description
+   * Function to reset cypherQuery, queryId, queryName, and natLang to their default values.
+   */
   const resetQueryContext = () => {
     setCypherQuery("");
     setQueryId(0);
@@ -60,23 +80,29 @@ export const QueryPropsProvider = ({
     setNaturalLanguageQuery("");
   };
 
+  /**
+   * setQueryFromQuery
+   *
+   * @description
+   * Function to update all query data (cypherQuery, queryId, queryName, natLang) at once.
+   *
+   * @param {QueryType} query - The new query data containing cypherQuery, queryId, queryName, and natLang.
+   */
   const setQueryFromQuery = (query: QueryType) => {
-    console.log("in query context");
-    console.log(query);
     setCypherQuery(query.cypherQuery);
-    console.log(cypherQuery);
     setQueryId(query.queryId);
-    console.log(queryId);
     setQueryName(query.queryName);
-    console.log(queryName);
     setNaturalLanguageQuery(query.natLang);
-    console.log(natLang);
-    console.log(getSelectedQuery());
-    // Assuming the folderType is derived from folderId in some way
-    // You might need to map folderId to folderType if required
-    // setFolderType(mapFolderIdToFolderType(query.folderId));
   };
 
+  /**
+   * getSelectedQuery
+   *
+   * @description
+   * Function to get the currently selected query data.
+   *
+   * @returns {QueryType} - The selected query data containing cypherQuery, queryId, queryName, and natLang.
+   */
   const getSelectedQuery = (): QueryType => {
     return {
       queryId,
@@ -119,4 +145,14 @@ export const QueryPropsProvider = ({
   );
 };
 
+/**
+ * useQueryProps
+ *
+ * @description
+ * Hook to consume the QueryContext values across components.
+ *
+ * @returns {QueryContextType} - Object containing cypherQuery, setCypherQuery, queryId, setQueryId,
+ * queryName, setQueryName, natLang, setNaturalLanguageQuery, resetQueryContext, setQueryFromQuery,
+ * getSelectedQuery, and updatedQuery.
+ */
 export const useQueryProps = () => useContext(QueryContext);
