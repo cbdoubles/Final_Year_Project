@@ -53,10 +53,30 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const [showReadOnlyTextbox, setShowReadOnlyTextbox] = useState(false);
+
+  /**
+   * handleShowNaturalLang
+   *
+   * @description
+   * Toggles the visibility of the natural language query textbox.
+   *
+   * @param {boolean} showReadOnlyTextbox - Current state of the natural language textbox visibility.
+   * @param {React.Dispatch<React.SetStateAction<boolean>>} setShowReadOnlyTextbox - State setter function.
+   */
   const handleShowNaturalLang = () => {
     setShowReadOnlyTextbox((prevState) => !prevState);
   };
 
+  /**
+   * handleRunQuery
+   *
+   * @description
+   * Runs the query by setting the localQuery state and calling the setQuery callback if provided.
+   *
+   * @param {React.RefObject<HTMLTextAreaElement>} inputRef - Reference to the query input element.
+   * @param {React.Dispatch<React.SetStateAction<string>>} setLocalQuery - State setter function for local query.
+   * @param {(query: string) => void} [setQuery] - Optional callback to set the query.
+   */
   const handleRunQuery = () => {
     const query = inputRef.current?.value || "";
     if (query === "") {
@@ -68,12 +88,37 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
     }
   };
 
+  /**
+   * openSave
+   *
+   * @description
+   * Prepares to open the save modal by resetting the selected folder and setting the saveCyphertext.
+   *
+   * @param {() => void} onOpen - Function to open the modal.
+   * @param {React.Dispatch<React.SetStateAction<QueryFolderType | null>>} setSelectedFolder - State setter function for selected folder.
+   * @param {string} editCyphertext - The current cypher query text being edited.
+   * @param {React.Dispatch<React.SetStateAction<string>>} setSaveCyphertext - State setter function for save cyphertext.
+   */
   const openSave = async (onOpen: () => void) => {
     setSelectedFolder(null);
     setSaveCyphertext(editCyphertext);
     onOpen();
   };
 
+  /**
+   * handleSaveCustom
+   *
+   * @description
+   * Handles saving a custom query by validating the parameters and saving the query.
+   *
+   * @param {() => void} onClose - Function to close the modal.
+   * @param {string} saveCyphertext - The cypher query text to save.
+   * @param {string} saveNatLang - The natural language text to save.
+   * @param {QueryFolderType | null} selectedFolder - The selected folder to save the query into.
+   * @param {number} projectId - The project ID associated with the query.
+   * @param {(query: QueryType) => void} setQueryFromQuery - Function to set the query from the saved query.
+   * @param {React.Dispatch<React.SetStateAction<QueryType>>} setSelectedQuery - State setter function for selected query.
+   */
   const handleSaveCustom = async (onClose: () => void) => {
     if (validateParameters(saveCyphertext, saveNatLang)) {
       if (selectedFolder === null) {
