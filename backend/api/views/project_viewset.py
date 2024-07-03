@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from ..models import Project
 from ..serializers.project_serializer import ProjectSerializer
-from ..file_services import modify_file
+from ..file_services import FileService
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -46,7 +46,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
             project = serializer.save()
 
             # Send the project ID and file to the method "modify_file"
-            modify_file(project.id, file, False)
+            file_service = FileService()
+            file_service.modify_file(project.id, file, False)
 
             # Return the serialized project data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -86,7 +87,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
             # Handle file reuploads if a file is provided
             if 'file' in request.FILES:
                 file = request.FILES.get('file')
-                modify_file(project.id, file, reupload=True)
+                file_service = FileService()
+                file_service.modify_file(project.id, file, reupload=True)
 
             # Validate the updated data using the serializer
             serializer = self.get_serializer(project, data=data, partial=True)

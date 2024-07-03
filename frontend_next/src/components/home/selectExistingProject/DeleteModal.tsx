@@ -1,17 +1,16 @@
-// DeleteModal.tsx
 import React from "react";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton from "@/src/utils/ui/UIButton";
 import { LuTrash2 } from "react-icons/lu";
 import { handleDeleteConfirm } from "@/src/utils/apiCalls/project/handleDeleteProject";
-import { Element } from "@/src/libs/types";
+import { ProjectType } from "@/src/libs/types";
 
 type DeleteModalProps = {
-  element: Element;
-  deletingElement: Element | null;
-  setDeletingElement: React.Dispatch<React.SetStateAction<Element | null>>;
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>;
-  elements: Element[];
+  element: ProjectType;
+  deletingElement: ProjectType | null;
+  setDeletingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>;
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>;
+  elements: ProjectType[];
 };
 
 const DeleteModal: React.FC<DeleteModalProps> = ({
