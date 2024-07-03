@@ -1,21 +1,21 @@
 // ProjectItem.tsx
 import React from "react";
-import { LuTrash2, LuPenSquare } from "react-icons/lu";
+import { LuPenSquare } from "react-icons/lu";
 import EditForm from "./EditForm";
 import DeleteModal from "./DeleteModal";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
-import { Element } from "@/src/libs/types";
+import { ProjectType } from "@/src/libs/types";
 
 type ProjectItemProps = {
-  element: Element;
-  selectedElement: Element | null;
-  setSelectedElement: React.Dispatch<React.SetStateAction<Element | null>>;
-  setElements: React.Dispatch<React.SetStateAction<Element[]>>;
-  elements: Element[];
-  editingElement: Element | null;
-  setEditingElement: React.Dispatch<React.SetStateAction<Element | null>>;
-  deletingElement: Element | null;
-  setDeletingElement: React.Dispatch<React.SetStateAction<Element | null>>;
+  element: ProjectType;
+  selectedElement: ProjectType | null;
+  setSelectedElement: React.Dispatch<React.SetStateAction<ProjectType | null>>;
+  setElements: React.Dispatch<React.SetStateAction<ProjectType[]>>;
+  elements: ProjectType[];
+  editingElement: ProjectType | null;
+  setEditingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>;
+  deletingElement: ProjectType | null;
+  setDeletingElement: React.Dispatch<React.SetStateAction<ProjectType | null>>;
 };
 
 const ProjectItem: React.FC<ProjectItemProps> = ({

@@ -31,7 +31,10 @@ export default function Home() {
           <CardBody className="grid gap-10 items-center justify-center p-10">
             <UIModal
               button={({ onOpen }) => (
-                <UIButton data-testid="ui-button" onClick={onOpen}>
+                <UIButton
+                  data-testid="select-exising-project-modal"
+                  onClick={onOpen}
+                >
                   Select existing project
                 </UIButton>
               )}

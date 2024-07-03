@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import ProjectItem from "./ProjectItem";
-import { Element } from "@/src/libs/types";
+import { ProjectType } from "@/src/libs/types";
 import { fetchProjects } from "@/src/utils/apiCalls/project/fetchProjects";
 
 type SelectExistingProjectProps = {};
 
 const SelectExistingProject: React.FC<SelectExistingProjectProps> = ({}) => {
-  const [elements, setElements] = useState<Element[]>([]);
-  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
-  const [editingElement, setEditingElement] = useState<Element | null>(null);
-  const [deletingElement, setDeletingElement] = useState<Element | null>(null);
+  const [elements, setElements] = useState<ProjectType[]>([]);
+  const [selectedElement, setSelectedElement] = useState<ProjectType | null>(null);
+  const [editingElement, setEditingElement] = useState<ProjectType | null>(null);
+  const [deletingElement, setDeletingElement] = useState<ProjectType | null>(null);
 
   useEffect(() => {
     onLoad();
