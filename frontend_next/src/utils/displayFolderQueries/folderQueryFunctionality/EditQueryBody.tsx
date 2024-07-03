@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import InputField from "@/src/utils/popUps/InputField";
+import React from "react";
+
 import { FolderType, QueryType } from "@/src/libs/types";
+import InputField from "@/src/utils/popUps/InputField";
 
 /**
  * @description

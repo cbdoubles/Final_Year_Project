@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 
-import { ProjectType } from "@/src/libs/types";
 import { DB_URL } from "@/src/libs/constants";
+import { ProjectType } from "@/src/libs/types";
 
 /**
  * Handle save project

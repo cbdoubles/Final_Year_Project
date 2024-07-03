@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import UIModal from "@/src/utils/ui/UIModal";
-import UIButton from "@/src/utils/ui/UIButton";
-import EditQueryBody from "./EditQueryBody";
 import { LuPenSquare } from "react-icons/lu";
+
+import EditQueryBody from "./EditQueryBody";
+
 import { FolderType, QueryType } from "@/src/libs/types";
 import { handleEditQuery } from "@/src/utils/apiCalls/query/handleEditQuery";
+import UIButton from "@/src/utils/ui/UIButton";
+import UIModal from "@/src/utils/ui/UIModal";
 
 /**
  * @description
