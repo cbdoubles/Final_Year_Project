@@ -1,14 +1,21 @@
 import { FolderType, QueryFolderListType, QueryType } from "@/src/libs/types";
 
+/**
+ * Fetch folders and their queries
+ *
+ * @description
+ * This function fetches folders for a given project ID and folder type, then fetches the queries for each folder.
+ * It returns a list of QueryFolderListType objects, each containing a folder and its associated queries.
+ *
+ * @param {FolderType} selectedFolderType - The type of folders to fetch.
+ * @param {number} projectId - The ID of the project to fetch folders and queries for.
+ * @returns {Promise<QueryFolderListType[]>} A promise that resolves to a list of QueryFolderListType objects.
+ */
 export const fetchFoldersQueries = async (
   selectedFolderType: FolderType,
   projectId: number
 ): Promise<QueryFolderListType[]> => {
   try {
-    // Fetch the list of folders
-    console.log("in fetch");
-    console.log(projectId);
-    console.log(selectedFolderType);
     const folderResponse = await fetch(
       `http://localhost:8000/api/folders/by-project/?project=${projectId}&type=${selectedFolderType}`,
       {
@@ -25,6 +32,12 @@ export const fetchFoldersQueries = async (
     // Initialize the list to store QueryFolderListType objects
     const queryFolderList: QueryFolderListType[] = [];
 
+    /**
+     * Get the queries URL based on folder type
+     *
+     * @param {number} folderId - The ID of the folder.
+     * @returns {string} The URL to fetch queries for the given folder ID.
+     */
     const getQueriesUrl = (folderId: number): string => {
       return selectedFolderType === "Favorite"
         ? `http://localhost:8000/api/favorite-queries/by-folder/?folder_id=${folderId}`
