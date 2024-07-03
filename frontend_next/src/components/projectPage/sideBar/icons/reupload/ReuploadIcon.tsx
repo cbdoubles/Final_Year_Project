@@ -1,24 +1,18 @@
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+
 import ReuploadFile from "@/src/components/projectPage/sideBar/icons/reupload/ReuploadFile";
+import { useProjectProps } from "@/src/contexts/ProjectContext";
+import { uploadFile } from "@/src/utils/apiCalls/project/handleEditFileProject";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useProjectProps } from "@/src/contexts/ProjectContext";
-import { ProjectType } from "@/src/libs/types";
-import Link from "next/link";
-
-const properties = {
-  name: "Reupload project data",
-  href: "/sideBar",
-  icon: ArrowPathIcon,
-};
 
 export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
-  const { projectId, setGraphName } = useProjectProps();
+  const { projectId } = useProjectProps();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
   const { setProject } = useProjectProps();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,35 +30,13 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const handleSave = async (onClose: () => void) => {
     if (!selectedFile || !fileName) return;
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("file_name", fileName);
-
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/projects/${projectId}/`,
-        {
-          method: "PATCH",
-          body: formData,
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log("File saved:", selectedFileName);
-
-        const project: ProjectType = {
-          projectId: Number(result.id),
-          projectName: result.name,
-          graphName: result.file_name,
-        };
-
-        setProject(project);
-      }
+      const project = await uploadFile(projectId, selectedFile, fileName);
+      setProject(project);
     } catch (error) {
-      console.error("Error uploading file:", error);
+      toast.error("Error saving project");
     }
+
     onClose();
   };
 
@@ -73,10 +45,18 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   return (
     <div>
       <UIModal
+        body={
+          <ReuploadFile
+            fileName={fileName}
+            selectedFileName={selectedFileName}
+            onFileChange={handleFileChange}
+            onFileNameChange={handleFileNameChange}
+          />
+        }
         button={({ onOpen }) => (
           <button
-            data-testid="ui-button"
             className="w-full flex relative h-[48px] grow items-center justify-start gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium text-black hover:bg-sky-100 hover:text-blue-600 md:justify-start md:p-2 md:px-3"
+            data-testid="ui-button"
             onClick={onOpen}
           >
             <ArrowPathIcon className="w-6" />
@@ -87,15 +67,6 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
             )}
           </button>
         )}
-        header={<p className="text-primary">Select File</p>}
-        body={
-          <ReuploadFile
-            fileName={fileName}
-            onFileNameChange={handleFileNameChange}
-            selectedFileName={selectedFileName}
-            onFileChange={handleFileChange}
-          />
-        }
         footer={({ onClose }) => (
           <>
             {!isSaveDisabled && (
@@ -103,8 +74,8 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
             )}
           </>
         )}
+        header={<p className="text-primary">Select File</p>}
       ></UIModal>
-      {message && <p>{message}</p>}
     </div>
   );
 }
