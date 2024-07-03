@@ -1,6 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { FolderType } from "@/src/libs/types";
 import UIButton, { UIButtonProps } from "@/src/utils/ui/UIButton";
+
+/**
+ * @description
+ * QueryIconButton Component
+ * This component renders a button with an icon. If the provided icon is not UIButton, it renders a standard button with the icon and type label.
+ * Otherwise, it renders the UIButton component. This allows for a flexible implementation that can adapt based on the provided icon.
+ *
+ * @props
+ * @param {Function} handleClick - Function to be called when the button is clicked.
+ * @param {boolean} [collapsed=false] - State to control the visibility of the type label. If true, the label is hidden.
+ * @param {FolderType} type - The type of folder, used as the label next to the icon when not collapsed.
+ * @param {React.ComponentType<React.SVGProps<SVGSVGElement>> | React.FunctionComponent<UIButtonProps>} icon - The icon to be displayed on the button. Can be a standard SVG icon or a UIButton.
+ *
+ * @component
+ * @example
+ * <QueryIconButton
+ *   handleClick={() => console.log('Clicked')}
+ *   collapsed={false}
+ *   type="Folder"
+ *   icon={FolderIcon}
+ * />
+ */
 
 interface SelectProps {
   handleClick: () => void;
@@ -8,17 +30,15 @@ interface SelectProps {
   type: FolderType;
   icon:
     | React.ComponentType<React.SVGProps<SVGSVGElement>>
-    | React.FunctionComponent<UIButtonProps>; // Updated icon prop type
+    | React.FunctionComponent<UIButtonProps>;
 }
 
 const QueryIconButton: React.FC<SelectProps> = ({
-  handleClick,
   collapsed,
   type,
   icon: Icon,
+  handleClick,
 }) => {
-  console.log("printing type");
-  console.log(type);
   return (
     <>
       {UIButton !== Icon ? (

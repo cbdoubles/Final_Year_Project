@@ -2,7 +2,18 @@ import React from "react";
 import { StarIcon } from "@heroicons/react/24/outline";
 import QueryIcon from "../../../../utils/sideBar/QueryIcon";
 
-//Defininig the component variables
+/**
+ * FavoriteIcon Component
+ *
+ * @description
+ * Renders a favorite icon using the QueryIcon component. This component is designed to visually represent a favorite item,
+ * such as a project or a file, in the UI. It uses the StarIcon from Heroicons to symbolize the favorite status.
+ *
+ * @props
+ * @param {boolean} collapsed - Indicates if the sidebar or container holding the icon is collapsed.
+ * @param {number} projectId - The ID of the project associated with the favorite icon.
+ */
+
 export default function FavoriteIcon({
   collapsed,
   projectId,
@@ -10,7 +21,6 @@ export default function FavoriteIcon({
   collapsed: boolean;
   projectId: number;
 }) {
-  //Return the QueryIcon component with the Favorite type and StarIcon
   return (
     <QueryIcon
       type="Favorite"
