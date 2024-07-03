@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 // Define the ProjectType
 export type ProjectType = {
@@ -15,9 +21,15 @@ type ProjectContextType = {
   graphName: string;
   setGraphName: (graphName: string) => void;
   resetProject: () => void;
-  setProject: (project: ProjectType) => void; // Add setProject to the context type
+  setProject: (project: ProjectType) => void;
 };
 
+/**
+ * ProjectContext
+ *
+ * @description
+ * Context object to manage project-related data such as projectId, projectName, and graphName.
+ */
 export const ProjectContext = createContext<ProjectContextType>({
   projectId: 1, // Default value for projectId
   setProjectId: () => {},
@@ -29,27 +41,82 @@ export const ProjectContext = createContext<ProjectContextType>({
   setProject: () => {}, // Default value for setProject
 });
 
+/**
+ * ProjectPropsProvider
+ *
+ * @description
+ * Provider component that wraps the application with ProjectContext, allowing components to
+ * consume and update project data using the useProjectProps hook.
+ *
+ * @param {React.ReactNode} children - The child components wrapped by ProjectPropsProvider.
+ */
 export const ProjectPropsProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [projectId, setProjectId] = useState<number>(1);
-  const [projectName, setProjectName] = useState<string>("");
-  const [graphName, setGraphName] = useState<string>("");
+  const [projectId, setProjectIdState] = useState<number>(0);
+  const [projectName, setProjectNameState] = useState<string>("");
+  const [graphName, setGraphNameState] = useState<string>("");
 
+  // Wrap setters with functions to handle state and localStorage
+  const setProjectId = (projectId: number) => {
+    setProjectIdState(projectId);
+    localStorage.setItem("projectId", projectId.toString());
+  };
+
+  const setProjectName = (projectName: string) => {
+    setProjectNameState(projectName);
+    localStorage.setItem("projectName", projectName);
+  };
+
+  const setGraphName = (graphName: string) => {
+    setGraphNameState(graphName);
+    localStorage.setItem("graphName", graphName);
+  };
+
+  /**
+   * resetProject
+   *
+   * @description
+   * Function to reset projectId, projectName, and graphName to their default values.
+   */
   const resetProject = () => {
-    setProjectId(1);
+    setProjectId(0);
     setProjectName("");
     setGraphName("");
   };
 
-  // Define the setProject function
+  /**
+   * setProject
+   *
+   * @description
+   * Function to update all project data (projectId, projectName, graphName) at once.
+   *
+   * @param {ProjectType} project - The new project data containing projectId, projectName, and graphName.
+   */
   const setProject = (project: ProjectType) => {
     setProjectId(project.projectId);
     setProjectName(project.projectName);
     setGraphName(project.graphName);
   };
+
+  // Load initial state from localStorage on component mount
+  useEffect(() => {
+    const storedProjectId = localStorage.getItem("projectId");
+    const storedProjectName = localStorage.getItem("projectName");
+    const storedGraphName = localStorage.getItem("graphName");
+
+    if (storedProjectId) {
+      setProjectIdState(parseInt(storedProjectId, 10));
+    }
+    if (storedProjectName) {
+      setProjectNameState(storedProjectName);
+    }
+    if (storedGraphName) {
+      setGraphNameState(storedGraphName);
+    }
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -60,7 +127,7 @@ export const ProjectPropsProvider = ({
       graphName,
       setGraphName,
       resetProject,
-      setProject, // Add setProject to the context value
+      setProject,
     }),
     [projectId, projectName, graphName]
   );
@@ -69,5 +136,13 @@ export const ProjectPropsProvider = ({
     <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
   );
 };
-
+/**
+ * useProjectProps
+ *
+ * @description
+ * Hook to consume the ProjectContext values across components.
+ *
+ * @returns {ProjectContextType} - Object containing projectId, setProjectId, projectName,
+ * setProjectName, graphName, setGraphName, resetProject, and setProject.
+ */
 export const useProjectProps = () => useContext(ProjectContext);
