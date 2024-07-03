@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { React, useState } from "react";
 import { LuFolder } from "react-icons/lu";
 import QueryDisplay from "./QueryDisplay";
 import EditFolder from "./EditFolder";
@@ -8,6 +8,26 @@ import {
   QueryFolderType,
   QueryFolderListType,
 } from "@/src/libs/types";
+
+/**
+ * @description
+ * FolderDisplay Component
+ * This component is responsible for displaying a folder's information, including its name and the queries it contains.
+ * It allows for the folder name to be edited and the folder to be deleted. It also displays the queries within the folder
+ * and provides functionality to edit and delete these queries.
+ *
+ * @props
+ * @param {QueryFolderListType} item - The folder and its queries to be displayed.
+ * @param {boolean} canBeShared - Indicates if the folder can be shared.
+ * @param {(query: QueryType) => void} handlerClick - Function to handle clicks on queries.
+ * @param {(deleteFolder: boolean, folder: QueryFolderType) => void} deleteFolder - Function to delete the folder.
+ *
+ * @state
+ * @param {boolean} open - State to control the visibility of the folder's queries. True if the queries are visible.
+ * @param {QueryFolderType} folder - State representing the current folder. It starts with the folder passed in props and can be updated.
+ * @param {QueryType[]} queries - State representing the list of queries within the folder. It starts with the queries passed in props and can be updated.
+ * @param {number | null} selectedButtonId - State to track the ID of the selected query button. Null if no button is selected.
+ */
 
 const FolderDisplay = ({
   item,
@@ -32,7 +52,7 @@ const FolderDisplay = ({
   const updateFolderName = (newFolderName: string) => {
     const updatedFolder = { ...folder, folderName: newFolderName };
     setFolder(updatedFolder);
-    item.folder = updatedFolder; // Avoid mutating props directly
+    item.folder = updatedFolder;
   };
 
   const deleteQuery = (deletingQuery: boolean, deleteQuery: QueryType) => {
@@ -57,28 +77,28 @@ const FolderDisplay = ({
     <div className={"bg-sky-600"}>
       <div className="flex items-center justify-between">
         <button
-          onClick={handleFolderClick}
           className="cursor-pointer text-white flex items-center gap-1"
+          onClick={handleFolderClick}
         >
           <LuFolder className="ml-2 text-white" />
           {folder.folderName}
         </button>
         <div className="flex gap-2">
           <EditFolder folder={folder} updateFolderName={updateFolderName} />
-          <DeleteFolder folder={folder} deleteFolder={deleteFolder} />
+          <DeleteFolder deleteFolder={deleteFolder} folder={folder} />
         </div>
       </div>
       {queries.length > 0 && open && (
         <div className="w-full">
           <QueryDisplay
-            queries={queries}
             canBeShared={canBeShared}
-            handlerClick={handlerClick}
             deleteQuery={deleteQuery}
             editQuery={editQuery}
-            type={item.folder.folderType}
+            handlerClick={handlerClick}
+            queries={queries}
             selectedButtonId={selectedButtonId}
             setSelectedButtonId={setSelectedButtonId}
+            type={item.folder.folderType}
           />
         </div>
       )}

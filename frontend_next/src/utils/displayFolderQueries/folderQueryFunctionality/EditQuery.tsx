@@ -6,6 +6,45 @@ import { LuPenSquare } from "react-icons/lu";
 import { FolderType, QueryType } from "@/src/libs/types";
 import { handleEditQuery } from "@/src/utils/apiCalls/query/handleEditQuery";
 
+/**
+ * @description
+ * EditQuery Component
+ * This component is responsible for editing the details of a specific query. It utilizes a modal to present the user with input fields for editing the query's name, cyphertext representation, and natural language representation. Changes can be saved or discarded.
+ *
+ * @props
+ * @param {QueryType} query - The initial query object to be edited.
+ * @param {(editingQuery: boolean, editQuery: QueryType) => void} editQuery - Function to handle the edited query. The first parameter indicates if the editing was successful, and the second parameter is the edited query object.
+ * @param {FolderType} type - The type of folder the query belongs to. This is used for categorization or filtering purposes.
+ *
+ * @state
+ * @param {QueryType} prevState - State to hold the initial state of the query before any edits. This is used to revert changes if needed.
+ * @param {QueryType} editedQuery - State to hold the currently edited query. This state is updated as the user makes changes in the modal.
+ *
+ * @function
+ * @param {string} newQueryName - The new name for the query.
+ * @description
+ * updateQueryName updates the editedQuery state with the new name provided by the user.
+ *
+ * @function
+ * @param {string} newCyphertext - The new cyphertext representation for the query.
+ * @description
+ * updateCyphertext updates the editedQuery state with the new cyphertext provided by the user.
+ *
+ * @function
+ * @param {string} newNaturalLanguage - The new natural language representation for the query.
+ * @description
+ * updateNaturalLanguage updates the editedQuery state with the new natural language representation provided by the user.
+ *
+ * @function
+ * @param {Promise<boolean>} deleted - A promise that resolves to a boolean indicating whether the edit operation was successful.
+ * @description
+ * loadItems simulates loading and waits for the 'deleted' promise to resolve. It is used to handle asynchronous operations related to editing the query.
+ *
+ * @function
+ * @description
+ * handleSaveEditQuery handles the saving of the edited query. It calls the handleEditQuery API function with the edited query and type, waits for the operation to complete, and then either updates the query state with the edited query or reverts to the previous state if the edit was not successful.
+ */
+
 const EditQuery = ({
   query,
   editQuery,
@@ -51,8 +90,6 @@ const EditQuery = ({
         setQuery(prevState);
       }
     });
-    // editQuery(false, editedQuery);
-    console.log("in handling edit query");
   };
 
   return (
@@ -74,9 +111,9 @@ const EditQuery = ({
         <EditQueryBody
           query={editedQuery}
           type={type}
-          updateQueryName={updateQueryName}
           updateCyphertext={updateCyphertext}
           updateNaturalLanguage={updateNaturalLanguage}
+          updateQueryName={updateQueryName}
         />
       }
       footer={({ onClose }) => (

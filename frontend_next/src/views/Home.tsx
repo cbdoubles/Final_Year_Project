@@ -1,23 +1,28 @@
-import React from "react";
+import { Card, CardBody } from "@nextui-org/card";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+
+import Header from "../components/projectPage/header/Header";
+
 import SelectExistingProject from "@/src/components/home/selectExistingProject/SelectExistingProject";
 import StartNewProject from "@/src/components/home/StartNewProject";
-import { Card, CardBody } from "@nextui-org/card";
+import { ProjectType } from "@/src/libs/types";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
-import Header from "../components/projectPage/header/Header";
-import { useRouter } from "next/router";
-import { useProjectProps } from "@/src/contexts/ProjectContext";
 
 export default function Home() {
   const router = useRouter();
-  const { projectId, projectName, graphName } = useProjectProps();
+  const [selectedElement, setSelectedElement] = useState<ProjectType | null>(
+    null
+  );
 
   const handleSelect = () => {
-    console.log("Selected Project Name:", projectName);
-    console.log("Selected Project ID:", projectId);
-    console.log("Selected graph name", graphName);
-    //Handle Select
-    router.push("/projectpage");
+    if (selectedElement) {
+      router.push("/projectpage");
+    } else {
+      toast.error("No project selected");
+    }
   };
 
   return (
@@ -30,6 +35,12 @@ export default function Home() {
         >
           <CardBody className="grid gap-10 items-center justify-center p-10">
             <UIModal
+              body={
+                <SelectExistingProject
+                  selectedElement={selectedElement}
+                  setSelectedElement={setSelectedElement}
+                />
+              }
               button={({ onOpen }) => (
                 <UIButton
                   data-testid="select-exising-project-modal"
@@ -38,8 +49,6 @@ export default function Home() {
                   Select existing project
                 </UIButton>
               )}
-              header={<p className="text-primary">Select Existing project</p>}
-              body={<SelectExistingProject></SelectExistingProject>}
               footer={({ onClose }) => (
                 <>
                   <UIButton color="danger" onClick={onClose}>
@@ -50,14 +59,15 @@ export default function Home() {
                   </UIButton>
                 </>
               )}
+              header={<p className="text-primary">Select Existing project</p>}
             ></UIModal>
 
             <UIModal
               button={({ onOpen }) => (
                 <UIButton onClick={onOpen}>Start new project</UIButton>
               )}
-              header={<p className="text-primary">Select File</p>}
               body={<StartNewProject></StartNewProject>}
+              header={<p className="text-primary">Select File</p>}
             ></UIModal>
           </CardBody>
         </Card>
