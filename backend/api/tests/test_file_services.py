@@ -1,7 +1,7 @@
 import os
 import pytest
 from unittest.mock import patch, Mock, MagicMock, mock_open
-from file_services import FileService
+from ..file_services import FileService
 
 @patch('os.getenv')
 @patch('neo4j.GraphDatabase.driver')
@@ -115,6 +115,26 @@ def test_fix_labels(mock_driver):
     fs.close()
 
 @patch('neo4j.GraphDatabase.driver')
+def test_fix_labels_no_labels(mock_driver):
+    fs = FileService()
+    mock_tx = MagicMock()
+    mock_tx.run.return_value.single.return_value.get.return_value = None
+    fs.fix_labels(mock_tx, 'test_project')
+    assert mock_tx.run.call_count == 2
+    query_fix_labels = """
+            MATCH (n {project_id: $project_id})
+            WITH n, properties(n).labels AS nodeLabels, apoc.map.removeKey(properties(n), 'labels') AS newProps
+            SET n = newProps
+            WITH n, nodeLabels, newProps
+            UNWIND nodeLabels AS label
+            CALL apoc.create.addLabels(elementId(n), [label]) YIELD node
+            WITH node, newProps
+            SET node = newProps
+            RETURN collect({data: {id: elementId(node), label: labels(node), properties: properties(node)}}) AS nodes
+            """
+    mock_tx.run.assert_called_with(query_fix_labels, parameters={'project_id': 'test_project'})
+
+@patch('neo4j.GraphDatabase.driver')
 @patch('os.path.join')
 @patch('os.path.normpath')
 @patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
@@ -210,3 +230,95 @@ def test_modify_file_graphml(mock_open, mock_normpath, mock_join, mock_driver):
         mock_session.execute_write.assert_any_call(fs.fix_labels, 'test_project')
 
     fs.close()
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_error_modifying_file(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.csv'
+    mock_file_data.chunks.side_effect = Exception("Error reading file")
+
+    mock_join.return_value = 'dummy_path/dummy_file.csv'
+
+    fs.modify_file('test_project', mock_file_data, reupload=True)
+
+    mock_open.assert_called_once_with('dummy_path/dummy_file.csv', 'wb+')
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_unsupported_format(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.txt'
+    mock_file_data.chunks.return_value = [b'data']
+    mock_join.return_value = 'dummy_path/dummy_file.txt'
+    mock_normpath.return_value = 'dummy_path/dummy_file.txt'
+
+    with patch.object(fs, 'determine_file_format') as mock_determine_file_format:
+        mock_determine_file_format.return_value = '.txt'
+
+        fs.modify_file('test_project', mock_file_data, reupload=True)
+
+        mock_open.assert_called_once_with('dummy_path/dummy_file.txt', 'wb+')
+        mock_determine_file_format.assert_called_once_with('dummy_path/dummy_file.txt')
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_error_reuploading_data(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.csv'
+    mock_file_data.chunks.return_value = [b'data']
+    mock_join.return_value = 'dummy_path/dummy_file.csv'
+    mock_normpath.return_value = 'dummy_path/dummy_file.csv'
+
+    with patch.object(fs, 'delete_file') as mock_delete_file, \
+         patch.object(fs, 'determine_file_format') as mock_determine_file_format:
+
+        mock_session = MagicMock()
+        mock_driver_instance = mock_driver.return_value
+        mock_driver_instance.session.return_value.__enter__.return_value = mock_session
+        mock_determine_file_format.return_value = '.csv'
+        mock_session.execute_write.side_effect = [None, Exception("Error reuploading data")]
+
+        fs.modify_file('test_project', mock_file_data, reupload=True)
+
+        mock_open.assert_called_once_with('dummy_path/dummy_file.csv', 'wb+')
+        mock_delete_file.assert_called_once_with('dummy_path/dummy_file.csv')
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_neo4j_error(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.csv'
+    mock_file_data.chunks.return_value = [b'data']
+    mock_join.return_value = 'dummy_path/dummy_file.csv'
+    mock_normpath.return_value = 'dummy_path/dummy_file.csv'
+
+    with patch.object(fs, 'delete_file') as mock_delete_file, \
+         patch.object(fs, 'determine_file_format') as mock_determine_file_format:
+
+        mock_session = MagicMock()
+        mock_driver_instance = mock_driver.return_value
+        mock_driver_instance.session.return_value.__enter__.return_value = mock_session
+        mock_determine_file_format.return_value = '.csv'
+        mock_session.execute_write.side_effect = Exception("Neo4j transaction error")
+
+        fs.modify_file('test_project', mock_file_data, reupload=True)
+
+        mock_open.assert_called_once_with('dummy_path/dummy_file.csv', 'wb+')
+        mock_delete_file.assert_called_once_with('dummy_path/dummy_file.csv')
