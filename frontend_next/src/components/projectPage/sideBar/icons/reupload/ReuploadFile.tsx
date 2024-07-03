@@ -9,6 +9,23 @@ type ReuploadFileProps = {
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+/**
+ * ReuploadFile Component
+ *
+ * @description
+ * This component provides a file re-upload interface. It allows users to input a file name, select a file for upload,
+ * and displays the selected file name if available. It triggers file selection dialog on button click and handles
+ * file name and file selection change events.
+ *
+ * @props
+ * @param {string} fileName - Current file name displayed in the input field.
+ * @param {(event: React.ChangeEvent<HTMLInputElement>) => void} onFileNameChange - Function to handle file name input change.
+ * @param {string | null} selectedFileName - Name of the currently selected file (null if no file selected).
+ * @param {(event: React.ChangeEvent<HTMLInputElement>) => void} onFileChange - Function to handle file selection change.
+ *
+ * @state
+ * No additional state managed within this component.
+ */
 const ReuploadFile: React.FC<ReuploadFileProps> = ({
   fileName,
   onFileNameChange,
@@ -17,6 +34,10 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  /**
+   * Handles click event on the "Select File" button.
+   * Triggers the file input to open for file selection.
+   */
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
