@@ -8,7 +8,7 @@ import Header from "@/src/components/projectPage/header/Header";
 import QueryTextboxAdvanced from "@/src/components/projectPage/queryTextbox/QueryTextboxAdvanced";
 import QueryTextboxBasic from "@/src/components/projectPage/queryTextbox/QueryTextboxBasic";
 import NeovisComponent from "@/src/components/projectPage/visualization/neovisGraph/NeovisComponent";
-import { NeoVisProvider } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
+import { NeoVisProvider } from "@/src/contexts/NeoVisContext";
 
 interface ProjectPageViewProps {
   children: ReactNode;
