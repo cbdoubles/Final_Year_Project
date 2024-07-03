@@ -10,11 +10,6 @@ import { toast } from "react-toastify";
 import { useQueryProps } from "@/src/contexts/QueryContext";
 
 export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
-  // const loadItems = async () => {
-  //   await new Promise((r) => setTimeout(r, 2000))
-  //   return items
-  // }
-
   const [defaultQueries, setDefaultQueries] = useState<QueryType[] | null>(
     null
   );
@@ -24,7 +19,6 @@ export default function DefaultIcon({ collapsed }: { collapsed: boolean }) {
 
   const openSelectFolder = async (onOpen: () => void) => {
     const result = await fetchDefaultQueries();
-    console.log("Fetched folders:", result);
     if (result) {
       setDefaultQueries(result);
       onOpen();

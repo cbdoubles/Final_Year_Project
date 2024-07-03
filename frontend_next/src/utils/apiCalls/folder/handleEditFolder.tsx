@@ -35,7 +35,6 @@ export const handleEditFolder = async (
       return folder;
     }
   } catch (error) {
-    console.error("Error updating project name:", error);
     toast.error("Name already in use");
     return prevElementState;
   }
