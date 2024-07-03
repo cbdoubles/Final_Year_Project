@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import { LuFolder } from "react-icons/lu";
 import QueryDisplay from "./QueryDisplay";
 import EditFolder from "./EditFolder";

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import { LuPenSquare } from "react-icons/lu";
 import UIModal from "@/src/utils/ui/UIModal";
 import UIButton from "@/src/utils/ui/UIButton";

@@ -3,7 +3,7 @@ import { FolderType, QueryType } from "@/src/libs/types";
 import EditQuery from "./EditQuery";
 import DeleteQuery from "./DeleteQuery";
 import { Button } from "@nextui-org/button";
-import { React, useState } from "react";
+import { useState } from "react";
 
 /**
  * @description
