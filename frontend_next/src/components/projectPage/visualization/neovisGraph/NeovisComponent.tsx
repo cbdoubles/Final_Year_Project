@@ -11,9 +11,8 @@ import {
 } from "@nextui-org/react";
 import { useNeoVisContext } from "@/src/contexts/NeoVisContext";
 import html2canvas from "html2canvas";
-import { ENV, NEO_URL } from "@/src/libs/constants";
+import { ENV, NEO4J_URL } from "@/src/libs/constants";
 
-const NEO4J_URL = NEO_URL ?? "";
 const NEO4J_USER = "neo4j";
 const NEO4J_PASSWORD = "letmein";
 
