@@ -87,7 +87,7 @@ DATABASES = {
         'NAME':   'querify_db',
         'USER': 'querify_remote',
         'PASSWORD': 'querifyrocks',
-        'HOST': 'localhost',
+        'HOST': '145.220.75.94',
         'PORT': '3306',
     }
 }
