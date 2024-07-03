@@ -1,5 +1,5 @@
 import { Textarea } from "@nextui-org/react";
-import React, { ChangeEventHandler } from "react";
+import React from "react";
 
 type QueryInputProps = {
   label?: string;
@@ -18,20 +18,14 @@ const InputField: React.FC<QueryInputProps> = ({
   value,
   onChange,
 }) => {
-  // const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-  //   if (onChange) {
-  //     onChange(e);
-  //   }
-  // };
-
   return (
     <Textarea
       {...(label ? { label } : {})}
-      labelPlacement="outside"
       className="p-2 text-black text-lg w-70 max-h-xl"
-      placeholder={placeholder}
-      minRows={rows}
       isDisabled={readOnly}
+      labelPlacement="outside"
+      minRows={rows}
+      placeholder={placeholder}
       value={value}
       onChange={onChange}
     />
