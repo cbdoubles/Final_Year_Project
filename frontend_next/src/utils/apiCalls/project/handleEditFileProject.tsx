@@ -1,5 +1,18 @@
 import { ProjectType } from "@/src/libs/types";
 
+/**
+ * Upload file to a project
+ *
+ * @description
+ * This function uploads a file to a specified project on the server. It returns the updated project
+ * object if the upload is successful, or throws an error if it fails.
+ *
+ * @param {number} projectId - The ID of the project to upload the file to.
+ * @param {File} selectedFile - The file to be uploaded.
+ * @param {string} fileName - The name of the file to be saved.
+ * @returns {Promise<ProjectType>} A promise that resolves to the updated project object if the upload is successful.
+ * @throws {Error} Throws an error if the upload fails.
+ */
 export async function uploadFile(
   projectId: number,
   selectedFile: File,
@@ -21,8 +34,6 @@ export async function uploadFile(
     const result = await response.json();
 
     if (response.ok) {
-      console.log("File saved:", selectedFile.name);
-
       const project: ProjectType = {
         projectId: Number(result.id),
         projectName: result.name,
