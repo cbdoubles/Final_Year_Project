@@ -1,11 +1,10 @@
 import React from "react";
 import SwitchMode from "@/src/components/projectPage/sideBar/icons/SwitchModeIcon";
-import CustomButton from "@/src/components/projectPage/sideBar/icons/CustomIcon";
+import CustomIcon from "@/src/components/projectPage/sideBar/icons/CustomIcon";
 import FavouriteIcon from "@/src/components/projectPage/sideBar/icons/FavouriteIcon";
 import Default from "@/src/components/projectPage/sideBar/icons/defaultQuery/DefaultIcon";
 import Reupload from "@/src/components/projectPage/sideBar/icons/reupload/ReuploadIcon";
 import { LuAlignJustify } from "react-icons/lu";
-import QueryIconButton from "@/src/utils/sideBar/QueryIconButton";
 import { Card } from "@nextui-org/react";
 import { useProps } from "@/src/contexts/PropsContext";
 import { useProjectProps } from "@/src/contexts/ProjectContext";
@@ -37,15 +36,10 @@ export default function SideBar({
               {"Collapse"}
             </p>
           )}
-          {/* <LinkIcon className="w-6" />
-          {!collapsed && (
-            <p className="hidden md:block text-left truncate overflow-ellipsis absolute right-[12px] left-[44px]">
-              {modeName}
-            </p>
-          )} */}
+          {}
         </button>
         <FavouriteIcon collapsed={collapsed} projectId={projectId} />
-        <CustomButton collapsed={collapsed} projectId={projectId} />
+        <CustomIcon collapsed={collapsed} projectId={projectId} />
         <Default collapsed={collapsed} />
         <Reupload collapsed={collapsed} />
         <SwitchMode collapsed={collapsed} />
