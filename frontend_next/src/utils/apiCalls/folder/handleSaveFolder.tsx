@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
 import { QueryFolderType, FolderType } from "@/src/libs/types";
+import { DB_URL } from "@/src/libs/constants";
 
 /**
  * Handle folder saving
@@ -20,7 +21,7 @@ export const handleSaveFolder = async (
   projectId: number
 ): Promise<QueryFolderType | null> => {
   try {
-    const response = await fetch(`http://localhost:8000/api/folders/`, {
+    const response = await fetch(`${DB_URL}/api/folders/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
 import { QueryFolderType } from "@/src/libs/types";
+import { DB_URL } from "@/src/libs/constants";
 
 /**
  * Handle folder editing
@@ -20,13 +21,10 @@ export const handleEditFolder = async (
     const formData = new FormData();
     formData.append("name", folder.folderName);
 
-    const response = await fetch(
-      `http://localhost:8000/api/folders/${folder.folderId}/`,
-      {
-        method: "PATCH",
-        body: formData,
-      }
-    );
+    const response = await fetch(`${DB_URL}/api/folders/${folder.folderId}/`, {
+      method: "PATCH",
+      body: formData,
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

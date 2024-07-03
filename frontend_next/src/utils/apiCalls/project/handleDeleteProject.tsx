@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ProjectType } from "@/src/libs/types";
+import { DB_URL } from "@/src/libs/constants";
 
 /**
  * Handle delete confirmation
@@ -24,7 +25,7 @@ export const handleDeleteConfirm = async (
   if (deletingElement) {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/projects/${deletingElement.projectId}/`,
+        `${DB_URL}/api/projects/${deletingElement.projectId}/`,
         {
           method: "DELETE",
         }

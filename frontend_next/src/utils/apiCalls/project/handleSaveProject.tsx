@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
 import { ProjectType } from "@/src/libs/types";
+import { DB_URL } from "@/src/libs/constants";
 
 /**
  * Handle save project
@@ -26,7 +27,7 @@ const handleSaveProject = async (
   formData.append("name", newProjectName);
 
   try {
-    const response = await fetch(`http://localhost:8000/api/projects/`, {
+    const response = await fetch(`${DB_URL}/api/projects/`, {
       method: "POST",
       body: formData,
     });

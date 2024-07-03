@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { ProjectType } from "@/src/libs/types";
 
 /**
@@ -23,13 +24,10 @@ export async function uploadFile(
   formData.append("file_name", fileName);
 
   try {
-    const response = await fetch(
-      `http://localhost:8000/api/projects/${projectId}/`,
-      {
-        method: "PATCH",
-        body: formData,
-      }
-    );
+    const response = await fetch(`${DB_URL}/api/projects/${projectId}/`, {
+      method: "PATCH",
+      body: formData,
+    });
 
     const result = await response.json();
 

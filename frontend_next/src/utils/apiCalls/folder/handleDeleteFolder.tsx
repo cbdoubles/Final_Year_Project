@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { QueryFolderType } from "@/src/libs/types";
 
 /**
@@ -16,7 +17,7 @@ export const handleDeleteFolder = async (
   if (deletingFolder) {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/folders/${deletingFolder.folderId}/`,
+        `${DB_URL}/api/folders/${deletingFolder.folderId}/`,
         {
           method: "DELETE",
         }

@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { QueryType } from "@/src/libs/types";
 
 /**
@@ -11,7 +12,7 @@ import { QueryType } from "@/src/libs/types";
  */
 export const fetchDefaultQueries = async (): Promise<QueryType[]> => {
   try {
-    const response = await fetch("http://localhost:8000/api/default-queries/");
+    const response = await fetch(`${DB_URL}/api/default-queries/`);
     const data = await response.json();
 
     const transformedData: QueryType[] = data.map((query: any) => ({

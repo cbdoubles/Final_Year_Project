@@ -1,3 +1,4 @@
+import { DB_URL } from "@/src/libs/constants";
 import { ProjectType } from "@/src/libs/types";
 
 /**
@@ -19,13 +20,10 @@ export const handleEditSubmit = async (
   const formData = new FormData();
   formData.append("name", projectName);
 
-  const response = await fetch(
-    `http://localhost:8000/api/projects/${projectId}/`,
-    {
-      method: "PATCH",
-      body: formData,
-    }
-  );
+  const response = await fetch(`${DB_URL}/api/projects/${projectId}/`, {
+    method: "PATCH",
+    body: formData,
+  });
 
   if (!response.ok) {
     const errorData = await response.json();
