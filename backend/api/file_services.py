@@ -13,7 +13,7 @@ class FileService:
         """
         self.neo4j_user = os.getenv('NEO4J_USER')
         self.neo4j_password = os.getenv('NEO4J_PASSWORD')
-        self.uri = "bolt://localhost:7687"
+        self.uri = "bolt://localhost:7474"
         self.driver = GraphDatabase.driver(self.uri, auth=(self.neo4j_user, self.neo4j_password))
 
     @staticmethod
