@@ -58,7 +58,7 @@ const EditFolder = ({
   };
 
   const fetchUpdateFolderName = () => {
-    folder = { ...folder, folderName: folderName }; // update folder on save
+    folder = { ...folder, folderName: folderName };
     const returnedFolder: Promise<QueryFolderType> = handleEditFolder(
       folder,
       prevState
