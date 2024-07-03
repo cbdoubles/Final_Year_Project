@@ -1,0 +1,135 @@
+{
+    "Session": "default",
+    "Sessions": {
+        "default": {
+            "SessionData": {
+                "1_1536x864": {
+                    "AnalysisLog": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00InfoBrowserWidget_0": {
+                                "height": 711,
+                                "width": 417
+                            },
+                            "01SuggestionsBrowser": {
+                                "height": 711,
+                                "width": 250
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
+                "EditorWindowSetting": {
+                    "2d79695a8866f5732a72bce4118fd26c": {
+                        "anchor": {
+                            "line": 127,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 127,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 711,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 126,
+                        "width": 861,
+                        "x": 0,
+                        "y": 0
+                    }
+                },
+                "GraphicFilterSettings": {
+                    "Enabled": false
+                },
+                "InfoBrowserWindowManager": {
+                    "InfoBrowserFileSyncInst": -1,
+                    "InfoBrowserSyncInst": [
+                        "0"
+                    ]
+                },
+                "LastAccessedPid": "16176",
+                "LastDisplayGroup": "1_1536x864",
+                "MaintainEditorHistory": {
+                    "FileRanges": {
+                        "size": 0
+                    },
+                    "index": -1
+                },
+                "MiscSaveStates": {
+                    "ib": "",
+                    "projectOverviewCharts": "true",
+                    "projectOverviewChartsPosition": 1,
+                    "projectOverviewChartsSelected": "true",
+                    "projectOverviewChartsWorkspace": 0,
+                    "selection": "QueryTextboxAdvanced.tsx"
+                },
+                "SplittableWorkspace": {
+                    "active workspace": 0,
+                    "primary ws size": 861,
+                    "split orientation": -1
+                },
+                "analysis": {
+                    "background": {
+                        "started": true
+                    }
+                },
+                "projectconfigure": {
+                    "last config panel": "Web"
+                }
+            }
+        }
+    }
+}
