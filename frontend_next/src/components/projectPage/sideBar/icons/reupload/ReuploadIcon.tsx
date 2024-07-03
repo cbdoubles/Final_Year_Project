@@ -8,6 +8,22 @@ import { uploadFile } from "@/src/utils/apiCalls/project/handleEditFileProject";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
 
+/**
+ * ReuploadIcon Component
+ *
+ * @description
+ * This component renders an icon with a modal interface for re-uploading a file associated with a project.
+ * It allows users to select a new file and update the existing file for the project.
+ *
+ * @props
+ * @param {boolean} collapsed - Flag indicating whether the component is in a collapsed state (not used directly by this component).
+ *
+ * @state
+ * @typedef {File | null} selectedFile - State to store the selected file for upload.
+ * @typedef {string | null} selectedFileName - State to store the name of the selected file.
+ * @typedef {string} fileName - State to store the input value for the file name.
+ */
+
 export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const { projectId } = useProjectProps();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -15,6 +31,12 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const [fileName, setFileName] = useState<string>("");
   const { setProject } = useProjectProps();
 
+  /**
+   * Handles change event on the file input element.
+   * Updates the selected file and its name based on user selection.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing file input details.
+   */
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -23,10 +45,23 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
     }
   };
 
+  /**
+   * Handles change event on the file name input element.
+   * Updates the file name state based on user input.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing the new file name.
+   */
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileName(event.target.value);
   };
 
+  /**
+   * Handles save operation for the reuploaded file.
+   * Validates input fields and attempts to save the updated file using API call.
+   * Displays error message on failure.
+   *
+   * @param {() => void} onClose - Function to close the modal after save operation.
+   */
   const handleSave = async (onClose: () => void) => {
     if (!selectedFile || !fileName) return;
 
