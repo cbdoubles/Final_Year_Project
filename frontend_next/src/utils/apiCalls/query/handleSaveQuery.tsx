@@ -72,7 +72,7 @@ export const handleSaveQuery = async (
       return newQuery; // Return true if update was successful
     } catch (error) {
       console.error("Error editing query:", error);
-      toast.error("Invalid Query name (possible duplicate or empty)");
+      toast.error("Invalid query input (possible duplicate or empty fields)");
       return null; // Return false if any error occurs during update
     }
   }

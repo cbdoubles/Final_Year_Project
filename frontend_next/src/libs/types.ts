@@ -1,5 +1,3 @@
-// types.ts
-
 // Defines the type for different folder types, which can be either "Default", "Custom", "Favorite" or null.
 export type FolderType = "Default" | "Custom" | "Favorite" | null;
 
