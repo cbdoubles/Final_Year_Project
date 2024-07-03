@@ -11,8 +11,9 @@ import {
 } from "@nextui-org/react";
 import { useNeoVisContext } from "@/src/components/projectPage/visualization/neovisGraph/NeoVisContext";
 import html2canvas from "html2canvas";
+import { ENV, NEO_URL } from "@/src/libs/constants";
 
-const NEO4J_URL = "bolt://localhost:7687";
+const NEO4J_URL = NEO_URL ?? "";
 const NEO4J_USER = "neo4j";
 const NEO4J_PASSWORD = "letmein";
 
@@ -387,6 +388,7 @@ const NeovisComponent: React.FC<{
           },
           initialCypher: query,
           nonFlat: false,
+          encrypted: ENV === "production" ? "ENCRYPTION_ON" : "ENCRYPTION_OFF",
         };
 
         setConfig(initialConfig);
