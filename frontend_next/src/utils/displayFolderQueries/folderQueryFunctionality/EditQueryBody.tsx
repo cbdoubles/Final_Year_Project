@@ -26,13 +26,11 @@ import InputField from "@/src/utils/popUps/InputField";
 
 const EditQueryBody = ({
   query,
-  type,
   updateQueryName,
   updateCyphertext,
   updateNaturalLanguage,
 }: {
   query: QueryType;
-  type: FolderType;
   updateQueryName: (newFolderName: string) => void;
   updateCyphertext: (newCyphertext: string) => void;
   updateNaturalLanguage: (newNaturalLanguage: string) => void;
