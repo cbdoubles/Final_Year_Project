@@ -26,6 +26,7 @@ import {
  * @typedef {File | null} selectedFile - State to store the selected file for upload.
  * @typedef {string | null} selectedFileName - State to store the name of the selected file.
  * @typedef {string} fileName - State to store the input value for the file name.
+ * @typedef {boolean} isLoading - State to store the loading status during save operation.
  */
 
 export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
@@ -33,6 +34,7 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setProject } = useProjectProps();
 
   /**
@@ -45,11 +47,14 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const handleSave = async (onClose: () => void) => {
     if (!selectedFile || !fileName) return;
 
+    setIsLoading(true);
     try {
       const project = await uploadFile(projectId, selectedFile, fileName);
       setProject(project);
     } catch (error) {
       toast.error("Error saving project");
+    } finally {
+      setIsLoading(false);
     }
 
     onClose();
@@ -89,7 +94,14 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
         footer={({ onClose }) => (
           <>
             {!isSaveDisabled && (
-              <UIButton onClick={() => handleSave(onClose)}>Save</UIButton>
+              <UIButton onClick={() => handleSave(onClose)}>
+                {isLoading ? "Saving..." : "Save"}
+              </UIButton>
+            )}
+            {isLoading && (
+              <div className="mt-4 flex justify-center">
+                <div className="w-6 h-6 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-blue-500"></div>
+              </div>
             )}
           </>
         )}

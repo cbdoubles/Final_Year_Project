@@ -29,6 +29,7 @@ type StartNewProjectProps = {};
  * @typedef {string | null} selectedFileName - State to store the name of the selected file.
  * @typedef {string} fileName - State to store the input value for the file name.
  * @typedef {string} newProjectName - State to store the input value for the new project name.
+ * @typedef {boolean} isLoading - State to store the loading status during save operation.
  */
 
 const StartNewProject: React.FC<StartNewProjectProps> = () => {
@@ -37,6 +38,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const [newProjectName, setNewProjectName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { setProject } = useProjectProps();
 
@@ -67,7 +69,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
    */
   const handleSave = async () => {
     if (!selectedFile || !fileName || !newProjectName) return;
-
+    setIsLoading(true);
     try {
       const project = await handleSaveProject(
         selectedFile,
@@ -78,6 +80,8 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
       router.push("/projectpage");
     } catch (error) {
       toast.error("Error saving project");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -129,8 +133,17 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
               handleFileChange(event, setSelectedFile, setSelectedFileName)
             }
           />
-          {!isSaveDisabled && <UIButton onClick={handleSave}>Save</UIButton>}
+          {!isSaveDisabled && (
+            <UIButton onClick={handleSave}>
+              {isLoading ? "Saving..." : "Save"}
+            </UIButton>
+          )}
         </div>
+        {isLoading && (
+          <div className="mt-4 flex justify-center">
+            <div className="w-6 h-6 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-blue-500"></div>
+          </div>
+        )}
       </div>
     </>
   );
