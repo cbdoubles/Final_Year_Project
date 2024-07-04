@@ -249,26 +249,106 @@
                         "0"
                     ]
                 },
-                "LastAccessedPid": "16176",
+                "LastAccessedPid": "17456",
                 "LastDisplayGroup": "1_1536x864",
                 "MaintainEditorHistory": {
                     "FileRanges": {
-                        "size": 0
+                        "0": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./components/home/StartNewProject.tsx",
+                            "LineBegin": 131,
+                            "LineEnd": 131
+                        },
+                        "1": {
+                            "ColumnBegin": 54,
+                            "ColumnEnd": 54,
+                            "FilePath": "./components/home/StartNewProject.tsx",
+                            "LineBegin": 130,
+                            "LineEnd": 130
+                        },
+                        "10": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./components/home/StartNewProject.tsx",
+                            "LineBegin": 134,
+                            "LineEnd": 134
+                        },
+                        "2": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./components/projectPage/sideBar/SideBar.tsx",
+                            "LineBegin": 13,
+                            "LineEnd": 13
+                        },
+                        "3": {
+                            "ColumnBegin": 19,
+                            "ColumnEnd": 19,
+                            "FilePath": "./components/home/selectExistingProject/DeleteModal.tsx",
+                            "LineBegin": 51,
+                            "LineEnd": 51
+                        },
+                        "4": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
+                            "LineBegin": 251,
+                            "LineEnd": 251
+                        },
+                        "5": {
+                            "ColumnBegin": 32,
+                            "ColumnEnd": 32,
+                            "FilePath": "./components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
+                            "LineBegin": 248,
+                            "LineEnd": 248
+                        },
+                        "6": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./components/home/StartNewProject.tsx",
+                            "LineBegin": 134,
+                            "LineEnd": 134
+                        },
+                        "7": {
+                            "ColumnBegin": 32,
+                            "ColumnEnd": 32,
+                            "FilePath": "./components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
+                            "LineBegin": 248,
+                            "LineEnd": 248
+                        },
+                        "8": {
+                            "ColumnBegin": 19,
+                            "ColumnEnd": 19,
+                            "FilePath": "./components/home/selectExistingProject/DeleteModal.tsx",
+                            "LineBegin": 51,
+                            "LineEnd": 51
+                        },
+                        "9": {
+                            "ColumnBegin": 32,
+                            "ColumnEnd": 32,
+                            "FilePath": "./components/projectPage/queryTextbox/QueryTextboxAdvanced.tsx",
+                            "LineBegin": 248,
+                            "LineEnd": 248
+                        },
+                        "size": 11
                     },
-                    "index": -1
+                    "index": 10
                 },
                 "MiscSaveStates": {
                     "entitySelected": "@lfetchFoldersQueries.queries.(unnamed_function_1)@p@lfetchFoldersQueries.queries@p@lfetchFoldersQueries@kw15fetchfoldersqueries:./utils/apiCalls/foldersQueries/fetchFoldersQueries.tsx@f./utils/apiCalls/foldersQueries/fetchFoldersQueries.tsx",
-                    "ib": "",
+                    "ib": "issue",
                     "projectOverviewCharts": "true",
                     "projectOverviewChartsPosition": 1,
                     "projectOverviewChartsSelected": "true",
                     "projectOverviewChartsWorkspace": 0,
-                    "selection": "QueryTextboxAdvanced.tsx"
+                    "selection": "StartNewProject.tsx"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,
                     "SaveDirectory": "./."
+                },
+                "ProjectUI": {
+                    "projectviewcuritem": "components"
                 },
                 "SplittableWorkspace": {
                     "active workspace": 0,
