@@ -560,7 +560,7 @@ describe("Side Bar Button Functionality - Excluding Favorites and Customs", () =
     cy.visit("/");
   });
 
-  it("Run  ", () => {
+  it("Reupload button  ", () => {
     cy.contains("Select existing project").click();
     cy.contains("Cypress-Testing DO NOT DELETE").click();
     cy.get('[data-testid= "select-project-home-button"]').click();
