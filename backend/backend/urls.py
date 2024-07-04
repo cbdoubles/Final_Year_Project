@@ -29,7 +29,6 @@ from api.views.custom_query_viewset import CustomQueryViewSet
 from api.views.folder_viewset import FolderViewSet
 from api.views.favorite_query_viewset import FavoriteQueryViewSet
 from api.views.default_query_viewset import DefaultQueryViewSet
-from api.views.table_view import json_view
 
 # Define the schema view for Swagger
 schema_view = get_schema_view(
@@ -65,7 +64,6 @@ urlpatterns = [
     re_path(
         '.*', lambda request: JsonResponse({'error': 'Not Found'}, status=404)),
     # testing json data fetching for table vizualization
-    path('json-endpoint/', json_view, name='my_json_view'),
 ]
 
 if settings.DEBUG:
