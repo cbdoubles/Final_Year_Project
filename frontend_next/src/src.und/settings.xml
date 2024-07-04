@@ -88,6 +88,8 @@
         <dir
           name="popUps"/>
         <dir
+          name="projectProperties"/>
+        <dir
           name="queryTextbox">
           <dir
             name="helpers"/>
