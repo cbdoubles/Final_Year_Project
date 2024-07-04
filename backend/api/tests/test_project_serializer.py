@@ -2,7 +2,7 @@ import pytest
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 from ..models import Project, Folder
-from ..serializers import ProjectSerializer
+from ..serializers.project_serializer import ProjectSerializer
 
 @pytest.mark.django_db
 def test_project_serializer_create():

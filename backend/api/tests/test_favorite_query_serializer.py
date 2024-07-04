@@ -2,7 +2,7 @@ import pytest
 from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from ..models import Project, Folder, FavoriteQuery
-from ..serializers import FavoriteQuerySerializer
+from ..serializers.favorite_query_serializer import FavoriteQuerySerializer
 
 @pytest.mark.django_db
 def test_favorite_query_serializer_create():

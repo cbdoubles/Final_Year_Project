@@ -92,32 +92,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME':   'querify_db_test',
-#         'USER': 'mir',
-#         'PASSWORD': 'mirisgreat',
-#         'HOST': '131.155.199.143',
-#         'PORT': '3306',
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'querify_db_test',
-#         'USER': 'mir',
-#         'PASSWORD': 'mirisgreat',
-#         'HOST': '131.155.199.143',
-#         'PORT': '3306',
-#         'TEST': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': ':memory:',
-#         },
-#     }
-# }
-
 if 'test' in sys.argv or 'test_coverage' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
