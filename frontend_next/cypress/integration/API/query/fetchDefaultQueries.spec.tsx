@@ -1,3 +1,4 @@
+/* global cy */
 import { DB_URL } from "@/src/libs/constants";
 import { fetchDefaultQueries } from "@/src/utils/apiCalls/query/fetchDefaultQueries";
 

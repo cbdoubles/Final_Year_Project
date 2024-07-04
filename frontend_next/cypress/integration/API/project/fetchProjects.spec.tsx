@@ -39,16 +39,21 @@ describe("fetchProjects API utility", () => {
     ]);
   });
 
-  it("handles fetch error gracefully", async () => {
+  it("handles fetch error", async () => {
+    const errorMessage = "Internal Server Error";
+
     // Mock an error response
     cy.intercept("GET", `${DB_URL}/api/projects/`, {
       statusCode: 500,
-      body: "Internal Server Error",
+      body: errorMessage,
     }).as("fetchProjectsError");
 
     const result = await fetchProjects();
 
     // Verify the result
-    expect(result).to.be.undefined; // Since we're not returning anything in case of error, expect undefined
+    expect(result).to.be.undefined; // or to.be.null, depending on how you handle errors
+
+    // Verify the error message
+    cy.get(".error-message").should("contain", errorMessage); // Adjust selector as per your application
   });
 });
