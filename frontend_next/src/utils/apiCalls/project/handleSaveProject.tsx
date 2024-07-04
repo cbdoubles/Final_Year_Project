@@ -26,31 +26,24 @@ const handleSaveProject = async (
   formData.append("file_name", fileName);
   formData.append("name", newProjectName);
 
-  try {
-    const response = await fetch(`${DB_URL}/api/projects/`, {
-      method: "POST",
-      body: formData,
-    });
+  const response = await fetch(`${DB_URL}/api/projects/`, {
+    method: "POST",
+    body: formData,
+  });
 
-    const result = await response.json();
+  const result = await response.json();
 
-    if (response.ok) {
-      const project: ProjectType = {
-        projectId: Number(result.id),
-        projectName: result.name,
-        graphName: result.file_name,
-      };
+  if (response.ok) {
+    const project: ProjectType = {
+      projectId: Number(result.id),
+      projectName: result.name,
+      graphName: result.file_name,
+    };
 
-      return project;
-    } else {
-      console.error("Error in response:", result);
-      toast.error(result.error || "Project name already in use");
-      throw new Error(result.error || "Project name already in use");
-    }
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    toast.error("Error uploading file");
-    throw error;
+    return project;
+  } else {
+    console.error("Error in response:", result);
+    throw new Error(result.error || "Project name already in use");
   }
 };
 
