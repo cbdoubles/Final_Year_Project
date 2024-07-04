@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
 from ..models import Folder, Project
+from ..serializers.custom_query_serializer import CustomQuerySerializer
 
 @pytest.fixture
 def api_client():
