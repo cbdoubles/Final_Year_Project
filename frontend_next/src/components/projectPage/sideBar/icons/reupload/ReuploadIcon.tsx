@@ -7,6 +7,10 @@ import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { uploadFile } from "@/src/utils/apiCalls/project/handleEditFileProject";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
+import {
+  handleFileChange,
+  handleFileNameChange,
+} from "@/utils/projectProperties/projectProperties";
 
 /**
  * ReuploadIcon Component
@@ -22,6 +26,7 @@ import UIModal from "@/src/utils/ui/UIModal";
  * @typedef {File | null} selectedFile - State to store the selected file for upload.
  * @typedef {string | null} selectedFileName - State to store the name of the selected file.
  * @typedef {string} fileName - State to store the input value for the file name.
+ * @typedef {boolean} isLoading - State to store the loading status during save operation.
  */
 
 export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
@@ -29,31 +34,8 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setProject } = useProjectProps();
-
-  /**
-   * Handles change event on the file input element.
-   * Updates the selected file and its name based on user selection.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing file input details.
-   */
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setSelectedFileName(file.name);
-    }
-  };
-
-  /**
-   * Handles change event on the file name input element.
-   * Updates the file name state based on user input.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing the new file name.
-   */
-  const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.target.value);
-  };
 
   /**
    * Handles save operation for the reuploaded file.
@@ -65,11 +47,14 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const handleSave = async (onClose: () => void) => {
     if (!selectedFile || !fileName) return;
 
+    setIsLoading(true);
     try {
       const project = await uploadFile(projectId, selectedFile, fileName);
       setProject(project);
     } catch (error) {
       toast.error("Error saving project");
+    } finally {
+      setIsLoading(false);
     }
 
     onClose();
@@ -84,8 +69,12 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
           <ReuploadFile
             fileName={fileName}
             selectedFileName={selectedFileName}
-            onFileChange={handleFileChange}
-            onFileNameChange={handleFileNameChange}
+            onFileChange={(event) =>
+              handleFileChange(event, setSelectedFile, setSelectedFileName)
+            }
+            onFileNameChange={(event) =>
+              handleFileNameChange(event, setFileName)
+            }
           />
         }
         button={({ onOpen }) => (
@@ -105,7 +94,14 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
         footer={({ onClose }) => (
           <>
             {!isSaveDisabled && (
-              <UIButton onClick={() => handleSave(onClose)}>Save</UIButton>
+              <UIButton onClick={() => handleSave(onClose)}>
+                {isLoading ? "Saving..." : "Save"}
+              </UIButton>
+            )}
+            {isLoading && (
+              <div className="mt-4 flex justify-center">
+                <div className="w-6 h-6 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-blue-500"></div>
+              </div>
             )}
           </>
         )}

@@ -6,6 +6,10 @@ import UIButton from "../../utils/ui/UIButton";
 
 import { useProjectProps } from "@/src/contexts/ProjectContext";
 import handleSaveProject from "@/src/utils/apiCalls/project/handleSaveProject";
+import {
+  handleFileChange,
+  handleFileNameChange,
+} from "@/utils/projectProperties/projectProperties";
 
 type StartNewProjectProps = {};
 
@@ -25,6 +29,7 @@ type StartNewProjectProps = {};
  * @typedef {string | null} selectedFileName - State to store the name of the selected file.
  * @typedef {string} fileName - State to store the input value for the file name.
  * @typedef {string} newProjectName - State to store the input value for the new project name.
+ * @typedef {boolean} isLoading - State to store the loading status during save operation.
  */
 
 const StartNewProject: React.FC<StartNewProjectProps> = () => {
@@ -33,6 +38,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const [newProjectName, setNewProjectName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { setProject } = useProjectProps();
 
@@ -42,30 +48,6 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
    */
   const handleButtonClick = () => {
     fileInputRef.current?.click();
-  };
-
-  /**
-   * Handles change event on the file input element.
-   * Updates the selected file and its name based on user selection.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing file input details.
-   */
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setSelectedFileName(file.name);
-    }
-  };
-
-  /**
-   * Handles change event on the file name input element.
-   * Updates the file name state based on user input.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing the new file name.
-   */
-  const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.target.value);
   };
 
   /**
@@ -87,7 +69,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
    */
   const handleSave = async () => {
     if (!selectedFile || !fileName || !newProjectName) return;
-
+    setIsLoading(true);
     try {
       const project = await handleSaveProject(
         selectedFile,
@@ -98,6 +80,8 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
       router.push("/projectpage");
     } catch (error) {
       toast.error("Error saving project");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,7 +109,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
             data-testid="file-name-text-field"
             type="text"
             value={fileName}
-            onChange={handleFileNameChange}
+            onChange={(event) => handleFileNameChange(event, setFileName)}
           />
         </label>
         {selectedFileName && (
@@ -145,10 +129,21 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
             accept=".json, .graphml"
             style={{ display: "none" }}
             type="file"
-            onChange={handleFileChange}
+            onChange={(event) =>
+              handleFileChange(event, setSelectedFile, setSelectedFileName)
+            }
           />
-          {!isSaveDisabled && <UIButton onClick={handleSave}>Save</UIButton>}
+          {!isSaveDisabled && (
+            <UIButton onClick={handleSave}>
+              {isLoading ? "Saving..." : "Save"}
+            </UIButton>
+          )}
         </div>
+        {isLoading && (
+          <div className="mt-4 flex justify-center">
+            <div className="w-6 h-6 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-blue-500"></div>
+          </div>
+        )}
       </div>
     </>
   );

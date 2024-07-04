@@ -232,6 +232,13 @@
             name="InputField.tsx"/>
         </dir>
         <dir
+          name="projectProperties">
+          <auto
+            name="fileSelector.tsx"/>
+          <auto
+            name="projectProperties.ts"/>
+        </dir>
+        <dir
           name="queryTextbox">
           <auto
             name="NatLangBox.tsx"/>

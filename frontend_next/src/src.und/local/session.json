@@ -15,16 +15,29 @@
                         "FloatingWidgetOrder": [
                         ],
                         "OpenWindows": {
-                            "00InfoBrowserWidget_0": {
-                                "height": 711,
-                                "width": 417
+                            "00ProjectOverviewWidget": {
+                                "height": 332,
+                                "width": 397
                             },
                             "01SuggestionsBrowser": {
-                                "height": 711,
+                                "height": 372,
                                 "width": 250
+                            },
+                            "02EntityFilter": {
+                                "height": 355,
+                                "width": 397
+                            },
+                            "03InfoBrowserWidget_0": {
+                                "height": 352,
+                                "width": 417
+                            },
+                            "04IssueBrowser": {
+                                "height": 312,
+                                "width": 1115
                             }
                         },
                         "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget"
                         ]
                     },
                     "EntityFilter": {
@@ -56,11 +69,19 @@
                         "Dock Tab Group": [
                         ]
                     },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
                     "ProjectOverviewWidget": {
                         "Dock Area": 1,
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
+                            "EntityFilter"
                         ]
                     },
                     "SuggestionsBrowser": {
@@ -71,25 +92,153 @@
                         ]
                     }
                 },
+                "2_1536x864_1920x1080": {
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00IssueBrowser": {
+                                "height": 312,
+                                "width": 1115
+                            },
+                            "01ProjectOverviewWidget": {
+                                "height": 332,
+                                "width": 397
+                            },
+                            "02SuggestionsBrowser": {
+                                "height": 372,
+                                "width": 250
+                            },
+                            "03EntityFilter": {
+                                "height": 355,
+                                "width": 397
+                            },
+                            "04InfoBrowserWidget_0": {
+                                "height": 352,
+                                "width": 417
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
+                "CodeCheckFiles": {
+                    "lastSelectedFilterInt": 0
+                },
                 "EditorWindowSetting": {
-                    "2d79695a8866f5732a72bce4118fd26c": {
+                    "1c439a833e32dd44a88a6cbfc774402b": {
                         "anchor": {
-                            "line": 127,
+                            "line": 133,
                             "offset": 0
                         },
                         "caret": {
-                            "line": 127,
+                            "line": 133,
                             "offset": 0
                         },
                         "container": 1,
-                        "height": 711,
+                        "height": 372,
                         "hscroll": 0,
                         "isMaximized": false,
-                        "vscroll": 126,
+                        "vscroll": 129,
+                        "width": 861,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "2d79695a8866f5732a72bce4118fd26c": {
+                        "anchor": {
+                            "line": 247,
+                            "offset": 32
+                        },
+                        "caret": {
+                            "line": 247,
+                            "offset": 32
+                        },
+                        "container": 1,
+                        "height": 372,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 239,
+                        "width": 861,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "5397f7df71b66a2940b24a80c649a90d": {
+                        "anchor": {
+                            "line": 12,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 12,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 372,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 861,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "67ef7cd301e0e43fae289bf7941204ed": {
+                        "anchor": {
+                            "line": 50,
+                            "offset": 19
+                        },
+                        "caret": {
+                            "line": 50,
+                            "offset": 19
+                        },
+                        "container": 1,
+                        "height": 372,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 39,
                         "width": 861,
                         "x": 0,
                         "y": 0
                     }
+                },
+                "EntityFilter": {
+                    "LastEntityFilterUsed": "All Entities"
                 },
                 "GraphicFilterSettings": {
                     "Enabled": false
@@ -109,12 +258,17 @@
                     "index": -1
                 },
                 "MiscSaveStates": {
+                    "entitySelected": "@lfetchFoldersQueries.queries.(unnamed_function_1)@p@lfetchFoldersQueries.queries@p@lfetchFoldersQueries@kw15fetchfoldersqueries:./utils/apiCalls/foldersQueries/fetchFoldersQueries.tsx@f./utils/apiCalls/foldersQueries/fetchFoldersQueries.tsx",
                     "ib": "",
                     "projectOverviewCharts": "true",
                     "projectOverviewChartsPosition": 1,
                     "projectOverviewChartsSelected": "true",
                     "projectOverviewChartsWorkspace": 0,
                     "selection": "QueryTextboxAdvanced.tsx"
+                },
+                "ProjectMetricsBrowser": {
+                    "Overwrite": false,
+                    "SaveDirectory": "./."
                 },
                 "SplittableWorkspace": {
                     "active workspace": 0,
