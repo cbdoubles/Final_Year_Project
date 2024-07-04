@@ -7,6 +7,10 @@ import { useProjectProps } from "@/src/contexts/ProjectContext";
 import { uploadFile } from "@/src/utils/apiCalls/project/handleEditFileProject";
 import UIButton from "@/src/utils/ui/UIButton";
 import UIModal from "@/src/utils/ui/UIModal";
+import {
+  handleFileChange,
+  handleFileNameChange,
+} from "@/utils/projectProperties/projectProperties";
 
 /**
  * ReuploadIcon Component
@@ -30,30 +34,6 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const { setProject } = useProjectProps();
-
-  /**
-   * Handles change event on the file input element.
-   * Updates the selected file and its name based on user selection.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing file input details.
-   */
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setSelectedFileName(file.name);
-    }
-  };
-
-  /**
-   * Handles change event on the file name input element.
-   * Updates the file name state based on user input.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The event object containing the new file name.
-   */
-  const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.target.value);
-  };
 
   /**
    * Handles save operation for the reuploaded file.
@@ -84,8 +64,12 @@ export default function ReuploadIcon({ collapsed }: { collapsed: boolean }) {
           <ReuploadFile
             fileName={fileName}
             selectedFileName={selectedFileName}
-            onFileChange={handleFileChange}
-            onFileNameChange={handleFileNameChange}
+            onFileChange={(event) =>
+              handleFileChange(event, setSelectedFile, setSelectedFileName)
+            }
+            onFileNameChange={(event) =>
+              handleFileNameChange(event, setFileName)
+            }
           />
         }
         button={({ onOpen }) => (
