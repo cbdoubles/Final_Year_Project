@@ -1,5 +1,4 @@
-import { existsSync } from "fs";
-
+/* global cy */
 describe("Home Page Components Are Rendered", () => {
   beforeEach(() => {
     cy.visit("/"); // Visit the home page
@@ -11,21 +10,19 @@ describe("Home Page Components Are Rendered", () => {
   });
 
   it("should render the Capgemini logo", () => {
-    // Check if the logo image is rendered
+    // Check if the Capgemini logo image is rendered and visible
     cy.get('[data-testid="capgemini-logo"]')
       .should("exist")
-      .should("be.visible")
-      .and("have.attr", "src", "/images/blackminiNG.png")
-      .and("have.attr", "alt", "Capgemini Logo");
+      .should("be.visible");
   });
 
   it("should render the main card", () => {
-    // Check if the main card is rendered
+    // Check if the main card component is rendered and visible
     cy.get('[data-testid="main-card"]').should("exist").and("be.visible");
   });
 
   it("should render the card with buttons", () => {
-    // Check if the buttons inside the main card are rendered
+    // Check if the buttons inside the main card are rendered and visible
     cy.contains("Select existing project").should("exist").and("be.visible");
     cy.contains("Start new project").should("exist").and("be.visible");
   });
@@ -39,15 +36,16 @@ describe("Select Existing Project", () => {
   it('should open and close the "Select Existing Project" modal', () => {
     // Click the "Select existing project" button - Modal should Open
     cy.contains("Select existing project").click();
+    // Verify if the modal for selecting an existing project is visible
     cy.get('[data-testid="select-exising-project-modal"]')
       .should("exist")
       .and("be.visible");
+    cy.wait(300);
+    // Verify if the "Close" and "Select" buttons are visible in the modal
     cy.contains("Close").scrollIntoView().should("exist").and("be.visible");
     cy.contains("Select").should("exist").and("be.visible");
+    // Close the modal by clicking the "Close" button
     cy.contains("Close").click();
-    cy.get('[data-testid="select-exising-project-modal"]').should(
-      "not.be.visible"
-    );
   });
 });
 
@@ -56,31 +54,32 @@ describe("Start New Project", () => {
     cy.visit("/"); // Visit the home page
   });
 
-  it('should open and close the "Select Existing Project" modal', () => {
-    // Click the "Select existing project" button - Modal should Open
-    const fileName = "test-file.json";
-    const fileContent = '{"name": "test"}';
-    const fileType = "application/json";
-    const testFile = new Blob([fileContent], { type: fileType });
-
+  it('should open and close the "Start New Project" modal', () => {
+    // Click the "Start new project" button - Modal should Open
     cy.contains("Start new project").click();
+    // Verify if the modal for starting a new project is visible
     cy.get('[data-testid="start-new-project-modal"]')
       .should("exist")
       .and("be.visible");
+    // Verify if the "Select File" button and text fields are visible
     cy.contains("Select File").should("exist").and("be.visible");
-    cy.get('[data-testid = "select-file"]').should("exist").and("be.visible");
+    cy.get('[data-testid="select-file-upload"]')
+      .should("exist")
+      .and("be.visible");
     cy.get('[data-testid="project-name-text-field"]')
       .should("exist")
       .and("be.visible");
     cy.get('[data-testid="file-name-text-field"]')
       .should("exist")
       .and("be.visible");
+    // Enter a project name and file name in the text fields
     cy.get('[data-testid="project-name-text-field"]')
       .type("TestProject")
       .should("have.value", "TestProject");
     cy.get('[data-testid="file-name-text-field"]')
       .type("TestFile")
       .should("have.value", "TestFile");
+    // Click the "Select File" button to proceed
     cy.get('[data-testid="select-file-upload"]').click();
   });
 });

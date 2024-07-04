@@ -50,16 +50,22 @@ const NewFolderPopUp: React.FC<NewFolderPopUpProps> = ({ onSave, onClose }) => {
    * Renders the popup interface with an input field for the folder name and a save button.
    */
   return (
-    <div>
-      <InputField
-        label="Folder Name"
-        placeholder="Enter folder name"
-        rows={1}
-        value={folderName}
-        onChange={(e) => setFolderName(e.target.value)}
-      />
+    <div data-testid="new-folder-modal">
+      <div data-testid="folder-name-project-page-text-field">
+        <InputField
+          label="Folder Name"
+          placeholder="Enter folder name"
+          rows={1}
+          value={folderName}
+          onChange={(e) => setFolderName(e.target.value)}
+        />
+      </div>
       <div className="absolute bottom-4 right-5">
-        <UIButton className="bg-success-700 text-lg" onClick={handleSave}>
+        <UIButton
+          data-testid="save-folder-modal-button"
+          className="bg-success-700 text-lg"
+          onClick={handleSave}
+        >
           Save
         </UIButton>
       </div>

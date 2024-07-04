@@ -700,7 +700,7 @@ const NeovisComponent: React.FC<{
   };
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col" data-testid="graph-table-display">
       {isTableView ? (
         renderTable()
       ) : (

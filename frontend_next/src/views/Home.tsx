@@ -78,7 +78,11 @@ export default function Home() {
                   <UIButton color="danger" onClick={onClose}>
                     Close
                   </UIButton>
-                  <UIButton color="primary" onClick={handleSelect}>
+                  <UIButton
+                    color="primary"
+                    data-testid="select-project-home-button"
+                    onClick={handleSelect}
+                  >
                     Select
                   </UIButton>
                 </>

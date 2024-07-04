@@ -200,7 +200,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
         }
         button={({ onOpen }) => (
           <UIButton
-            data-testid="ui-button"
+            data-testid="select-folder-button"
             onClick={() => openSelectFolder(onOpen)}
           >
             {selectedFolder ? selectedFolder.folderName : "Select folder"}
@@ -217,7 +217,11 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
                   />
                 }
                 button={({ onOpen }) => (
-                  <UIButton className="bg-success-700" onClick={onOpen}>
+                  <UIButton
+                    className="bg-success-700"
+                    data-testid="create-new-folder-button"
+                    onClick={onOpen}
+                  >
                     Create New Folder
                   </UIButton>
                 )}
@@ -237,6 +241,7 @@ const SavePopUp: React.FC<SavePopUpProps> = ({
               />
               <UIButton
                 color="primary"
+                data-testid="select-folder-button"
                 onClick={() => handleSelectFolder(onClose)}
               >
                 Select

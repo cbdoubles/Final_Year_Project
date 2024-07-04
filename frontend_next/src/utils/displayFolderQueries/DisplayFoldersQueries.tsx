@@ -61,7 +61,7 @@ const FolderTest: React.FC<SelectProps> = ({
       {items.length === 0 ? (
         <p>No query found</p>
       ) : (
-        <div>
+        <div data-testid="query-select">
           {folderItems.map((item) => (
             <FolderDisplay
               key={`select_group_${item.folder.folderId}`}

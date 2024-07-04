@@ -61,7 +61,7 @@ const ReuploadFile: React.FC<ReuploadFileProps> = ({
       )}
       <div className="mt-4 flex gap-2">
         <UIButton
-          data-testid="select-file-reupload"
+          data-testid="select-file-reupload-button"
           onClick={handleButtonClick}
         >
           Select File

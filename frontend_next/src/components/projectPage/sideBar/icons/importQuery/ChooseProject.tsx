@@ -45,7 +45,7 @@ const ChooseProject: React.FC<ChooseProjectProps> = ({
    * @returns {JSX.Element} The rendered list of projects.
    */
   return (
-    <div>
+    <div data-testid="import-modal">
       {projects &&
         projects.map((project) => (
           <div

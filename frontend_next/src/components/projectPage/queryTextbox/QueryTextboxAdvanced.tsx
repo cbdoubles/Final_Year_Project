@@ -208,12 +208,14 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
                 <>
                   <UIButton
                     className=" bg-danger w-full text-lg"
+                    data-test-id="add-to-favorite-cancel-button"
                     onClick={onClose}
                   >
                     Cancel
                   </UIButton>
                   <UIButton
                     className="bg-success-700 w-full text-lg"
+                    data-test-id="add-to-favorite-save-button"
                     onClick={() => handleSaveCustom(onClose)}
                   >
                     Save
@@ -250,12 +252,14 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
                 <>
                   <UIButton
                     className=" bg-danger w-full text-lg"
+                    data-test-id="add-to-custom-cancel-button"
                     onClick={onClose}
                   >
                     Cancel
                   </UIButton>
                   <UIButton
                     className="bg-success-700 w-full text-lg"
+                    data-test-id="add-to-custom-save-button"
                     onClick={() => handleSaveCustom(onClose)}
                   >
                     Save

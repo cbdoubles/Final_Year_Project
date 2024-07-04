@@ -119,7 +119,10 @@ const QueryIcon: React.FC<SelectProps> = ({
           />
         )}
         footer={({ onClose }) => (
-          <UIButton onClick={() => handleSelectQueryButtonClick(onClose)}>
+          <UIButton
+            data-testid="select-query-side-bar-button"
+            onClick={() => handleSelectQueryButtonClick(onClose)}
+          >
             Select query
           </UIButton>
         )}

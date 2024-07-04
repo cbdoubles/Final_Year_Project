@@ -35,6 +35,7 @@ const InputField: React.FC<QueryInputProps> = ({
 }) => {
   return (
     <Textarea
+      data-testid="query-text-field"
       {...(label ? { label } : {})}
       className="p-2 text-black text-lg w-70 max-h-xl"
       isDisabled={readOnly}

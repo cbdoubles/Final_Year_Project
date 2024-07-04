@@ -46,7 +46,7 @@ const SelectFolder: React.FC<SelectProjectProps> = ({
    * indicates the selected folder with a background color.
    */
   return (
-    <div>
+    <div data-teestid="select-folder-modal">
       {folders &&
         folders.map((folder) => (
           <div
