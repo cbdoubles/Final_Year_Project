@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 import { DB_URL } from "@/src/libs/constants";
 import { ProjectType } from "@/src/libs/types";
 

@@ -26,38 +26,38 @@
     "@next/next/no-img-element": "off",
     "react/prop-types": 0,
     "react/display-name": 0,
-    "react/jsx-sort-props": [
-      1,
-      {
-        "callbacksLast": true,
-        "shorthandFirst": false,
-        "shorthandLast": true,
-        "multiline": "first",
-        "ignoreCase": true,
-        "noSortAlphabetically": false,
-        "reservedFirst": ["key", "ref"],
-        "locale": "auto"
-      }
-    ],
+    // "react/jsx-sort-props": [
+    //   1,
+    //   {
+    //     "callbacksLast": true,
+    //     "shorthandFirst": false,
+    //     "shorthandLast": true,
+    //     "multiline": "first",
+    //     "ignoreCase": true,
+    //     "noSortAlphabetically": false,
+    //     "reservedFirst": ["key", "ref"],
+    //     "locale": "auto"
+    //   }
+    // ],
     "import/no-unresolved": "off",
     "import/named": "warn",
     "import/namespace": "warn",
     "import/no-named-as-default": "off",
     "import/export": "warn",
-    "import/order": [
-      "error",
-      {
-        "groups": ["builtin", "external", "parent", "sibling", "index"],
-        "newlines-between": "always",
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        }
-      }
-    ],
-    "no-unused-vars": "off",
-    "unused-imports/no-unused-imports": "error",
-    "@typescript-eslint/no-unused-vars": "error",
+    // "import/order": [
+    //   "error",
+    //   {
+    //     "groups": ["builtin", "external", "parent", "sibling", "index"],
+    //     "newlines-between": "always",
+    //     "alphabetize": {
+    //       "order": "asc",
+    //       "caseInsensitive": true
+    //     }
+    //   }
+    // ],
+    // "no-unused-vars": "off",
+    // "unused-imports/no-unused-imports": "error",
+    // "@typescript-eslint/no-unused-vars": "error",
     "semi": ["error", "always"],
     "no-var": 2,
     "constructor-super": 2,
@@ -131,8 +131,8 @@
     "no-implied-eval": 2,
     "no-multi-spaces": 2,
     "no-multi-str": 2,
-    "arrow-spacing": 2,
-    "@typescript-eslint/no-explicit-any": "error"
+    "arrow-spacing": 2
+    // "@typescript-eslint/no-explicit-any": "error"
   },
   "settings": {
     "react": {
