@@ -1,6 +1,6 @@
 import pytest
 from django.core.exceptions import ValidationError
-from ..serializers import CustomQuerySerializer
+from ..serializers.custom_query_serializer import CustomQuerySerializer
 from ..models import CustomQuery, Project, Folder
 
 pytestmark = pytest.mark.django_db

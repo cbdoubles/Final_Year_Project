@@ -322,3 +322,135 @@ def test_modify_file_neo4j_error(mock_open, mock_normpath, mock_join, mock_drive
 
         mock_open.assert_called_once_with('dummy_path/dummy_file.csv', 'wb+')
         mock_delete_file.assert_called_once_with('dummy_path/dummy_file.csv')
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_fix_labels(mock_driver):
+    fs = FileService()
+    mock_tx = MagicMock()
+    mock_tx.run.return_value.single.return_value.get.return_value = ['Label']
+    fs.fix_labels(mock_tx, 'test_project')
+    mock_tx.run.assert_called_once_with("""
+        MATCH (n {project_id: $project_id})
+        RETURN labels(n) AS labels LIMIT 1
+        """, parameters={'project_id': 'test_project'})
+    fs.close()
+
+@patch('neo4j.GraphDatabase.driver')
+def test_fix_labels_no_labels(mock_driver):
+    fs = FileService()
+    mock_tx = MagicMock()
+    mock_tx.run.return_value.single.return_value.get.return_value = None
+    fs.fix_labels(mock_tx, 'test_project')
+    assert mock_tx.run.call_count == 2
+    query_fix_labels = """
+            MATCH (n {project_id: $project_id})
+            WITH n, properties(n).labels AS nodeLabels, apoc.map.removeKey(properties(n), 'labels') AS newProps
+            SET n = newProps
+            WITH n, nodeLabels, newProps
+            UNWIND nodeLabels AS label
+            CALL apoc.create.addLabels(elementId(n), [label]) YIELD node
+            WITH node, newProps
+            SET node = newProps
+            RETURN collect({data: {id: elementId(node), label: labels(node), properties: properties(node)}}) AS nodes
+            """
+    mock_tx.run.assert_called_with(query_fix_labels, parameters={'project_id': 'test_project'})
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_csv(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.csv'
+    mock_file_data.chunks.return_value = [b'data']
+    mock_join.return_value = 'dummy_path/dummy_file.csv'
+    mock_normpath.return_value = 'dummy_path/dummy_file.csv'
+
+    with patch.object(fs, 'delete_file') as mock_delete_file, \
+         patch.object(fs, 'determine_file_format') as mock_determine_file_format:
+
+        mock_session = MagicMock()
+        mock_driver_instance = mock_driver.return_value
+        mock_driver_instance.session.return_value.__enter__.return_value = mock_session
+        mock_determine_file_format.return_value = '.csv'
+
+        fs.modify_file('test_project', mock_file_data, reupload=True)
+
+        mock_determine_file_format.assert_called_once_with('dummy_path/dummy_file.csv')
+        mock_session.execute_write.assert_any_call(fs.clear_db, 'test_project')
+        mock_session.execute_write.assert_any_call(fs.import_csv_data, 'file:///dummy_path/dummy_file.csv')
+        mock_delete_file.assert_called_once_with('dummy_path/dummy_file.csv')
+        mock_session.execute_write.assert_any_call(fs.set_project_id, 'test_project')
+        mock_session.execute_write.assert_any_call(fs.fix_labels, 'test_project')
+
+    fs.close()
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_json(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.json'
+    mock_file_data.chunks.return_value = [b'data']
+    mock_join.return_value = 'dummy_path/dummy_file.json'
+    mock_normpath.return_value = 'dummy_path/dummy_file.json'
+
+    with patch.object(fs, 'delete_file') as mock_delete_file, \
+         patch.object(fs, 'determine_file_format') as mock_determine_file_format:
+
+        mock_session = MagicMock()
+        mock_driver_instance = mock_driver.return_value
+        mock_driver_instance.session.return_value.__enter__.return_value = mock_session
+        mock_determine_file_format.return_value = '.json'
+
+        fs.modify_file('test_project', mock_file_data, reupload=True)
+
+        mock_determine_file_format.assert_called_once_with('dummy_path/dummy_file.json')
+        mock_session.execute_write.assert_any_call(fs.clear_db, 'test_project')
+        mock_session.execute_write.assert_any_call(fs.import_json_data, 'file:///dummy_path/dummy_file.json')
+        mock_delete_file.assert_called_once_with('dummy_path/dummy_file.json')
+        mock_session.execute_write.assert_any_call(fs.set_project_id, 'test_project')
+        mock_session.execute_write.assert_any_call(fs.fix_labels, 'test_project')
+
+    fs.close()
+
+@patch('neo4j.GraphDatabase.driver')
+@patch('os.path.join')
+@patch('os.path.normpath')
+@patch('django.conf.settings.MEDIA_ROOT', 'dummy_media_root')
+@patch('builtins.open', new_callable=mock_open)
+def test_modify_file_graphml(mock_open, mock_normpath, mock_join, mock_driver):
+    fs = FileService()
+    mock_file_data = Mock()
+    mock_file_data.name = 'dummy_file.graphml'
+    mock_file_data.chunks.return_value = [b'data']
+    mock_join.return_value = 'dummy_path/dummy_file.graphml'
+    mock_normpath.return_value = 'dummy_path/dummy_file.graphml'
+
+    with patch.object(fs, 'delete_file') as mock_delete_file, \
+         patch.object(fs, 'determine_file_format') as mock_determine_file_format:
+
+        mock_session = MagicMock()
+        mock_driver_instance = mock_driver.return_value
+        mock_driver_instance.session.return_value.__enter__.return_value = mock_session
+        mock_determine_file_format.return_value = '.graphml'
+
+        fs.modify_file('test_project', mock_file_data, reupload=True)
+
+        mock_determine_file_format.assert_called_once_with('dummy_path/dummy_file.graphml')
+        mock_session.execute_write.assert_any_call(fs.clear_db, 'test_project')
+        mock_session.execute_write.assert_any_call(fs.import_graphml_data, 'file:///dummy_path/dummy_file.graphml')
+        mock_delete_file.assert_called_once_with('dummy_path/dummy_file.graphml')
+        mock_session.execute_write.assert_any_call(fs.set_project_id, 'test_project')
+        mock_session.execute_write.assert_any_call(fs.fix_labels, 'test_project')
+
+    fs.close()

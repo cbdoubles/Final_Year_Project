@@ -2,7 +2,7 @@ import pytest
 from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from ..models import DefaultQuery
-from ..serializers import DefaultQuerySerializer
+from ..serializers.default_query_serializer import DefaultQuerySerializer
 
 @pytest.mark.django_db
 def test_default_query_serializer_create():
