@@ -1,25 +1,6 @@
 from rest_framework import serializers
+from django.core.exceptions import ValidationError
 from ..models import Project, Folder
-
-
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        # Only the fields needed for the database
-        fields = ['id', 'name', 'file_name']
-
-    def create(self, validated_data):
-        # Create the Project instance
-        project = Project.objects.create(**validated_data)
-
-        # Create default folders
-        Folder.objects.create(
-            project=project, name='Project Custom Queries', type='Custom')
-        Folder.objects.create(
-            project=project, name='Project Favorite Queries', type='Favorite')
-
-        return project
-
 
 class ProjectSerializer(serializers.ModelSerializer):
     """
@@ -33,6 +14,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         # Fields to be serialized
         fields = ['id', 'name', 'file_name']
+
+    def validate(self, data):
+        # Perform validation on the entire object here
+        if not data.get('name') or data['name'] == '':
+            raise ValidationError("Name cannot be empty.")
+        return data
 
     def create(self, validated_data):
         """
