@@ -79,9 +79,7 @@ const StartNewProject: React.FC<StartNewProjectProps> = () => {
       setProject(project);
       router.push("/projectpage");
     } catch (error) {
-      toast.error(
-        "Error saving project - possibly project name already in use"
-      );
+      toast.error("Error saving project");
     } finally {
       setIsLoading(false);
     }

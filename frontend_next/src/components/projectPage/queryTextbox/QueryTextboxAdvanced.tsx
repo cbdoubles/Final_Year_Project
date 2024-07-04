@@ -140,7 +140,9 @@ const QueryTextboxAdvanced: React.FC<QueryTextboxAdvancedProps> = ({
         toast.success("Query saved successfully");
       }
     } else {
-      toast.error("Not all parameters from CQ are present in NLQ");
+      toast.error(
+        "Not all parameters from cyphertext are present in natural language box"
+      );
     }
   };
 
