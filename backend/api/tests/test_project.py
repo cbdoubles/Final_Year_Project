@@ -38,15 +38,16 @@ def projects():
     return projects
 
 
-# To make this pass you should put a file in the test folder and update the file name in the test
 @pytest.mark.django_db
 def test_create_project(api_client, project_data):
     url = reverse('projects-list')
-    file_path = os.path.join(os.path.dirname(__file__), 'perfetto.graphml')
-    with open(file_path, 'rb') as file:
-        project_data['file'] = SimpleUploadedFile(file.name, file.read())
+    # Create a mock file
+    mock_file = SimpleUploadedFile('mock_file.graphml', b'This is a test file content', content_type='application/xml')
+    project_data['file'] = mock_file
+    
     response = api_client.post(url, project_data, format='multipart')
-    assert response.status_code == status.HTTP_201_CREATED
+    
+    assert response.status_code == status.HTTP_201_CREATED, f"Expected status code 201 but got {response.status_code}. Response data: {response.data}"
     assert response.data['name'] == project_data['name']
     assert response.data['file_name'] == project_data['file_name']
 
@@ -56,11 +57,8 @@ def test_create_project(api_client, project_data):
     # Check if the default folders are created
     default_folders = Folder.objects.filter(project=project)
     assert default_folders.count() == 2
-    assert default_folders.filter(
-        name='Project Custom Queires', type='Custom').exists()
-    assert default_folders.filter(
-        name='Project Favorite Queries', type='Favorite').exists()
-
+    assert default_folders.filter(name='Project Custom Queries', type='Custom').exists()
+    assert default_folders.filter(name='Project Favorite Queries', type='Favorite').exists()
 
 @pytest.mark.django_db
 def test_create_project_without_file(api_client, project_data):
@@ -87,10 +85,85 @@ def test_partial_update_project_without_file(api_client, project):
     assert project.name == 'Updated Project'
     assert project.file_name == 'Updated File'
 
+@pytest.mark.django_db
+def test_create_project_without_file(api_client, project_data):
+    url = reverse('projects-list')
+    # Remove the file from project_data to simulate the missing file scenario
+    if 'file' in project_data:
+        del project_data['file']
+    response = api_client.post(url, project_data, format='multipart')
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data['error'] == 'File not provided'
 
-# INCLUDE A TEST FOR THE REUPLOAD OF A FILE!!!!
-# @pytest.mark.django_db
-# def test_partial_update_project_with_file(api_client, project):
+@pytest.mark.django_db
+def test_create_project_with_invalid_data(api_client):
+    url = reverse('projects-list')
+    invalid_data = {
+        'name': '',  # Invalid name
+        'file_name': 'Test File'
+    }
+    response = api_client.post(url, invalid_data, format='multipart')
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert 'error' in response.data
+
+from unittest.mock import patch
+
+@pytest.mark.django_db
+def test_create_project_unexpected_error(api_client, project_data):
+    url = reverse('projects-list')
+    # Create a mock file
+    mock_file = SimpleUploadedFile('mock_file.graphml', b'This is a test file content', content_type='application/xml')
+    project_data['file'] = mock_file
+
+    with patch('api.models.Project.save', side_effect=Exception('Unexpected error')):
+        response = api_client.post(url, project_data, format='multipart')
+        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert response.data['error'] == 'An unexpected error occurred: Unexpected error'
+
+
+@pytest.mark.django_db
+def test_partial_update_project_without_file_error(api_client, project):
+    url = reverse('projects-detail', args=[project.id])
+    update_data = {
+        'name': 'Updated Project',
+        'file_name': 'Updated File'
+    }
+    response = api_client.patch(url, update_data, format='multipart')
+    assert response.status_code == status.HTTP_200_OK
+    project.refresh_from_db()
+    assert project.name == 'Updated Project'
+    assert project.file_name == 'Updated File'
+
+
+@pytest.mark.django_db
+def test_partial_update_project_with_invalid_data(api_client, project):
+    url = reverse('projects-detail', args=[project.id])
+    invalid_data = {
+        'name': '',  # Invalid name
+        'file_name': 'Updated File'
+    }
+    response = api_client.patch(url, invalid_data, format='multipart')
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert 'error' in response.data
+
+
+from unittest.mock import patch
+
+@pytest.mark.django_db
+def test_partial_update_project_unexpected_error(api_client, project):
+    url = reverse('projects-detail', args=[project.id])
+    update_data = {
+        'name': 'Updated Project',
+        'file_name': 'Updated File'
+    }
+
+    with patch('api.models.Project.save', side_effect=Exception('Unexpected error')):
+        response = api_client.patch(url, update_data, format='multipart')
+        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert response.data['error'] == 'An unexpected error occurred: Unexpected error'
+
+
+
 
 @pytest.mark.django_db
 def test_partial_update_project_with_file(api_client, project):
@@ -161,8 +234,3 @@ def test_delete_project(api_client, project):
     # Try to fetch the project again
     response = api_client.get(url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
-
-# TODO
-# INCLUDE A TEST FOR THE REUPLOAD OF A FILE!!!!
-# @pytest.mark.django_db
-# def test_partial_update_project_with_file(api_client, project): 

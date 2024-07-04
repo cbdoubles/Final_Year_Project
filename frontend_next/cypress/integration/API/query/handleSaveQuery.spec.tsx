@@ -1,3 +1,4 @@
+/* global cy */
 import { toast } from "react-toastify";
 
 import { DB_URL } from "@/src/libs/constants";
@@ -42,7 +43,13 @@ describe("handleSaveQuery API utility", () => {
   });
 
   it("successfully saves a query to Favorite folder", async () => {
-    const result = await handleSaveQuery(queryName, cyphertext, natLang, folder, projectId);
+    const result = await handleSaveQuery(
+      queryName,
+      cyphertext,
+      natLang,
+      folder,
+      projectId
+    );
 
     // Verify the result
     expect(result).to.deep.equal({
@@ -60,12 +67,21 @@ describe("handleSaveQuery API utility", () => {
       body: { error: "Internal Server Error" },
     }).as("saveFavoriteQueryError");
 
-    const result = await handleSaveQuery(queryName, cyphertext, natLang, folder, projectId);
+    const result = await handleSaveQuery(
+      queryName,
+      cyphertext,
+      natLang,
+      folder,
+      projectId
+    );
 
     // Verify the result
     expect(result).to.be.null;
     // Verify toast error was called
-    cy.get("@toastError").should("be.calledOnceWithExactly", "Invalid query input (possible duplicate or empty fields)");
+    cy.get("@toastError").should(
+      "be.calledOnceWithExactly",
+      "Invalid query input (possible duplicate or empty fields)"
+    );
   });
 
   it("handles null folderType gracefully", async () => {
@@ -75,11 +91,20 @@ describe("handleSaveQuery API utility", () => {
       folderType: null,
     };
 
-    const result = await handleSaveQuery(queryName, cyphertext, natLang, nullFolder, projectId);
+    const result = await handleSaveQuery(
+      queryName,
+      cyphertext,
+      natLang,
+      nullFolder,
+      projectId
+    );
 
     // Verify the result
     expect(result).to.be.null;
     // Verify toast error was called
-    cy.get("@toastError").should("be.calledOnceWithExactly", "Invalid query input (possible duplicate or empty fields)");
+    cy.get("@toastError").should(
+      "be.calledOnceWithExactly",
+      "Invalid query input (possible duplicate or empty fields)"
+    );
   });
 });

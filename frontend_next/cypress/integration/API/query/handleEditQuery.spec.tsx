@@ -1,3 +1,4 @@
+/* global cy */
 import { DB_URL } from "@/src/libs/constants";
 import { FolderType, QueryType } from "@/src/libs/types";
 import { handleDeleteQuery } from "@/src/utils/apiCalls/query/handleDeleteQuery";
