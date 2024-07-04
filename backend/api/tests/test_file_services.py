@@ -10,7 +10,7 @@ def test_init(mock_driver, mock_getenv):
     fs = FileService()
     assert fs.neo4j_user == 'test'
     assert fs.neo4j_password == 'test'
-    mock_driver.assert_called_once_with('bolt://localhost:7687', auth=('test', 'test'))
+    mock_driver.assert_called_once_with('bolt://localhost:7474', auth=('test', 'test'))
     fs.close()
 
 def test_determine_file_format():
