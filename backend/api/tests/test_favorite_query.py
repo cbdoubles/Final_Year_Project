@@ -68,6 +68,12 @@ def test_create_query_with_same_name(api_client, favorite_query, project, favori
     response = api_client.post(url, data, format='json')
     assert response.status_code == 400
 
+@pytest.mark.django_db
+def test_by_folder_method_non_integer_folder_id(api_client):
+    url = reverse('favoritequery-by-folder') + '?folder_id=abc'
+    response = api_client.get(url, format='json')
+    assert response.status_code == 400
+    assert "Error: Folder ID must be an integer." in str(response.data)
 
 @pytest.mark.django_db
 def test_create_query_with_missing_fields(api_client, project, favorite_folder):
