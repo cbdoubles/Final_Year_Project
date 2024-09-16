@@ -12,13 +12,13 @@ describe("Home Page Components Are Visable When No Buttons Are Clicked", () => {
     cy.get('[data-testid="header"]').should("exist").and("be.visible");
   });
 
-  it("should display the Capgemini logo", () => {
+  it("should display the project logo", () => {
     // Check if the logo image is rendered
-    cy.get('[data-testid="capgemini-logo"]')
+    cy.get('[data-testid="project-logo"]')
       .should("exist")
       .should("be.visible")
       .and("have.attr", "src", "/images/blackminiNG.png")
-      .and("have.attr", "alt", "Capgemini Logo");
+      .and("have.attr", "alt", "Project Logo");
   });
 
   it("should render the main card", () => {

@@ -12,7 +12,7 @@ export default function Home() {
       <Header />
       <div className="flex w-full flex-grow items-center justify-center">
         <Card
-          className="bg-capgemini-gray bg-opacity-90"
+          className="bg-project-gray bg-opacity-90"
           data-testid="main-card"
         >
           <CardBody className="grid gap-10 items-center justify-center p-10">

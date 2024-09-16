@@ -35,9 +35,9 @@ const config: Config = {
         light: {
           colors: {
             background: "#FFFFFF",
-            "capgemini-gray": "#ECECEC",
+            "project-gray": "#ECECEC",
             primary: {
-              light: "#12ABDB", //Capgemini Blue
+              light: "#12ABDB", //Blue
               DEFAULT: "#0070AD", //Vibrant Blue
               dark: "#2B0A3D", //Deep Purple
               100: "#C8F5FA",

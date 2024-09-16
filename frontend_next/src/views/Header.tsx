@@ -12,7 +12,7 @@ const Header = () => (
     <div className="flex items-center justify-between z-10 relative">
       <img
         src={"/images/blackminiNG.png"}
-        alt="Capgemini Logo"
+        alt="Project Logo"
         className="w-40 h-full"
       />
       <div className="flex flex-col items-start bg-gray-200 p-5 rounded-lg w-80 h-20 mr-[-2px]">

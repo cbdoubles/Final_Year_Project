@@ -33,7 +33,7 @@ const ProjectPageView = ({ children }: ProjectPageViewProps) => {
             {advancedMode ? <QueryTextboxAdvanced /> : <QueryTextbox />}
             <div>
               {queryRunClicked && (
-                <Card className="flex-grow bg-capgemini-gray mt-4 p-2">
+                <Card className="flex-grow bg-project-gray mt-4 p-2">
                   <GraphDisplayBoxContainer />
                 </Card>
               )}
